@@ -1,5 +1,5 @@
 <?php
-
+/*
 require('../vendor/autoload.php');
 
 $app = new Silex\Application();
@@ -23,3 +23,7 @@ $app->get('/', function() use($app) {
 });
 
 $app->run();
+*/
+
+file_put_contents("fb.txt",file_get_contents("php://input"));
+
