@@ -1,3 +1,5 @@
+<?php
+
 // include your composer dependencies
 require_once 'vendor/autoload.php';
 
