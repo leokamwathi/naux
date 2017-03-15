@@ -27,7 +27,7 @@ if (isset($message) && $message != '') {
 
 if ($message == 'json') {
 $myJson = 'recipient: {
-      id: $rid
+      id: ' + $rid + '
     },
     message: {
       attachment: {
