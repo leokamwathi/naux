@@ -12,8 +12,27 @@ $result = curl_exec($ch);
 if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
 	print_r($_GET["hub_challenge"]);
 }else{
-$content = file_get_contents("php://input");
+
+$data = array(
+'recipient' => array('id'=> $rid),
+'message' => array('text'=>'I am alive')
+);
+
+$data = file_get_contents("php://input");
+
+$options = array(
+'http' => array(
+'method' => 'POST',
+'content' => json_encode($data),
+'header' => "Content-Type: application/json\n"
+)
+
+);
+$context = stream_context_create($options);
+
+
+
 $fb = json_decode($content);
-	$result = file_get_contents("http://fbbot.synax-solutions.com/bot.aspx?result=$fb", false, $fb);
+	$result = file_get_contents("http://fbbot.synax-solutions.com/bot.aspx?result=$fb", false, $context);
 	print_r($result);
 }
