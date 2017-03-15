@@ -70,12 +70,12 @@ $myJson = 'recipient: {
 
   $token = "EAAN5JK8Gx7sBAGCZB5YulfJl4eoUCXGZABOm1oGRFH4kHubnxeANv8ZCVRQymrxqm0BEpzdULKWKhaBi5qXSbxZBrWhKud2U3ZAsBi1e8y3xCuKUMz9UF5XWRM8O9moGoIidAsUyCr3FLKjlXd0Q2WC70x6vmIZBwajPKXbxKU7AZDZD";
 
-  $data = json_decode($myJson);
+  //$data = json_decode($myJson);
 
 $options = array(
 'http' => array(
 'method' => 'POST',
-'content' => json_encode($data),
+'content' => $myJson,
 'header' => "Content-Type: application/json\n"
 )
 
