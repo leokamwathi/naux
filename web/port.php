@@ -23,7 +23,7 @@ $data = file_get_contents("php://input");
 $options = array(
 'http' => array(
 'method' => 'POST',
-'content' => json_encode($data),
+'content' => json_encode(json_decode($data)),
 'header' => "Content-Type: application/json\n"
 )
 
@@ -32,7 +32,7 @@ $context = stream_context_create($options);
 
 
 
-$fb = json_decode($content);
+$fb = json_decode($data);
 	$result = file_get_contents("http://fbbot.synax-solutions.com/bot.aspx?result=$fb", false, $context);
 	print_r($result);
 }
