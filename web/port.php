@@ -13,10 +13,18 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
 	print_r($_GET["hub_challenge"]);
 }else{
 
-$data = array(
-'recipient' => array('id'=> $rid),
-'message' => array('text'=>'I am alive')
-);
+
+try {
+$fb = file_get_contents("php://input");
+$fb = json_decode($fb);
+
+//$sid = $fb->entry[0]->id;
+$rid = $fb->entry[0]->messaging[0]->sender->id;
+$message = $fb->entry[0]->messaging[0]->message->text;
+
+//if ($message > 0){
+if (isset($message) && $message != '') {
+
 
 $data = file_get_contents("php://input");
 
@@ -57,6 +65,10 @@ $context = stream_context_create($options);
 
 
 $reply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
+}
+}
+} catch (Exception $e) {
+    // Handle exception
 }
 	
 	
