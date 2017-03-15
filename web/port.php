@@ -9,7 +9,9 @@ $result = curl_exec($ch);
 */
 
 
-
-$result = file_get_contents("http://fbbot.synax-solutions.com/bot.aspx", false, file_get_contents("php://input"));
-
-print_r($result);
+if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
+	print_r($_GET["hub_challenge"]);
+}else{
+	$result = file_get_contents("http://fbbot.synax-solutions.com/bot.aspx", false, file_get_contents("php://input"));
+	print_r($result);
+}
