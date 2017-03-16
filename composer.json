@@ -4,7 +4,8 @@
     "monolog/monolog": "^1.4",
     "twig/twig": "^1.8",
     "symfony/twig-bridge": "^2",
-	"google/apiclient": "^2.0"
+	"google/apiclient": "^2.0",
+	"herrera-io/silex-pdo": "^1.0"
   },
   "require-dev": {
     "heroku/heroku-buildpack-php": "*"
