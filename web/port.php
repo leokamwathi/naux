@@ -27,10 +27,10 @@ if (isset($message) && $message != '') {
 
 if ($message == 'json') {
 // work work work.... 
-$data = '{"recipient": {
-      "id": "'.$rid.'"
-    },
-    "message": {"text" : "I am alive people"}}';
+//$data = '{"recipient": {
+//      "id": "'.$rid.'"
+//    },
+//    "message": {"text" : "I am alive people"}}';
 
 $myJson = '{"recipient": {
       "id": "'.$rid.'"
@@ -40,7 +40,7 @@ $myJson = '{"recipient": {
         "type": "template",
         "payload": {
           "template_type": "generic",
-         " elements": [{
+          "elements": [{
             "title": "rift",
             "subtitle": "Next-generation virtual reality",
             "item_url": "https://www.oculus.com/en-us/rift/",               
@@ -54,7 +54,16 @@ $myJson = '{"recipient": {
               "title": "Call Postback",
              "payload": "Payload for first bubble"
             }]
-          }, {
+          }]
+        }
+      }
+    }
+  }';
+  
+  
+  /*
+  
+  , {
             "title": "touch",
             "subtitle": "Your Hands, Now in VR",
             "item_url": "https://www.oculus.com/en-us/touch/",               
@@ -68,12 +77,9 @@ $myJson = '{"recipient": {
               "title": "Call Postback",
               "payload": "Payload for second bubble"
             }]
-          }]
-        }
-      }
-    }
-  }';
+          }
   
+  */
 
   $token = "EAAN5JK8Gx7sBAGCZB5YulfJl4eoUCXGZABOm1oGRFH4kHubnxeANv8ZCVRQymrxqm0BEpzdULKWKhaBi5qXSbxZBrWhKud2U3ZAsBi1e8y3xCuKUMz9UF5XWRM8O9moGoIidAsUyCr3FLKjlXd0Q2WC70x6vmIZBwajPKXbxKU7AZDZD";
 
