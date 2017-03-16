@@ -15,21 +15,13 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
 
 
 try {
-$fb = file_get_contents("php://input");
-$fb = json_decode($fb);
-
-//$sid = $fb->entry[0]->id;
-$rid = $fb->entry[0]->messaging[0]->sender->id;
-$message = $fb->entry[0]->messaging[0]->message->text;
-
-
 
 $data = file_get_contents("php://input");
 
 $options = array(
 'http' => array(
 'method' => 'POST',
-'content' => json_encode($data),
+'content' => $data,
 'header' => "Content-Type: application/json\n"
 )
 
@@ -38,9 +30,16 @@ $context = stream_context_create($options);
 
 //$fb = json_decode($data);
 
-	$messageHost = file_get_contents("http://fbbot.synax-solutions.com/bot.aspx?result=$data", false, $context);
-	//print_r($result);
+$messageHost = file_get_contents("http://fbbot.synax-solutions.com/bot.aspx?result=$data", false, $context);
+//print_r($result);
 
+
+
+$fb = json_decode($data);
+
+//$sid = $fb->entry[0]->id;
+$rid = $fb->entry[0]->messaging[0]->sender->id;
+$message = $fb->entry[0]->messaging[0]->message->text;
 
 
 //if ($message > 0){
