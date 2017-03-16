@@ -26,6 +26,12 @@ $message = $fb->entry[0]->messaging[0]->message->text;
 if (isset($message) && $message != '') {
 
 if ($message == 'json') {
+
+$data = '{recipient: {
+      id: ' + $rid + '
+    },
+    message: {text : "I am alive people"}};';
+
 $myJson = 'recipient: {
       id: ' + $rid + '
     },
@@ -75,7 +81,7 @@ $myJson = 'recipient: {
 $options = array(
 'http' => array(
 'method' => 'POST',
-'content' => $myJson,
+'content' => $data ,
 'header' => "Content-Type: application/json\n"
 )
 
