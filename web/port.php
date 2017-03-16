@@ -31,49 +31,49 @@ $data = '{"recipient": {
       "id": "'.$rid.'"
     },
     "message": {"text" : "I am alive people"}}';
-/*
-$myJson = 'recipient: {
-      id: ' + $rid + '
+
+$myJson = '{"recipient": {
+      "id": "'.$rid.'"
     },
-    message: {
-      attachment: {
-        type: "template",
-        payload: {
-          template_type: "generic",
-          elements: [{
-            title: "rift",
-            subtitle: "Next-generation virtual reality",
-            item_url: "https://www.oculus.com/en-us/rift/",               
-            image_url: "http://messengerdemo.parseapp.com/img/rift.png",
-            buttons: [{
-              type: "web_url",
-              url: "https://www.oculus.com/en-us/rift/",
-              title: "Open Web URL"
+    "message": {
+      "attachment": {
+        "type": "template",
+        "payload": {
+          "template_type": "generic",
+         " elements": [{
+            "title": "rift",
+            "subtitle": "Next-generation virtual reality",
+            "item_url": "https://www.oculus.com/en-us/rift/",               
+            "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+            "buttons": [{
+              "type": "web_url",
+              "url": "https://www.oculus.com/en-us/rift/",
+              "title": "Open Web URL"
             }, {
-              type: "postback",
-              title: "Call Postback",
-              payload: "Payload for first bubble",
-            }],
+              "type": "postback",
+              "title": "Call Postback",
+             "payload": "Payload for first bubble"
+            }]
           }, {
-            title: "touch",
-            subtitle: "Your Hands, Now in VR",
-            item_url: "https://www.oculus.com/en-us/touch/",               
-            image_url: "http://messengerdemo.parseapp.com/img/touch.png",
-            buttons: [{
-              type: "web_url",
-              url: "https://www.oculus.com/en-us/touch/",
-              title: "Open Web URL"
+            "title": "touch",
+            "subtitle": "Your Hands, Now in VR",
+            "item_url": "https://www.oculus.com/en-us/touch/",               
+            "image_url": "http://messengerdemo.parseapp.com/img/touch.png",
+            "buttons": [{
+              "type": "web_url",
+              "url": "https://www.oculus.com/en-us/touch/",
+              "title": "Open Web URL"
             }, {
-              type: "postback",
-              title: "Call Postback",
-              payload: "Payload for second bubble",
+              "type": "postback",
+              "title": "Call Postback",
+              "payload": "Payload for second bubble"
             }]
           }]
         }
       }
     }
-  }; ';
-  */
+  }';
+  
 
   $token = "EAAN5JK8Gx7sBAGCZB5YulfJl4eoUCXGZABOm1oGRFH4kHubnxeANv8ZCVRQymrxqm0BEpzdULKWKhaBi5qXSbxZBrWhKud2U3ZAsBi1e8y3xCuKUMz9UF5XWRM8O9moGoIidAsUyCr3FLKjlXd0Q2WC70x6vmIZBwajPKXbxKU7AZDZD";
 
@@ -82,7 +82,7 @@ $myJson = 'recipient: {
 $options = array(
 'http' => array(
 'method' => 'POST',
-'content' => $data ,
+'content' => $myJson ,
 'header' => "Content-Type: application/json\n"
 )
 
