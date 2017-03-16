@@ -26,12 +26,12 @@ $message = $fb->entry[0]->messaging[0]->message->text;
 if (isset($message) && $message != '') {
 
 if ($message == 'json') {
-
-$data = '{recipient: {
+// work work work.... 
+$data = 'recipient: {
       id: ' + $rid + '
     },
-    message: {text : "I am alive people"}};';
-
+    message: {text : "I am alive people"};';
+/*
 $myJson = 'recipient: {
       id: ' + $rid + '
     },
@@ -73,6 +73,7 @@ $myJson = 'recipient: {
       }
     }
   }; ';
+  */
 
   $token = "EAAN5JK8Gx7sBAGCZB5YulfJl4eoUCXGZABOm1oGRFH4kHubnxeANv8ZCVRQymrxqm0BEpzdULKWKhaBi5qXSbxZBrWhKud2U3ZAsBi1e8y3xCuKUMz9UF5XWRM8O9moGoIidAsUyCr3FLKjlXd0Q2WC70x6vmIZBwajPKXbxKU7AZDZD";
 
