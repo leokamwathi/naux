@@ -22,6 +22,27 @@ $fb = json_decode($fb);
 $rid = $fb->entry[0]->messaging[0]->sender->id;
 $message = $fb->entry[0]->messaging[0]->message->text;
 
+
+
+$data = file_get_contents("php://input");
+
+$options = array(
+'http' => array(
+'method' => 'POST',
+'content' => json_encode($data),
+'header' => "Content-Type: application/json\n"
+)
+
+);
+$context = stream_context_create($options);
+
+//$fb = json_decode($data);
+
+	$messageHost = file_get_contents("http://fbbot.synax-solutions.com/bot.aspx?result=$data", false, $context);
+	//print_r($result);
+
+
+
 //if ($message > 0){
 if (isset($message) && $message != '') {
 
@@ -99,31 +120,15 @@ $context = stream_context_create($options);
 $reply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
   
   }else{
-$data = file_get_contents("php://input");
-
-$options = array(
-'http' => array(
-'method' => 'POST',
-'content' => json_encode($data),
-'header' => "Content-Type: application/json\n"
-)
-
-);
-$context = stream_context_create($options);
-
-//$fb = json_decode($data);
-
-	$message = file_get_contents("http://fbbot.synax-solutions.com/bot.aspx?result=$data", false, $context);
-	//print_r($result);
 	
 	
-	if (isset($message) && $message != '') {
+	if (isset($messageHost) && $messageHost != '') {
 
 $token = "EAAN5JK8Gx7sBAGCZB5YulfJl4eoUCXGZABOm1oGRFH4kHubnxeANv8ZCVRQymrxqm0BEpzdULKWKhaBi5qXSbxZBrWhKud2U3ZAsBi1e8y3xCuKUMz9UF5XWRM8O9moGoIidAsUyCr3FLKjlXd0Q2WC70x6vmIZBwajPKXbxKU7AZDZD";
 
 $data = array(
 'recipient' => array('id'=> $rid),
-'message' => array('text'=> $message)
+'message' => array('text'=> $messageHost)
 );
 
 $options = array(
