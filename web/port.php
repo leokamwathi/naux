@@ -27,10 +27,10 @@ if (isset($message) && $message != '') {
 
 if ($message == 'json') {
 // work work work.... 
-$data = '"recipient": {
+$data = '{"recipient": {
       "id": "'.$rid.'"
     },
-    "message": {"text" : "I am alive people"};';
+    "message": {"text" : "I am alive people"}}';
 /*
 $myJson = 'recipient: {
       id: ' + $rid + '
