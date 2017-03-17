@@ -41,8 +41,10 @@ function pg_connection_string_from_database_url() {
 $pg_conn = pg_connect(pg_connection_string_from_database_url());
 
 $insertQuery = "INSERT INTO Json_Messages (json)
-    VALUES '$data');";
+    VALUES '$data')";
 $result = pg_query($pg_conn, $insertQuery );
+
+
 
 //================================================================================================================
 
@@ -86,8 +88,8 @@ $myJson = '{"recipient": {
               "title": "Open Web URL"
             }, {
               "type": "postback",
-              "title": "Call Postback",
-             "payload": "Payload for first bubble"
+              "title": "Callback",
+             "payload": "Payload"
             }]
           }]
         }
