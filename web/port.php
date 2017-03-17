@@ -30,9 +30,24 @@ $context = stream_context_create($options);
 
 //$fb = json_decode($data);
 
+
+//================================================================================================================
+
+function pg_connection_string_from_database_url() {
+  extract(parse_url($_ENV["DATABASE_URL"]));
+  return "user=$user password=$pass host=$host dbname=" . substr($path, 1); # <- you may want to add sslmode=require there too
+}
+# Here we establish the connection. Yes, that's all.
+$pg_conn = pg_connect(pg_connection_string_from_database_url());
+
+$insertQuery = "INSERT INTO Json_Messages (json)
+    VALUES '$data');";
+$result = pg_query($pg_conn, $insertQuery );
+
+//================================================================================================================
+
 $messageHost = file_get_contents("http://fbbot.synax-solutions.com/bot.aspx?result=$data", false, $context);
 //print_r($result);
-
 
 
 $fb = json_decode($data);
