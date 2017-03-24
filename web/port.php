@@ -240,7 +240,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     $options = array(
                         'http' => array(
                         'method' => 'POST',
-                        'content' => json_encode($reply),
+                        'content' => $reply,
                         'header' => "Content-Type: application/json\n"
                     )
 
@@ -248,9 +248,12 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     $context = stream_context_create($options);
 
                     $reply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
+                    file_put_contents("php://stderr", "FB reply: = ".$reply.PHP_EOL);
+
                 }
     } catch (Exception $e) {
         // Handle exception
+        file_put_contents("php://stderr", "ERROR: = ".$e->getMessage().PHP_EOL);
     }
 
 
