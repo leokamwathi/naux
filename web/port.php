@@ -29,14 +29,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
           $message = "payload";
         }
       }
-
-      curl -X POST -H "Content-Type: application/json" -d '{
-        "recipient":{
-        	"id":"USER_ID"
-        },
-        "sender_action":"typing_on"
-      }' "https://graph.facebook.com/v2.6/me/messages?access_token=PAGE_ACCESS_TOKEN"
-
+      
 //====================================================================================================================//
 /////////////////REply Messages
 
