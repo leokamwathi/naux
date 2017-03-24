@@ -30,11 +30,18 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
         }
       }
 
+      curl -X POST -H "Content-Type: application/json" -d '{
+        "recipient":{
+        	"id":"USER_ID"
+        },
+        "sender_action":"typing_on"
+      }' "https://graph.facebook.com/v2.6/me/messages?access_token=PAGE_ACCESS_TOKEN"
+
 //====================================================================================================================//
 /////////////////REply Messages
 
 $status_new = '
-"{recipient":{
+{"recipient":{
     "id":"'.$sid.'"
   },
   "message":{
@@ -69,7 +76,7 @@ $status_location = '{
 }';
 
 $status_job = '
-"{recipient":{
+{"recipient":{
     "id":"'.$sid.'"
   },
   "message":{
@@ -114,7 +121,7 @@ $status_exp = '
   }';
 
 $status_qualifications = '
-"{recipient":{
+{"recipient":{
     "id":"'.$sid.'"
   },
   "message":{
@@ -150,7 +157,7 @@ $status_qualifications = '
   }';
 
 $status_about = '
-"{recipient":{
+{"recipient":{
     "id":"'.$sid.'"
   },
   "message":{
@@ -272,6 +279,14 @@ $result = curl_exec($ch);
          if (isset($reply) && $reply != '') {
 
                     $token = "EAAN5JK8Gx7sBAGCZB5YulfJl4eoUCXGZABOm1oGRFH4kHubnxeANv8ZCVRQymrxqm0BEpzdULKWKhaBi5qXSbxZBrWhKud2U3ZAsBi1e8y3xCuKUMz9UF5XWRM8O9moGoIidAsUyCr3FLKjlXd0Q2WC70x6vmIZBwajPKXbxKU7AZDZD";
+/*
+                    $typing_on = array(
+                        'recipient' => array('id'=> $sid),
+                        'sender_action' => 'typing_on'
+                    );
+
+  */
+
 /*
                     $data = array(
                         'recipient' => array('id'=> $sid),
