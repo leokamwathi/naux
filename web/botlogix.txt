@@ -1,0 +1,97 @@
+
+==============================
+Start
+==============================
+Bot: Hi user, What are you looking for?
+[Looking Job][Posting a Job]
+
+***Looking for a job tree*****
+--------------------------------------
+Bot: Please enter the city,country of where you are looking for a job in? 
+eg (Nairobi, Kenya) 
+[Submit Locations Using Fb][Manual submission]
+---------------------------------------
+Bot: What kind of job are you looking for (Just one Job)?
+eg. Accountant, Web Designer,Chef, Sales Person,Programmer.
+---------------------------------------
+Bot: How many years have you worked at your job.
+Please enter the number of years eg. 0,2,4.5,10 etc
+//////make this a choice instead of just entering numbers..../////////
+[Under 1 year][1 to 3 years][4 to 8 years][8 years and above]
+---------------------------------------
+Bot: What are your job Qualifications. 
+Eg. Self taught,certificate,diploma,Degree,Masters
+///May be I make this a choice
+  [Self Taught][Certificate][Collage Diploma][University Degree][Masters Degree]
+
+---------------------------------------
+///////////////////Is this really needed???////////////////////////
+ Bot: Please enter a small introduction about yourself.(500 characters)
+ eg. Hi My name is Alex, I am very passionate about technology and computers.
+ I am very goal focused and will be very happy to work for internet bandwidth. 
+ -------------------------------------
+ Bot: Thank you for entering your information. Please confirm the information below is correct before proceeding. 
+ Job: Accountant
+ Experience: More than 8 years
+ Qualification: Masters Degree
+ Looking for a job at: Nairobi, Kenya
+ About me: I am a very cool accountant. Really I am.
+ 
+ 
+ [Edit][OK Search for me]
+ -------------------------------------
+ Bot: Your job search account will be active for 30days. 
+ You will be sent a message as to when you reactivate your account.
+ [Ok I understand][No I don't]
+ 
+ Bot: We have found XXX job listing matching your criteria your criteria. {Go to job found}
+ 
+ ------------------------------------
+ 
+ 
+ *************Job Listing************************
+ ------------------------------------
+ Bot: Please enter your company name.
+ 
+ ------------------------------------
+ Bot: Where are you located. (city,country)
+ [Submit using facebook]
+ ------------------------------------
+ Bot: What job are you listing for. 
+ eg accountant, web Designer, Banker etc.
+-------------------------------------
+Bot: What is the minimun job qualification you are looking for.
+  [Any][Self Taught][Certificate][Collage Diploma][University Degree][Masters Degree]
+------------------------------------
+Bot: What is the minimum job applicant experience you are looking for.
+[Any][Over 1 year][Over 4 years][over 8 years]
+------------------------------------
+Bot: Please describe the job in 1000 characters.
+-We are an NGO looking for a hard working sales person.
+------------------------------------
+Bot: Thank you for the information. You have entered. 
+Name: NGO Force
+Job location: Kisumu, Kenya
+job: Sales Person
+Qualifications: University Degree
+Experience: Over 1 years
+------------------------------------
+Bot: Got to found job applicants 
+------------------------------------ 
+
+
+==========================
+Job Found
+==========================
+-Hi user, A new job listing matching your criteria (Accountant) has been found.
+[Show me the Job][Not Interested Now][Edit Profile][Deactivate Account]
+
+
+=========================
+Job listing canidates found (May be not)
+=========================
+-Hi Company Name, We have found 8 canidate that fit your job description. Can we notify them of the job listing.
+[Yes Please][No Thank you][Edit Profile][Deactivate the Job Listing]
+
+
+
