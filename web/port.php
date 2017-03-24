@@ -1,8 +1,37 @@
 <?php
 
+if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
+    print_r($_GET["hub_challenge"]);
+
+
+}else{
+
+  try {
+
+      $data = file_get_contents("php://input");
+
+      //$fb = json_decode($data);
+
+
+
+      /// PAYLOAD Format
+      ///{"object":"page","entry":[{"id":"763933067090623","time":1490364301410,"messaging":[{"recipient":{"id":"763933067090623"},"timestamp":1490364301410,"sender":{"id":"1486644564679609"},"postback":{"payload":"Payload"}}]}]}
+
+      $fb = json_decode($data);
+
+      $pid = $fb->entry[0]->id;
+      $sid = $fb->entry[0]->messaging[0]->sender->id;
+      $message = $fb->entry[0]->messaging[0]->message->text;
+      $payload = $fb->entry[0]->messaging[0]->postback->payload;
+
+      if (isset($message) && $message != '') {
+        if (isset($payload) && $payload != '') {
+          $message = "Payload ".$payload;
+        }
+      }
 
 //====================================================================================================================//
-/////////////////Messages
+/////////////////REply Messages
 
 $status_new = '
 "{recipient":{
@@ -141,37 +170,13 @@ $result = curl_exec($ch);
 */
 
 
-if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
-    print_r($_GET["hub_challenge"]);
 
-
-}else{
     //================================================================================================================
     /////// Read Input set fb variables
 
-    try {
-
-        $data = file_get_contents("php://input");
-
-        //$fb = json_decode($data);
 
 
 
-        /// PAYLOAD Format
-        ///{"object":"page","entry":[{"id":"763933067090623","time":1490364301410,"messaging":[{"recipient":{"id":"763933067090623"},"timestamp":1490364301410,"sender":{"id":"1486644564679609"},"postback":{"payload":"Payload"}}]}]}
-
-        $fb = json_decode($data);
-
-        $pid = $fb->entry[0]->id;
-        $sid = $fb->entry[0]->messaging[0]->sender->id;
-        $message = $fb->entry[0]->messaging[0]->message->text;
-        $payload = $fb->entry[0]->messaging[0]->postback->payload;
-
-        if (isset($message) && $message != '') {
-          if (isset($payload) && $payload != '') {
-            $message = "Payload ".$payload;
-          }
-        }
         //===================================================================================================
         // database connections
         /*
@@ -217,7 +222,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 $reply = $status_exp;
                 break;
             case "qualification":
-                $reply = $status_qualification;
+                $reply = $status_qualifications;
                 break;
             case "about":
                 $reply = $status_about;
@@ -246,14 +251,15 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
 
                     );
                     $context = stream_context_create($options);
+                    $fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
+                    file_put_contents("php://stderr", "FB reply: = ".$fbreply.PHP_EOL);
 
-                    $reply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
-                    file_put_contents("php://stderr", "FB reply: = ".$reply.PHP_EOL);
-
+                }else{
+    file_put_contents("php://stderr", "No reply!!! ".PHP_EOL);
                 }
     } catch (Exception $e) {
         // Handle exception
-        file_put_contents("php://stderr", "ERROR: = ".$e->getMessage().PHP_EOL);
+        file_put_contents("php://stderr", "ERROR!!: = ".$e->getMessage().PHP_EOL);
     }
 
 
