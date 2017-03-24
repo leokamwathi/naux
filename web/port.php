@@ -167,11 +167,14 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
         $message = $fb->entry[0]->messaging[0]->message->text;
         $payload = $fb->entry[0]->messaging[0]->postback->payload;
 
-         if (isset($message) && $message != '') {
-             $message = "Payload ".$payload;
-         }
+        if (isset($message) && $message != '') {
+          if (isset($payload) && $payload != '') {
+            $message = "Payload ".$payload;
+          }
+        }
         //===================================================================================================
         // database connections
+        /*
         function pg_connection_string_from_database_url() {
             extract(parse_url($_ENV["DATABASE_URL"]));
             return "user=$user password=$pass host=$host dbname=" . substr($path, 1); # <- you may want to add sslmode=require there too
@@ -197,7 +200,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 $status = $row['status'];
             }
         }
-
+        */
         //====================================================================================================
 
         switch ($message) {
@@ -228,16 +231,16 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
          if (isset($reply) && $reply != '') {
 
                     $token = "EAAN5JK8Gx7sBAGCZB5YulfJl4eoUCXGZABOm1oGRFH4kHubnxeANv8ZCVRQymrxqm0BEpzdULKWKhaBi5qXSbxZBrWhKud2U3ZAsBi1e8y3xCuKUMz9UF5XWRM8O9moGoIidAsUyCr3FLKjlXd0Q2WC70x6vmIZBwajPKXbxKU7AZDZD";
-
+/*
                     $data = array(
                         'recipient' => array('id'=> $sid),
                         'message' => array('text'=> $reply)
                     );
-
+*/
                     $options = array(
                         'http' => array(
                         'method' => 'POST',
-                        'content' => json_encode($data),
+                        'content' => json_encode($reply),
                         'header' => "Content-Type: application/json\n"
                     )
 
