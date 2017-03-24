@@ -278,7 +278,7 @@ $result = curl_exec($ch);
 
          if (isset($reply) && $reply != '') {
 
-                    $token = "EAAN5JK8Gx7sBAGCZB5YulfJl4eoUCXGZABOm1oGRFH4kHubnxeANv8ZCVRQymrxqm0BEpzdULKWKhaBi5qXSbxZBrWhKud2U3ZAsBi1e8y3xCuKUMz9UF5XWRM8O9moGoIidAsUyCr3FLKjlXd0Q2WC70x6vmIZBwajPKXbxKU7AZDZD";
+                    $token = $_ENV["techware_fb_token"];
 /*
                     $typing_on = array(
                         'recipient' => array('id'=> $sid),
