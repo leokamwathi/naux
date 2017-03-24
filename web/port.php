@@ -26,7 +26,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
 
       if (isset($message) && $message != '') {
         if (isset($payload) && $payload != '') {
-          $message = "Payload ".$payload;
+          $message = "payload";
         }
       }
 
@@ -73,7 +73,7 @@ $status_job = '
     "id":"'.$sid.'"
   },
   "message":{
-    "text":"Hi, What kind of job are you looking for (Just one Job)? eg. Part time, Accountant, Web Designer,Chef, Sales Person, Programmer, House Help.",
+    "text":"Hi, What kind of job are you looking for (Just one Job)? eg. Part time, Accountant, Web Designer,Chef, Sales Person, Programmer, House Help."
    }
   }';
 
@@ -154,8 +154,36 @@ $status_about = '
     "id":"'.$sid.'"
   },
   "message":{
-    "text":"Hi, Tell us about yourself and the job you are looking for?",
+    "text":"Hi, Tell us about yourself and the job you are looking for?"
    }
+  }';
+
+  $status_test = '{"recipient": {
+      "id": "'.$sid.'"
+    },
+    "message": {
+      "attachment": {
+        "type": "template",
+        "payload": {
+          "template_type": "generic",
+          "elements": [{
+            "title": "rift",
+            "subtitle": "Next-generation virtual reality",
+            "item_url": "https://www.oculus.com/en-us/rift/",
+            "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+            "buttons": [{
+              "type": "web_url",
+              "url": "https://www.oculus.com/en-us/rift/",
+              "title": "Open Web URL"
+            }, {
+              "type": "postback",
+              "title": "Callback",
+             "payload": "PayloadTest"
+            }]
+          }]
+        }
+      }
+    }
   }';
 
 //====================================================================================================================//
@@ -227,8 +255,16 @@ $result = curl_exec($ch);
             case "about":
                 $reply = $status_about;
                 break;
+            case "payload":
+            $data = array(
+                'recipient' => array('id'=> $sid),
+                'message' => array('text'=> "Payload => ".$payload)
+            );
+              $reply = json_encode($data);
+              break;
             default:
-                $reply = $message;
+                $reply = $status_test;
+                break;
                 }
 
         //====================================================================================================
@@ -249,7 +285,10 @@ $result = curl_exec($ch);
                         'header' => "Content-Type: application/json\n"
                     ));
                     $context = stream_context_create($options);
+                    file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
+                    //$fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
                     $fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
+
                     file_put_contents("php://stderr", "FB reply: = ".$fbreply.PHP_EOL);
 
                 }else{
