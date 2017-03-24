@@ -4,7 +4,7 @@
 //====================================================================================================================//
 /////////////////Messages
 
-$status_new = '  
+$status_new = '
 "{recipient":{
     "id":"'.$sid.'"
   },
@@ -39,7 +39,7 @@ $status_location = '{
   }
 }';
 
-$status_job = '  
+$status_job = '
 "{recipient":{
     "id":"'.$sid.'"
   },
@@ -48,7 +48,7 @@ $status_job = '
    }
   }';
 
-$status_exp = '  
+$status_exp = '
 "{recipient":{
     "id":"'.$sid.'"
   },
@@ -84,7 +84,7 @@ $status_exp = '
    }
   }';
 
-$status_qualifications = '  
+$status_qualifications = '
 "{recipient":{
     "id":"'.$sid.'"
   },
@@ -120,7 +120,7 @@ $status_qualifications = '
    }
   }';
 
-$status_about = '  
+$status_about = '
 "{recipient":{
     "id":"'.$sid.'"
   },
@@ -179,7 +179,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
         # Here we establish the connection. Yes, that's all.
         $pg_conn = pg_connect(pg_connection_string_from_database_url());
 
-        $checkStatusQuery = "SELECT * from jobsDB where pageID ='$pid' and userID='$sid'";
+        $checkStatusQuery = "SELECT * from jobsDBtest where pageID ='$pid' and userID='$sid'";
 
         //$insertQuery = "INSERT INTO Json_Messages (json) VALUES ('$data')";
 
