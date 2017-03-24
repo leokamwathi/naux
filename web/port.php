@@ -247,7 +247,7 @@ $result = curl_exec($ch);
                         'method' => 'POST',
                         'content' => $reply,
                         'header' => "Content-Type: application/json\n"
-                    )
+                    );
 
                     );
                     $context = stream_context_create($options);
