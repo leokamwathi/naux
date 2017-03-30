@@ -22,7 +22,11 @@ function bot_setup()
         // check if message is a fieldname
 
         //if messgae create payload and send back
+        if(filter_var($message, FILTER_VALIDATE_URL))
+{
         file_put_contents("Tmpfile.zip", file_get_contents("$message"));
+
+    }
 /*
 
 curl -X POST -H "Content-Type: application/json" -d '{

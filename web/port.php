@@ -18,6 +18,46 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
         }
       }
 
+      if ($message == "file"){
+/*
+curl  \
+  -F recipient='{"id":"USER_ID"}' \
+  -F message='{"attachment":{"type":"file", "payload":{}}}' \
+  -F filedata=@/tmp/receipt.pdf \
+  "https://graph.facebook.com/v2.6/me/messages?access_token=PAGE_ACCESS_TOKEN"
+
+*/
+$token = $_ENV["techware_fb_token"];
+$url = "https://graph.facebook.com/v2.6/me/messages?access_token=$token";
+$jsonData ='
+  {"recipient":{
+    "id":"'.$sid.'"
+  },
+  "message":{"attachment":{"type":"file", "payload":{}}}
+  }';
+          //Encode the array into JSON.
+          $jsonDataEncoded = $jsonData;
+
+          //Initiate cURL.
+          $ch = curl_init($url);
+
+          //Tell cURL that we want to send a POST request.
+          curl_setopt($ch, CURLOPT_POST, 1);
+
+          //Attach our encoded JSON string to the POST fields.
+          curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
+
+          //Set the content type to application/json
+          curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+
+          //Execute the request
+          $result = curl_exec($ch);
+
+
+
+
+      }else{
+
 //====================================================================================================================//
 /////////////////REply Messages
 $status_new = '
@@ -62,7 +102,7 @@ $status_job = '
    }
   }';
 $status_exp = '
-"{recipient":{
+{"recipient":{
     "id":"'.$sid.'"
   },
   "message":{
@@ -262,6 +302,7 @@ $result = curl_exec($ch);
                 }else{
     file_put_contents("php://stderr", "No reply!!! ".PHP_EOL);
                 }
+            }
     } catch (Exception $e) {
         // Handle exception
         file_put_contents("php://stderr", "ERROR!!: = ".$e->getMessage().PHP_EOL);
