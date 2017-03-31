@@ -47,7 +47,7 @@ if(!$result){
 
   $i = pg_num_fields($result);
   for ($j = 0; $j < $i; $j++) {
-      $fieldname = pg_field_name($res, $j);
+      $fieldname = pg_field_name($result, $j);
       print("<td><b>".$fieldname."</b><td/>");
   }
   while ($row = pg_fetch_row($result)) {
