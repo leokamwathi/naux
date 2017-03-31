@@ -43,7 +43,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             //get username
             $user_details = file_get_contents("https://graph.facebook.com/v2.6/$sid?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=$token", false, $context);
             $username     = $user_details->first_name;
-
+                $pg_conn = pg_connect(setup_database_connection());
             setReplys();
             //chcek if new user
 
@@ -245,16 +245,17 @@ function setup_database_connection()
 }
 function pg_conx()
 {
-return pg_connect(setup_database_connection());
+    return pg_connect(setup_database_connection());
 }
 function getField($field)
 {
     global $pid;
     global $sid;
     global $dbTable;
+    global $pg_conn;
         $fielddata = "";
     $Query     = "SELECT $field from $dbTable where pageID ='$pid' and userID='$sid'";
-    $rows      = pg_query(pg_conx(), $Query);
+    $rows      = pg_query($pg_conn, $Query);
     if(!$rows){
         logx(pg_result_error($rows));
     }else{
@@ -274,8 +275,9 @@ function addField($field, $value)
     global $pid;
     global $sid;
     global $dbTable;
+    global $pg_conn;
     $Query="UPDATE $dbTable SET ($field) = ('$value') where pageID ='$pid' and userID='$sid'";
-    $rows  = pg_query(pg_conx(), $Query);
+    $rows  = pg_query($pg_conn, $Query);
     if(!$rows){
         logx(pg_result_error($rows));
         return false;
@@ -301,12 +303,13 @@ function insertUser()
     global $pid;
     global $sid;
     global $dbTable;
+    global $pg_conn;
     $Query = "INSERT INTO $dbTable (userID,pageID) VALUES ('$sid','$pid')";
-    $rows  = pg_query(pg_conx(), $Query);
+    $rows  = pg_query($pg_conn, $Query);
     if(!$rows){
         logx("{FAILED TO CREATE USER}");
         logx(pg_result_error($rows));
-        logx(pg_last_error(pg_conx()));
+        logx(pg_last_error($pg_conn));
         return false;
     }else{
         return true;
