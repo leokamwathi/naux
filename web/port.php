@@ -40,8 +40,10 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             //get payload
             $GLOBALS['payload']      = $fb->entry[0]->messaging[0]->postback->payload;
             $GLOBALS['dbTable']      = "jobsDBtest";
+
             //get username
-            $user_details = file_get_contents("https://graph.facebook.com/v2.6/".$GLOBALS['sid']."?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=$token", false, $context);
+            $GLOBALS['token']   = $_ENV["techware_fb_token"];
+            $user_details = file_get_contents("https://graph.facebook.com/v2.6/".$GLOBALS['sid']."?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=".$GLOBALS['token'], false, $context);
             $GLOBALS['username']     = $user_details->first_name;
             $GLOBALS['pg_conn'] = pg_connect(setup_database_connection());
             setReplys();
@@ -231,7 +233,7 @@ function sendReply($status)
             break;
     }
 
-    $token   = $_ENV["techware_fb_token"];
+
     $options = array(
         'http' => array(
             'method' => 'POST',
@@ -241,7 +243,7 @@ function sendReply($status)
     );
     $context = stream_context_create($options);
     //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
-    $fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
+    $fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=".$GLOBALS['token'], false, $context);
     //file_put_contents("php://stderr", "FB reply: = ".$fbreply.PHP_EOL);
     addField('status',$status);
     logx("{STATUS}.$status");
