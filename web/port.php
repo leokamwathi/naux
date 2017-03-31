@@ -11,15 +11,12 @@ function bot_setup()
     // get data stream
     $datastream = file_get_contents("php://input");
     //get fb data
-    file_put_contents("php://stderr", $datastream.PHP_EOL);
-    $fb         = json_decode($datastream);
+    logx($datastream);
+    $fb = json_decode($datastream);
     if (json_last_error() != "JSON_ERROR_NONE") {
         //print_r(json_last_error());
         file_put_contents("php://stderr", json_last_error().PHP_EOL);
     } else {
-
-        $pg_conn = pg_connect(pg_connection_string_from_database_url());
-
         $pid          = $fb->entry[0]->id;
         $sid          = $fb->entry[0]->messaging[0]->sender->id;
         // get message
@@ -35,13 +32,17 @@ function bot_setup()
         //chcek if new user
 
         if (isNewUser()) {
+            logx("{NEW USER}");
             if(addNewUser()){
                 sendReply('new');
             }else{
-                sendReply('new'); #failed to add user.. really what to do????
+                logx("{FAILED TO CREATE USER}");
+                //sendReply('new'); #failed to add user.. really what to do????
             }
         } else {
+            logx("{READING REPLY....}");
             if (is($payload)) {
+                logx("{ISPAYLOAD}");
                 //job_findjob , qualification_collage-diploma
                 $payloadPara = explode("_", $payload);
                 if(setPayload($payloadPara))
@@ -52,12 +53,14 @@ function bot_setup()
                 }
             }else{
                 if(is($message)){
+                    logx("{IS MESSAGE}");
                     if(setStatus(getField('status'),$message)){
                         sendReply(nextStatus(getField('status')));
                     }else{
                         sendReply(getField('status'));
                     }
                 }else{
+                    logx("{NOT PAYLOAD OR MESSAGE}");
                     sendReply(getField('status'));
                 }
             }
@@ -80,6 +83,7 @@ function bot_setup()
         WAIT for user input
         */
     }
+    logx("Waiting for user reply");
 }
 
 function setPayload($paypara)
@@ -211,6 +215,8 @@ function sendReply($status)
     //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
     $fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
     //file_put_contents("php://stderr", "FB reply: = ".$fbreply.PHP_EOL);
+    logx("{REPLY}".$reply);
+    logx("{FBREPLY}".$fbreply);
 }
 
 function setup_database_connection()
@@ -218,27 +224,35 @@ function setup_database_connection()
     extract(parse_url($_ENV["DATABASE_URL"]));
     return "user=$user password=$pass host=$host dbname=" . substr($path, 1); # <- you may want to add sslmode=require there too
 }
-
+function pg_conx()
+{
+return pg_connect(setup_database_connection());
+}
 function getField($field)
 {
-    $Query     = "SELECT $field from $dbTable where pageID ='$pid' and userID='$sid'";
-    $rows      = pg_query($pg_conn, $Query);
-    $fielddata = "";
-    if (!pg_num_rows($result)) {
         $fielddata = "";
+    $Query     = "SELECT $field from $dbTable where pageID ='$pid' and userID='$sid'";
+    $rows      = pg_query(pg_conx(), $Query);
+    if(!$rows){
+        logx(pg_result_error($rows));
+    }else{
+    if (!pg_num_rows($result)) {
+        //no rows = no data
     } else {
         while ($row = pg_fetch_row($rows)) {
             $fielddata = $row[0];
         }
     }
+}
     return $fielddata;
 }
 
 function addField($field, $value)
 {
     $Query="UPDATE $dbTable SET ($field) = ('$value') where pageID ='$pid' and userID='$sid'";
-    $rows  = pg_query($pg_conn, $Query);
+    $rows  = pg_query(pg_conx(), $Query);
     if(!$rows){
+        logx(pg_result_error($rows));
         return false;
     }else{
         return true;
@@ -257,11 +271,14 @@ function isNewUser()
 function insertUser()
 {
     $Query = "INSERT INTO $dbTable (userID,pageID) VALUES ('$sid','$pid')";
-    $rows  = pg_query($pg_conn, $Query);
+    $rows  = pg_query(pg_conx(), $Query);
     if(!$rows){
+        logx("{FAILED TO CREATE USER}");
+        logx(pg_result_error($rows));
+        logx(pg_last_error(pg_conx()));
         return false;
     }else{
-    return true;
+        return true;
     }
 }
 
@@ -273,6 +290,10 @@ function addNewUser()
     }else{
         return false;
     }
+}
+
+function logx($msg){
+    file_put_contents("php://stderr", $msg.PHP_EOL);
 }
 
 function setReplys()
