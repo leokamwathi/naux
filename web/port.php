@@ -1,90 +1,100 @@
 <?php
+
+//GLOBAL variables
+
+
+
 //Check for hub Challenge
 if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
     print_r($_GET["hub_challenge"]);
 } else {
-    bot_setup();
-}
+    //put bot setup here boy..
 
-function bot_setup()
-{
-    // get data stream
-    $datastream = file_get_contents("php://input");
-    //get fb data
-    logx($datastream);
-    $fb = json_decode($datastream);
-    if (json_last_error() != "JSON_ERROR_NONE") {
-        //print_r(json_last_error());
-        file_put_contents("php://stderr", json_last_error().PHP_EOL);
-    } else {
-        $pid          = $fb->entry[0]->id;
-        $sid          = $fb->entry[0]->messaging[0]->sender->id;
-        // get message
-        $message      = $fb->entry[0]->messaging[0]->message->text;
-        //get payload
-        $payload      = $fb->entry[0]->messaging[0]->postback->payload;
-        $dbTable      = "jobsDBtest";
-        //get username
-        $user_details = file_get_contents("https://graph.facebook.com/v2.6/$sid?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=$token", false, $context);
-        $username     = $user_details->first_name;
+    // bot_setup();
 
-        setReplys();
-        //chcek if new user
-
-        if (isNewUser()) {
-            logx("{NEW USER}");
-            if(addNewUser()){
-                sendReply('new');
-            }else{
-                logx("{FAILED TO CREATE USER}");
-                //sendReply('new'); #failed to add user.. really what to do????
-            }
+    //function bot_setup()
+    //{
+        // get data stream
+        logx("{SETUP}");
+        $datastream = file_get_contents("php://input");
+        //get fb data
+        logx($datastream);
+        $fb = json_decode($datastream);
+        if (json_last_error() != "JSON_ERROR_NONE") {
+            //print_r(json_last_error());
+            file_put_contents("php://stderr", json_last_error().PHP_EOL);
         } else {
-            logx("{READING REPLY....}");
-            if (is($payload)) {
-                logx("{ISPAYLOAD}");
-                //job_findjob , qualification_collage-diploma
-                $payloadPara = explode("_", $payload);
-                if(setPayload($payloadPara))
-                {
-                    sendReply(nextStatus($payloadPara[0]));
+            $pid          = $fb->entry[0]->id;
+            $sid          = $fb->entry[0]->messaging[0]->sender->id;
+            // get message
+            $message      = $fb->entry[0]->messaging[0]->message->text;
+            //get payload
+            $payload      = $fb->entry[0]->messaging[0]->postback->payload;
+            $dbTable      = "jobsDBtest";
+            //get username
+            $user_details = file_get_contents("https://graph.facebook.com/v2.6/$sid?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=$token", false, $context);
+            $username     = $user_details->first_name;
+
+            setReplys();
+            //chcek if new user
+
+            if (isNewUser()) {
+                logx("{NEW USER}");
+                if(addNewUser()){
+                    sendReply('new');
                 }else{
-                    sendReply(getField('status'));
+                    logx("{FAILED TO CREATE USER}");
+                    //sendReply('new'); #failed to add user.. really what to do????
                 }
-            }else{
-                if(is($message)){
-                    logx("{IS MESSAGE}");
-                    if(setStatus(getField('status'),$message)){
-                        sendReply(nextStatus(getField('status')));
+            } else {
+                logx("{READING REPLY....}");
+                if (is($payload)) {
+                    logx("{ISPAYLOAD}");
+                    //job_findjob , qualification_collage-diploma
+                    $payloadPara = explode("_", $payload);
+                    if(setPayload($payloadPara))
+                    {
+                        sendReply(nextStatus($payloadPara[0]));
                     }else{
                         sendReply(getField('status'));
                     }
                 }else{
-                    logx("{NOT PAYLOAD OR MESSAGE}");
-                    sendReply(getField('status'));
+                    if(is($message)){
+                        logx("{IS MESSAGE}");
+                        if(setStatus(getField('status'),$message)){
+                            sendReply(nextStatus(getField('status')));
+                        }else{
+                            sendReply(getField('status'));
+                        }
+                    }else{
+                        logx("{NOT PAYLOAD OR MESSAGE}");
+                        sendReply(getField('status'));
+                    }
                 }
             }
+
+            /*
+            @ check if is new user
+            @ +if new creat startup data
+            @ + status = new
+            @ +ask new question
+
+            @Check payload
+            @+update payload
+            @-send next/status message
+            @Check current status
+            @+If status needs message then check for message
+            @+if message then add message to DB and ask next question
+
+
+            WAIT for user input
+            */
         }
-
-        /*
-        @ check if is new user
-        @ +if new creat startup data
-        @ + status = new
-        @ +ask new question
-
-        @Check payload
-        @+update payload
-        @-send next/status message
-        @Check current status
-        @+If status needs message then check for message
-        @+if message then add message to DB and ask next question
-
-
-        WAIT for user input
-        */
-    }
-    logx("Waiting for user reply");
+        logx("Waiting for user reply");
+    //}
 }
+
+
 
 function setPayload($paypara)
 {
