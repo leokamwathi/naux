@@ -1,6 +1,7 @@
 <?php
 
 //GLOBAL variables
+/*
 global $fb;
 global $pid;
 global $sid;
@@ -10,7 +11,7 @@ global $dbTable;
 global $username;
 global $datastream;
 global $user_details;
-
+*/
 
 //Check for hub Challenge
 if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
@@ -248,6 +249,9 @@ return pg_connect(setup_database_connection());
 }
 function getField($field)
 {
+    global $pid;
+    global $sid;
+    global $dbTable;
         $fielddata = "";
     $Query     = "SELECT $field from $dbTable where pageID ='$pid' and userID='$sid'";
     $rows      = pg_query(pg_conx(), $Query);
@@ -267,6 +271,9 @@ function getField($field)
 
 function addField($field, $value)
 {
+    global $pid;
+    global $sid;
+    global $dbTable;
     $Query="UPDATE $dbTable SET ($field) = ('$value') where pageID ='$pid' and userID='$sid'";
     $rows  = pg_query(pg_conx(), $Query);
     if(!$rows){
@@ -279,6 +286,9 @@ function addField($field, $value)
 
 function isNewUser()
 {
+    global $pid;
+    global $sid;
+    global $dbTable;
     if($sid == getField("userID")){
         return true;
     }else{
@@ -288,6 +298,9 @@ function isNewUser()
 
 function insertUser()
 {
+    global $pid;
+    global $sid;
+    global $dbTable;
     $Query = "INSERT INTO $dbTable (userID,pageID) VALUES ('$sid','$pid')";
     $rows  = pg_query(pg_conx(), $Query);
     if(!$rows){
@@ -316,6 +329,9 @@ function logx($msg){
 
 function setReplys()
 {
+    global $pid;
+    global $sid;
+    global $username;
     $status_info = '
                 {"recipient":{
                     "id":"' . $sid . '"
