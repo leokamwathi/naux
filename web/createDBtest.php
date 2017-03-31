@@ -14,9 +14,10 @@ function pg_connection_string_from_database_url() {
 }
 # Here we establish the connection. Yes, that's all.
 $pg_conn = pg_connect(pg_connection_string_from_database_url());
+$dbTable = "jobsDBtest";
 
-$result = pg_query($pg_conn, "SELECT * FROM ".$dbTable);
-print_r("Last connection Error read tabke<br>");
+$result = pg_query($pg_conn, "SELECT * FROM jobsDBtest");
+print_r("Last connection Error read table<br>");
 print_r(pg_last_error($pg_conn));
 print_r("==========================<br>");
 if(!$result){
@@ -27,7 +28,14 @@ if(!$result){
 }else{
 if (!pg_num_rows($result)) {
   print("Your database is currently empty.<br>");
+  print_r("==========================<br>");
   print_r($result);
+  print_r("==========================<br>");
+  print_r(pg_result_error($result));
+  print_r("==========================<br>");
+  print_r(pg_last_error($pg_conn));
+  print_r("==========================<br>");
+  print_r(pg_query($pg_conn, "SELECT * FROM jobsDBtest")."<br>");
 } else {
   print "Your Database Data:<br>";
   print ("<table>");

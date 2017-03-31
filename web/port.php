@@ -42,7 +42,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             $dbTable      = "jobsDBtest";
             //get username
             $user_details = file_get_contents("https://graph.facebook.com/v2.6/$sid?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=$token", false, $context);
-            $username     = $user_details->first_name;
+            $GLOBALS['username']     = $user_details->first_name;
             $pg_conn = pg_connect(setup_database_connection());
             setReplys();
             //chcek if new user
@@ -58,7 +58,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             } else {
                 logx("{CURRENT STATUS}".getField('status'));
                 logx("{READING REPLY....}".$message);
-                if (is_string($payload)) {
+                if (isset($payload) && $payload != '') {
                     logx("{ISPAYLOAD}");
                     //job_findjob , qualification_collage-diploma
                     $payloadPara = explode("_", $payload);
@@ -69,7 +69,11 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         sendReply(getField('status'));
                     }
                 }else{
-                    if(!is_null($message)){
+                    if (isset($message) && $message != '') {
+                        if($message == getField('lastNotification') ){
+                            logx("{SAME MESSAGE AGAIN REALLY SUCKS}".$message);
+                        }else{
+                        setField('lastNotification',$message);
                         logx("{IS MESSAGE}");
                         if(setStatus(getField('status'),$message)){
                             sendReply(nextStatus(getField('status')));
@@ -80,9 +84,11 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                                 sendReply('new');
                             }
                         }
+                    }
                     }else{
                         logx("{NOT PAYLOAD OR MESSAGE JUST SOME FB STUFF}".$message);
                     }
+
                 }
             }
 
@@ -181,9 +187,9 @@ if(!is_string($userStatus)){
     }
 
 }
-function is($str)
+function isStr($str)
 {
-    return is_string($str);
+     return(isset($message) && $message != '');
 }
 function sendReply($status)
 {
@@ -345,7 +351,7 @@ function setReplys()
                     "id":"' . $sid . '"
                 },
                 "message":{
-                    "text":"Hi ' . $username . ', This is the info we have from you.\n
+                    "text":"Hi ' . $GLOBALS['username'] . ', This is the info we have from you.\n
                     Location:' . getField('location') . '\n
                     Job:' . getField('job') . '\n
                     Qualification:' . getField('qualification') . '\n
@@ -386,7 +392,10 @@ function setReplys()
                 "id":"' . $sid . '"
             },
             "message":{
-                "text":"Hi ' . $username . ', Welcome to the job bot. I will help you find a job or find job applicants. What do you want to do?",
+                "text":"Hi ' . $GLOBALS['username'] . ',\n
+                My name is Job Bot (job for short :-p ). \n
+                I can help you find a job or find job applicants. \n
+                What do you want to do?",
                 "quick_replies":[
                     {
                         "content_type":"text",
@@ -407,7 +416,9 @@ function setReplys()
             "id":"' . $sid . '"
         },
         "message":{
-            "text":"Please enter your job location : (city,country) eg. Nairobi, Kenya or use your current location.",
+            "text":"Please enter your job location : (city,country) \n
+            eg. \n
+            (Nairobi, Kenya) or use your current location from fbmessager.",
             "quick_replies":[
                 {"content_type":"location",}
             ]
@@ -419,7 +430,9 @@ function setReplys()
         "id":"' . $sid . '"
     },
     "message":{
-        "text":"Hi, What kind of job are you looking for (Just one Job)? eg. Part time, Accountant, Web Designer,Chef, Sales Person, Programmer, House Help."
+        "text":"What kind of job are you looking for (Just one Job)?\n
+         eg. n\
+         (Part time, Accountant, Web Designer,Chef, Sales Person, Programmer, House Help)"
     }
 }';
 
@@ -500,7 +513,12 @@ function setReplys()
     "id":"' . $sid . '"
 },
 "message":{
-    "text":"Hi, Tell us about yourself and the job you are looking for?"
+    "text":"Tell us a bit about yourself and the job you are looking for.\n
+    eg.\n
+    Hi,\n
+    My name is job. \n
+    I am 1 year old and I and very passionate about helping people find jobs and employees.\n
+    I like challenges and will raise to any challenge i meet or atleat try my hardest."
 }
 }';
 
