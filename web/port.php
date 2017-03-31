@@ -11,9 +11,11 @@ function bot_setup()
     // get data stream
     $datastream = file_get_contents("php://input");
     //get fb data
-    $fb         = json_decode($data);
+    file_put_contents("php://stderr", $datastream.PHP_EOL);
+    $fb         = json_decode($datastream);
     if (json_last_error() != "JSON_ERROR_NONE") {
-        print_r(json_last_error());
+        //print_r(json_last_error());
+        file_put_contents("php://stderr", json_last_error().PHP_EOL);
     } else {
 
         $pg_conn = pg_connect(pg_connection_string_from_database_url());
@@ -240,6 +242,15 @@ function addField($field, $value)
         return false;
     }else{
         return true;
+    }
+}
+
+function isNewUser()
+{
+    if($sid == getField("userID")){
+        return true;
+    }else{
+        return false;
     }
 }
 
