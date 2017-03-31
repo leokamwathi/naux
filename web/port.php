@@ -3,10 +3,10 @@
 //GLOBAL variables
 /*
 global $fb;
-global $pid;
-global $sid;
+global $piid;
+global $GLOBALS['sid'];
 global $message;
-global $payload;
+global $GLOBALS['payload'];
 global $dbTable;
 global $username;
 global $datastream;
@@ -33,17 +33,17 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             //print_r(json_last_error());
             file_put_contents("php://stderr", json_last_error().PHP_EOL);
         } else {
-            $pid          = $fb->entry[0]->id;
-            $sid          = $fb->entry[0]->messaging[0]->sender->id;
+            $GLOBALS['pid']          = $fb->entry[0]->id;
+            $GLOBALS['sid']          = $fb->entry[0]->messaging[0]->sender->id;
             // get message
-            $message      = $fb->entry[0]->messaging[0]->message->text;
+            $GLOBALS['message']      = $fb->entry[0]->messaging[0]->message->text;
             //get payload
-            $payload      = $fb->entry[0]->messaging[0]->postback->payload;
-            $dbTable      = "jobsDBtest";
+            $GLOBALS['payload']      = $fb->entry[0]->messaging[0]->postback->payload;
+            $GLOBALS['dbTable']      = "jobsDBtest";
             //get username
-            $user_details = file_get_contents("https://graph.facebook.com/v2.6/$sid?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=$token", false, $context);
+            $user_details = file_get_contents("https://graph.facebook.com/v2.6/".$GLOBALS['sid']."?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=$token", false, $context);
             $GLOBALS['username']     = $user_details->first_name;
-            $pg_conn = pg_connect(setup_database_connection());
+            $GLOBALS['pg_conn'] = pg_connect(setup_database_connection());
             setReplys();
             //chcek if new user
 
@@ -57,25 +57,25 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 }
             } else {
                 logx("{CURRENT STATUS}".getField('status'));
-                logx("{READING REPLY....}".$message);
-                if (isset($payload) && $payload != '') {
+                logx("{READING REPLY....}".$GLOBALS['message']);
+                if (isset($GLOBALS['payload']) && $GLOBALS['payload'] != '') {
                     logx("{ISPAYLOAD}");
                     //job_findjob , qualification_collage-diploma
-                    $payloadPara = explode("_", $payload);
-                    if(setPayload($payloadPara))
+                    $payldPara = explode("_", $GLOBALS['payload']);
+                    if(setPayload($payldPara))
                     {
-                        sendReply(nextStatus($payloadPara[0]));
+                        sendReply(nextStatus($payldPara[0]));
                     }else{
                         sendReply(getField('status'));
                     }
                 }else{
-                    if (isset($message) && $message != '') {
-                        if($message == getField('lastNotification') ){
-                            logx("{SAME MESSAGE AGAIN REALLY SUCKS}".$message);
+                    if (isset($GLOBALS['message']) && $GLOBALS['message'] != '') {
+                        if($GLOBALS['message'] == getField('lastNotification') ){
+                            logx("{SAME MESSAGE AGAIN REALLY SUCKS}".$GLOBALS['message']);
                         }else{
-                        addField('lastNotification',$message);
+                        addField('lastNotification',$GLOBALS['message']);
                         logx("{IS MESSAGE}");
-                        if(setStatus(getField('status'),$message)){
+                        if(setStatus(getField('status'),$GLOBALS['message'])){
                             sendReply(nextStatus(getField('status')));
                         }else{
                             if (is_string(getField('status'))){
@@ -86,7 +86,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         }
                     }
                     }else{
-                        logx("{NOT PAYLOAD OR MESSAGE JUST SOME FB STUFF}".$message);
+                        logx("{NOT PAYLOAD OR MESSAGE JUST SOME FB STUFF}".$GLOBALS['message']);
                         //sendReply('new');
                     }
 
@@ -190,7 +190,7 @@ if(!is_string($userStatus)){
 }
 function isStr($str)
 {
-     return(isset($message) && $message != '');
+     return(isset($GLOBALS['message']) && $GLOBALS['message'] != '');
 }
 function sendReply($status)
 {
@@ -217,10 +217,10 @@ function sendReply($status)
         case "payload":
             $data  = array(
                 'recipient' => array(
-                    'id' => $sid
+                    'id' => $GLOBALS['sid']
                 ),
                 'message' => array(
-                    'text' => "Payload => " . $payload
+                    'text' => "Payload => " . $GLOBALS['payload']
                 )
             );
             $reply = json_encode($data);
@@ -260,13 +260,11 @@ function pg_conx()
 }
 function getField($field)
 {
-    global $pid;
-    global $sid;
-    global $dbTable;
-    global $pg_conn;
+
+
         $fielddata = "";
-    $Query     = "SELECT $field from $dbTable where pageID ='$pid' and userID='$sid'";
-    $rows      = pg_query($pg_conn, $Query);
+    $Query     = "SELECT $field from ".$GLOBALS['dbTable']." where pageID ='".$GLOBALS["pid"]."' and userID='".$GLOBALS["sid"]."'";
+    $rows      = pg_query($GLOBALS['pg_conn'], $Query);
     if(!$rows){
         logx(pg_result_error($rows));
     }else{
@@ -283,12 +281,9 @@ function getField($field)
 
 function addField($field, $value)
 {
-    global $pid;
-    global $sid;
-    global $dbTable;
-    global $pg_conn;
-    $Query="UPDATE $dbTable SET ($field) = ('$value') where pageID ='$pid' and userID='$sid'";
-    $rows  = pg_query($pg_conn, $Query);
+
+    $Query="UPDATE ".$GLOBALS['dbTable']." SET ($field) = ('$value') where pageID ='".$GLOBALS['pid']."' and userID='".$GLOBALS['sid']."'";
+    $rows  = pg_query($GLOBALS['pg_conn'], $Query);
     if(!$rows){
         logx(pg_result_error($rows));
         return false;
@@ -299,10 +294,8 @@ function addField($field, $value)
 
 function isNewUser()
 {
-    global $pid;
-    global $sid;
-    global $dbTable;
-    if($sid == getField("userID")){
+
+    if($GLOBALS['sid'] == getField("userID")){
         return true;
     }else{
         return false;
@@ -311,16 +304,13 @@ function isNewUser()
 
 function insertUser()
 {
-    global $pid;
-    global $sid;
-    global $dbTable;
-    global $pg_conn;
-    $Query = "INSERT INTO $dbTable (userID,pageID) VALUES ('$sid','$pid')";
-    $rows  = pg_query($pg_conn, $Query);
+
+    $Query = "INSERT INTO ".$GLOBALS['dbTable']." (userID,pageID) VALUES ('".$GLOBALS['sid']."','".$GLOBALS['pid']."')";
+    $rows  = pg_query($GLOBALS['pg_conn'], $Query);
     if(!$rows){
         logx("{FAILED TO CREATE USER}");
         logx(pg_result_error($rows));
-        logx(pg_last_error($pg_conn));
+        logx(pg_last_error($GLOBALS['pg_conn']));
         return false;
     }else{
         return true;
@@ -344,15 +334,13 @@ function logx($msg){
 function setReplys()
 {
     logx("{SETTING REPLIES}");
-    global $pid;
-    global $sid;
-    global $username;
+
     $GLOBALS['status_info'] = '
                 {"recipient":{
-                    "id":"' . $sid . '"
+                    "id":"'.$GLOBALS['sid'].'"
                 },
                 "message":{
-                    "text":"Hi ' . $GLOBALS['username'] . ', This is the info we have from you.\n
+                    "text":"Hi '.$GLOBALS['username'].', This is the info we have from you.\n
                     Location:' . getField('location') . '\n
                     Job:' . getField('job') . '\n
                     Qualification:' . getField('qualification') . '\n
@@ -390,7 +378,7 @@ function setReplys()
             }';
     $GLOBALS['status_new']  = '
             {"recipient":{
-                "id":"' . $sid . '"
+                "id":"' .$GLOBALS['sid']. '"
             },
             "message":{
                 "text":"Hi ' . $GLOBALS['username'] . ',\n
@@ -414,7 +402,7 @@ function setReplys()
 
     $GLOBALS['$status_location'] = '
         "{recipient":{
-            "id":"' . $sid . '"
+            "id":"' . $GLOBALS['sid'] . '"
         },
         "message":{
             "text":"Please enter your job location : (city,country) \n
@@ -428,7 +416,7 @@ function setReplys()
 
     $GLOBALS['$status_job'] = '
     {"recipient":{
-        "id":"' . $sid . '"
+        "id":"' . $GLOBALS['sid'] . '"
     },
     "message":{
         "text":"What kind of job are you looking for (Just one Job)?\n
@@ -439,7 +427,7 @@ function setReplys()
 
     $GLOBALS['status_experience'] = '
 {"recipient":{
-    "id":"' . $sid . '"
+    "id":"' . $GLOBALS['sid'] . '"
 },
 "message":{
     "text":"How many years have you worked at this job?",
@@ -475,7 +463,7 @@ function setReplys()
 
     $GLOBALS['status_qualifications'] = '
 {"recipient":{
-    "id":"' . $sid . '"
+    "id":"' . $GLOBALS['sid'] . '"
 },
 "message":{
     "text":"What is your job qualification Level?",
@@ -511,7 +499,7 @@ function setReplys()
 
     $GLOBALS['status_about'] = '
 {"recipient":{
-    "id":"' . $sid . '"
+    "id":"' . $GLOBALS['sid'] . '"
 },
 "message":{
     "text":"Tell us a bit about yourself and the job you are looking for.\n
@@ -525,7 +513,7 @@ function setReplys()
 
     //payload with links and images
     $GLOBALS['status_test'] = '{"recipient": {
-    "id": "' . $sid . '"
+    "id": "' . $GLOBALS['sid'] . '"
 },
 "message": {
     "attachment": {
