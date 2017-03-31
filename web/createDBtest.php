@@ -15,7 +15,7 @@ function pg_connection_string_from_database_url() {
 # Here we establish the connection. Yes, that's all.
 $pg_conn = pg_connect(pg_connection_string_from_database_url());
 
-$result = pg_query($pg_conn, "SELECT * FROM $dbTable");
+$result = pg_query($pg_conn, "SELECT * FROM ".$dbTable);
 print_r("Last connection Error read tabke<br>");
 print_r(pg_last_error($pg_conn));
 print_r("==========================<br>");
@@ -53,40 +53,41 @@ print ("</tr>");
 
 function createDB(){
     $pg_conn = pg_connect(pg_connection_string_from_database_url());
-$createTable = "CREATE TABLE IF NOT EXISTS $dbTable (
-            pageID text NOT NULL,
-						userID text NOT NULL ,
-						userType text NOT NULL ,
-						Name text NOT NULL ,
-						status text NOT NULL ,
-						email text NOT NULL ,
-						location text NOT NULL ,
-						geoLocation text NOT NULL ,
-						job text NOT NULL ,
-						about text NOT NULL ,
-						experience text NOT NULL ,
-						qualification text NOT NULL ,
-            companyName text NOT NULL ,
-            companyEmail text NOT NULL ,
-            companyUrl text NOT NULL ,
-            companyAbout text NOT NULL ,
-            CompanyQualification text NOT NULL ,
-            CompanyJob text NOT NULL ,
-            companyAbout text NOT NULL ,
-            compnayExperience text NOT NULL ,
-            compnayExpireDays text NOT NULL ,
-            compnayExpiryDate text NOT NULL ,
-            expireDays text NOT NULL ,
-						expiryDate text NOT NULL ,
-						lastNotification text NOT NULL ,
-            companyNotification text NOT NULL ,
-                        companyViewed text NOT NULL ,
-						active text NOT NULL ,
-						joinDate text NOT NULL ,
-						paid text NOT NULL ,
-						amountPaid text NOT NULL ,
-						paymentID text NOT NULL
+$createTable = "CREATE TABLE IF NOT EXISTS ".$dbTable." (
+                    pageID text NOT NULL,
+                    userID text NOT NULL ,
+                    userType text NOT NULL ,
+                    Name text NOT NULL ,
+                    status text NOT NULL ,
+                    email text NOT NULL ,
+                    location text NOT NULL ,
+                    geoLocation text NOT NULL ,
+                    job text NOT NULL ,
+                    about text NOT NULL ,
+                    experience text NOT NULL ,
+                    qualification text NOT NULL ,
+                    companyName text NOT NULL ,
+                    companyEmail text NOT NULL ,
+                    companyUrl text NOT NULL ,
+                    companyAbout text NOT NULL ,
+                    CompanyQualification text NOT NULL ,
+                    CompanyJob text NOT NULL ,
+                    companyAbout text NOT NULL ,
+                    compnayExperience text NOT NULL ,
+                    compnayExpireDays text NOT NULL ,
+                    compnayExpiryDate text NOT NULL ,
+                    expireDays text NOT NULL ,
+                    expiryDate text NOT NULL ,
+                    lastNotification text NOT NULL ,
+                    companyNotification text NOT NULL ,
+                    companyViewed text NOT NULL ,
+                    active text NOT NULL ,
+                    joinDate text NOT NULL ,
+                    paid text NOT NULL ,
+                    amountPaid text NOT NULL ,
+                    paymentID text NOT NULL
                     )";
+                    print_r($createTable);
 $result = pg_query($pg_conn, $createTable );
 print_r("Last connection Error Create table<br>");
 print_r(pg_last_error($pg_conn));
