@@ -1,4 +1,5 @@
 <?php
+$dbTable = "jobsDBtest";
   print ("<html>");
   print ("<head></head>");
   print ("<body>");
@@ -7,17 +8,20 @@
 # string suitable for pg_connect. Put this in your app.
 function pg_connection_string_from_database_url() {
   extract(parse_url($_ENV["DATABASE_URL"]));
-  return "user=$user password=$pass host=$host dbname=" . substr($path, 1); # <- you may want to add sslmode=require there too
+  $dbOptions = "user=$user password=$pass host=$host dbname=" . substr($path, 1); # <- you may want to add sslmode=require there too
+  print($dbOptions."<br>");
+  return $dbOptions;
 }
 # Here we establish the connection. Yes, that's all.
 $pg_conn = pg_connect(pg_connection_string_from_database_url());
 
-$result = pg_query($pg_conn, "SELECT * FROM jobsDBtest");
+$result = pg_query($pg_conn, "SELECT * FROM $dbTable");
 if(!$result){
     createDB();
 }else{
 if (!pg_num_rows($result)) {
   print("Your database is currently empty.<br>");
+  print_r($result);
 } else {
   print "Your Database Data:<br>";
   print ("<table>");
@@ -36,12 +40,14 @@ if (!pg_num_rows($result)) {
 print ("</tr>");
     // print("- $row[0]\n");
    }
-     print ("</table>");
+     print ("</table><br>");
+      print_r($result);
 }
 }
 
 function createDB(){
-$createTable = "CREATE TABLE IF NOT EXISTS jobsDBtest (
+    $pg_conn = pg_connect(pg_connection_string_from_database_url());
+$createTable = "CREATE TABLE IF NOT EXISTS $dbTable (
             pageID text NOT NULL,
 						userID text NOT NULL ,
 						userType text NOT NULL ,
@@ -77,9 +83,20 @@ $createTable = "CREATE TABLE IF NOT EXISTS jobsDBtest (
                     )";
 $result = pg_query($pg_conn, $createTable );
 if(!$result){
-    print_r("Failed to create database.<br>");
+    print_r("Failed to create table.<br>");
+    $result = pg_query($pg_conn, "DROP TABLE Json_Messages");
+    if(!$result){
+        print_r("Failed to delete table.<br>");
+
+    }else{
+        print_r("Deleted table from database.<br>");
+            print_r("Refresh to re create the table.<br>");
+            $result = pg_query($pg_conn, $createTable );
+        //print_r($result);
+    }
 }else{
     print_r("Database created.<br>");
+
     //print_r($result);
 }
 }
