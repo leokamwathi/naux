@@ -74,15 +74,14 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         if(setStatus(getField('status'),$message)){
                             sendReply(nextStatus(getField('status')));
                         }else{
-                            sendReply(getField('status'));
+                            if (is(getField('status'))){
+                                sendReply(getField('status'));
+                            }else{
+                                sendReply('new');
+                            }
                         }
                     }else{
-                        logx("{NOT PAYLOAD OR MESSAGE}");
-                        if (is(getField('status'))){
-                            sendReply(getField('status'));
-                        }else{
-                            sendReply('new');
-                        }
+                        logx("{NOT PAYLOAD OR MESSAGE JUST SOME FB STUFF}");
                     }
                 }
             }
