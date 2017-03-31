@@ -56,6 +56,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     //sendReply('new'); #failed to add user.. really what to do????
                 }
             } else {
+                logx("{CURRENT STATUS}".getField('status'));
                 logx("{READING REPLY....}");
                 if (is($payload)) {
                     logx("{ISPAYLOAD}");
@@ -187,24 +188,25 @@ function is($str)
 }
 function sendReply($status)
 {
+
     switch ($status) {
         case "new":
-            $reply = $status_new;
+            $reply = $GLOBALS['status_new'];
             break;
         case "location":
-            $reply = $status_location;
+            $reply = $GLOBALS['status_location'];
             break;
         case "job":
-            $reply = $status_job;
+            $reply = $GLOBALS['status_job'];
             break;
         case "experience":
-            $reply = $status_exp;
+            $reply = $GLOBALS['status_exp'];
             break;
         case "qualification":
-            $reply = $status_qualifications;
+            $reply = $GLOBALS['status_qualifications'];
             break;
         case "about":
-            $reply = $status_about;
+            $reply = $GLOBALS['status_about'];
             break;
         case "payload":
             $data  = array(
@@ -218,7 +220,7 @@ function sendReply($status)
             $reply = json_encode($data);
             break;
         default:
-            $reply = $status_test;
+            $reply = $GLOBALS['$status_test'];
             break;
     }
 
@@ -234,6 +236,7 @@ function sendReply($status)
     //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
     $fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
     //file_put_contents("php://stderr", "FB reply: = ".$fbreply.PHP_EOL);
+    logx("{STATUS}.$status");
     logx("{REPLY}".$reply);
     logx("{FBREPLY}".$fbreply);
 }
@@ -259,7 +262,7 @@ function getField($field)
     if(!$rows){
         logx(pg_result_error($rows));
     }else{
-    if (!pg_num_rows($result)) {
+    if (!pg_num_rows($rows)) {
         //no rows = no data
     } else {
         while ($row = pg_fetch_row($rows)) {
@@ -335,7 +338,7 @@ function setReplys()
     global $pid;
     global $sid;
     global $username;
-    $status_info = '
+    $GLOBALS['status_info'] = '
                 {"recipient":{
                     "id":"' . $sid . '"
                 },
@@ -376,7 +379,7 @@ function setReplys()
                     ]
                 }
             }';
-    $status_new  = '
+    $GLOBALS['status_new']  = '
             {"recipient":{
                 "id":"' . $sid . '"
             },
@@ -397,7 +400,7 @@ function setReplys()
             }
         }';
 
-    $status_location = '
+    $GLOBALS['$status_location'] = '
         "{recipient":{
             "id":"' . $sid . '"
         },
@@ -409,7 +412,7 @@ function setReplys()
         }
     }';
 
-    $status_job = '
+    $GLOBALS['$status_job'] = '
     {"recipient":{
         "id":"' . $sid . '"
     },
@@ -418,7 +421,7 @@ function setReplys()
     }
 }';
 
-    $status_exp = '
+    $GLOBALS['status_exp'] = '
 {"recipient":{
     "id":"' . $sid . '"
 },
@@ -454,7 +457,7 @@ function setReplys()
 }
 }';
 
-    $status_qualifications = '
+    $GLOBALS['status_qualifications'] = '
 {"recipient":{
     "id":"' . $sid . '"
 },
@@ -490,7 +493,7 @@ function setReplys()
 }
 }';
 
-    $status_about = '
+    $GLOBALS['status_about'] = '
 {"recipient":{
     "id":"' . $sid . '"
 },
@@ -500,7 +503,7 @@ function setReplys()
 }';
 
     //payload with links and images
-    $status_test = '{"recipient": {
+    $GLOBALS['status_test'] = '{"recipient": {
     "id": "' . $sid . '"
 },
 "message": {
