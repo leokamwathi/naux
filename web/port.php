@@ -1,7 +1,15 @@
 <?php
 
 //GLOBAL variables
-
+global $fb;
+global $pid;
+global $sid;
+global $message;
+global $payload;
+global $dbTable;
+global $username;
+global $datastream;
+global $user_details;
 
 
 //Check for hub Challenge
@@ -19,7 +27,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
         $datastream = file_get_contents("php://input");
         //get fb data
         logx($datastream);
-        $fb = json_decode($datastream);
+         $fb = json_decode($datastream);
         if (json_last_error() != "JSON_ERROR_NONE") {
             //print_r(json_last_error());
             file_put_contents("php://stderr", json_last_error().PHP_EOL);
