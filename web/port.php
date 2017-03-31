@@ -73,7 +73,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         if($message == getField('lastNotification') ){
                             logx("{SAME MESSAGE AGAIN REALLY SUCKS}".$message);
                         }else{
-                        setField('lastNotification',$message);
+                        addField('lastNotification',$message);
                         logx("{IS MESSAGE}");
                         if(setStatus(getField('status'),$message)){
                             sendReply(nextStatus(getField('status')));
@@ -87,6 +87,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     }
                     }else{
                         logx("{NOT PAYLOAD OR MESSAGE JUST SOME FB STUFF}".$message);
+                        //sendReply('new');
                     }
 
                 }
@@ -120,19 +121,19 @@ function setPayload($paypara)
     $isSet = false;
     switch ($paypara[0]) {
         case "job":
-            setField($paypara[0], $paypara[1]);
+            addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
         case "location":
-            setField($paypara[0], $paypara[1]);
+            addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
         case "experience":
-            setField($paypara[0], $paypara[1]);
+            addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
         case "qualification":
-            setField($paypara[0], $paypara[1]);
+            addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
         case "edit":
@@ -148,15 +149,15 @@ function setStatus($myStatus,$myMessage)
     $isSet = false;
     switch ($myStatus) {
         case "job":
-            setField($myStatus, $myMessage);
+            addField($myStatus, $myMessage);
             $isSet = true;
             break;
         case "location":
-            setField($myStatus, $myMessage);
+            addField($myStatus, $myMessage);
             $isSet = true;
             break;
         case "about":
-            setField($myStatus, $myMessage);
+            addField($myStatus, $myMessage);
             $isSet = true;
             break;
     }
@@ -242,7 +243,7 @@ function sendReply($status)
     //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
     $fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
     //file_put_contents("php://stderr", "FB reply: = ".$fbreply.PHP_EOL);
-    setField('status',$status);
+    addField('status',$status);
     logx("{STATUS}.$status");
     logx("{REPLY}".$reply);
     logx("{FBREPLY}".$fbreply);
