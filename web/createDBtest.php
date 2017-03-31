@@ -12,6 +12,7 @@ function pg_connection_string_from_database_url() {
   print($dbOptions."<br>");
   return $dbOptions;
 }
+try{
 # Here we establish the connection. Yes, that's all.
 $pg_conn = pg_connect(pg_connection_string_from_database_url());
 $dbTable = "jobsDBtest";
@@ -26,8 +27,11 @@ if(!$result){
     print_r("==========================<br>");
     createDB();
 }else{
-if (!pg_num_rows($result)) {
-  print("Your database is currently empty.<br>");
+
+//if (!pg_num_rows($result)) {
+//  print("Your database is currently empty.<br>");
+//  print_r("==========================<br>");
+  print("pg_num_rows =".pg_num_rows($result)."<br>");
   print_r("==========================<br>");
   print_r($result);
   print_r("==========================<br>");
@@ -36,7 +40,7 @@ if (!pg_num_rows($result)) {
   print_r(pg_last_error($pg_conn));
   print_r("==========================<br>");
   print_r(pg_query($pg_conn, "SELECT * FROM jobsDBtest")."<br>");
-} else {
+//} else {
   print "Your Database Data:<br>";
   print ("<table>");
 
@@ -57,6 +61,13 @@ print ("</tr>");
      print ("</table><br>");
       print_r($result);
 }
+//}
+
+
+} catch (Exception $e) {
+    print_r($e->getMessage()."<br>");
+    // Handle exception
+    //file_put_contents("php://stderr", "ERROR!!: = ".$e->getMessage().PHP_EOL);
 }
 
 function createDB(){
