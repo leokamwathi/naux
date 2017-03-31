@@ -12,9 +12,38 @@ function pg_connection_string_from_database_url() {
 # Here we establish the connection. Yes, that's all.
 $pg_conn = pg_connect(pg_connection_string_from_database_url());
 
+$result = pg_query($pg_conn, "SELECT * FROM jobsDBtest");
+if(!$result){
+    createDB();
+}else{
+if (!pg_num_rows($result)) {
+  print("Your database is currently empty.<br>");
+} else {
+  print "Your Database Data:<br>";
+  print ("<table>");
+
+
+  $i = pg_num_fields($result);
+  for ($j = 0; $j < $i; $j++) {
+      $fieldname = pg_field_name($res, $j);
+      print("<td><b>".$fieldname."</b><td/>");
+  }
+  while ($row = pg_fetch_row($result)) {
+    print ("<tr>");
+    foreach($row as $cell) {
+  print("<td>".$value."<td/>");
+}
+print ("</tr>");
+    // print("- $row[0]\n");
+   }
+     print ("</table>");
+}
+}
+
+function createDB(){
 $createTable = "CREATE TABLE IF NOT EXISTS jobsDBtest (
             pageID text NOT NULL,
-						userID text NOT NULL , 
+						userID text NOT NULL ,
 						userType text NOT NULL ,
 						Name text NOT NULL ,
 						status text NOT NULL ,
@@ -38,8 +67,8 @@ $createTable = "CREATE TABLE IF NOT EXISTS jobsDBtest (
             expireDays text NOT NULL ,
 						expiryDate text NOT NULL ,
 						lastNotification text NOT NULL ,
-            companyNotification text NOT NULL , #CVS of Company userID that you have been send notifications of
-            companyViewed text NOT NULL , #CVS of Company userID that you have seen job posting
+            companyNotification text NOT NULL ,
+                        companyViewed text NOT NULL ,
 						active text NOT NULL ,
 						joinDate text NOT NULL ,
 						paid text NOT NULL ,
@@ -47,8 +76,13 @@ $createTable = "CREATE TABLE IF NOT EXISTS jobsDBtest (
 						paymentID text NOT NULL
                     )";
 $result = pg_query($pg_conn, $createTable );
-print_r($result);
-
+if(!$result){
+    print_r("Failed to create database.<br>");
+}else{
+    print_r("Database created.<br>");
+    //print_r($result);
+}
+}
 /*
 $insertData = '{"object":"page","entry":[{"id":"763933067090623","time":1489656298161,"messaging":[{"sender":{"id":"1486644564679609"},"recipient":{"id":"763933067090623"},"timestamp":1489656298087,"message":{"mid":"mid.$cAAK2yxk7oTRhB7SCZ1a1m5n8K6Fr","seq":4271,"text":"rift"}}]}]}';
 
@@ -59,31 +93,6 @@ $result = pg_query($pg_conn, $insertQuery );
 
 # Now let's use the connection for something silly just to prove it works:
 //$result = pg_query($pg_conn, "SELECT relname FROM pg_stat_user_tables WHERE schemaname='public'");
-
-$result = pg_query($pg_conn, "SELECT * FROM jobsDBtest");
-
-if (!pg_num_rows($result)) {
-  print("Your database is currently empty.<br>");
-} else {
-  print "Your Database Data:<br>";
-  print ("<table>");
-
-
-  $i = pg_num_fields($result);
-  for ($j = 0; $j < $i; $j++) {
-      $fieldname = pg_field_name($res, $j);
-      print("<td><b>".$fieldname."</b><td/>");
-  }
-  while ($row = pg_fetch_row($result)) {
-    print ("<tr>");
-    foreach($row as $cell) {
-  print("<td>".$value."<td/>");
-}
-print ("</tr>");
-    // print("- $row[0]\n");
-   }
-     print ("</table>");
-}
 
  print ("</body>");
   print ("</html>");
