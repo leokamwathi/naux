@@ -81,7 +81,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                             }
                         }
                     }else{
-                        logx("{NOT PAYLOAD OR MESSAGE JUST SOME FB STUFF}");
+                        logx("{NOT PAYLOAD OR MESSAGE JUST SOME FB STUFF}".$message);
                     }
                 }
             }
