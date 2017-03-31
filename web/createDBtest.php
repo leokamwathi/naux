@@ -16,7 +16,13 @@ function pg_connection_string_from_database_url() {
 $pg_conn = pg_connect(pg_connection_string_from_database_url());
 
 $result = pg_query($pg_conn, "SELECT * FROM $dbTable");
+print_r("Last connection Error read tabke<br>");
+print_r(pg_last_error($pg_conn));
+print_r("==========================<br>");
 if(!$result){
+    print_r("Last result read tabke<br>");
+    print_r(pg_result_error($result));
+    print_r("==========================<br>");
     createDB();
 }else{
 if (!pg_num_rows($result)) {
@@ -82,18 +88,25 @@ $createTable = "CREATE TABLE IF NOT EXISTS $dbTable (
 						paymentID text NOT NULL
                     )";
 $result = pg_query($pg_conn, $createTable );
+print_r("Last connection Error Create table<br>");
+print_r(pg_last_error($pg_conn));
+print_r("==========================<br>");
 if(!$result){
     print_r("Failed to create table.<br>");
+    print_r(pg_result_error($result));
     $result = pg_query($pg_conn, "DROP TABLE Json_Messages");
     if(!$result){
         print_r("Failed to delete table.<br>");
-
+        print_r(pg_result_error($result));
     }else{
         print_r("Deleted table from database.<br>");
             print_r("Refresh to re create the table.<br>");
             $result = pg_query($pg_conn, $createTable );
         //print_r($result);
     }
+    print_r("Last connection Error Delete table<br>");
+    print_r(pg_last_error($pg_conn));
+    print_r("==========================<br>");
 }else{
     print_r("Database created.<br>");
 
