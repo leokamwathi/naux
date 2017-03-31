@@ -43,7 +43,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             //get username
             $user_details = file_get_contents("https://graph.facebook.com/v2.6/$sid?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=$token", false, $context);
             $username     = $user_details->first_name;
-                $pg_conn = pg_connect(setup_database_connection());
+            $pg_conn = pg_connect(setup_database_connection());
             setReplys();
             //chcek if new user
 
@@ -78,7 +78,11 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         }
                     }else{
                         logx("{NOT PAYLOAD OR MESSAGE}");
-                        sendReply(getField('status'));
+                        if (is(getField('status'))){
+                            sendReply(getField('status'));
+                        }else{
+                            sendReply('new');
+                        }
                     }
                 }
             }
@@ -220,7 +224,8 @@ function sendReply($status)
             $reply = json_encode($data);
             break;
         default:
-            $reply = $GLOBALS['$status_test'];
+            $status = 'new';
+            $reply = $GLOBALS['status_new'];
             break;
     }
 
@@ -236,6 +241,7 @@ function sendReply($status)
     //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
     $fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=$token", false, $context);
     //file_put_contents("php://stderr", "FB reply: = ".$fbreply.PHP_EOL);
+    setField('status',$status);
     logx("{STATUS}.$status");
     logx("{REPLY}".$reply);
     logx("{FBREPLY}".$fbreply);
@@ -335,6 +341,7 @@ function logx($msg){
 
 function setReplys()
 {
+    logx("{SETTING REPLIES}");
     global $pid;
     global $sid;
     global $username;
@@ -421,7 +428,7 @@ function setReplys()
     }
 }';
 
-    $GLOBALS['status_exp'] = '
+    $GLOBALS['status_experience'] = '
 {"recipient":{
     "id":"' . $sid . '"
 },
