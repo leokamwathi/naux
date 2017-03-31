@@ -57,8 +57,8 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 }
             } else {
                 logx("{CURRENT STATUS}".getField('status'));
-                logx("{READING REPLY....}");
-                if (is($payload)) {
+                logx("{READING REPLY....}".$message);
+                if (is_string($payload)) {
                     logx("{ISPAYLOAD}");
                     //job_findjob , qualification_collage-diploma
                     $payloadPara = explode("_", $payload);
@@ -69,12 +69,12 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         sendReply(getField('status'));
                     }
                 }else{
-                    if(is($message)){
+                    if(!is_null($message)){
                         logx("{IS MESSAGE}");
                         if(setStatus(getField('status'),$message)){
                             sendReply(nextStatus(getField('status')));
                         }else{
-                            if (is(getField('status'))){
+                            if (is_string(getField('status'))){
                                 sendReply(getField('status'));
                             }else{
                                 sendReply('new');
@@ -160,7 +160,7 @@ function setStatus($myStatus,$myMessage)
 
 function nextStatus($userStatus)
 {
-if(!is($userStatus)){
+if(!is_string($userStatus)){
     $userStatus = getField('status');
 }
     switch ($userStatus) {
@@ -183,11 +183,7 @@ if(!is($userStatus)){
 }
 function is($str)
 {
-    if (isset($reply) && $reply != '') {
-        return true;
-    } else {
-        return false;
-    }
+    return is_string($str);
 }
 function sendReply($status)
 {
