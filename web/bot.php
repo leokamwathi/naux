@@ -33,34 +33,47 @@ function bot_setup()
         //chcek if new user
 
         if (isNewUser()) {
-            insertUser();
-            setField('status', 'new');
-            sendReply('new');
+            if(addNewUser()){
+                sendReply('new');
+            }else{
+                sendReply('new'); #failed to add user.. really what to do????
+            }
         } else {
-            $status = getField('status');
             if (is($payload)) {
                 //job_findjob , qualification_collage-diploma
-                $payloadPara    = explode("_", $payload);
-                $payload_status = $payloadPara[0];
-
-
-
+                $payloadPara = explode("_", $payload);
+                if(setPayload($payloadPara))
+                {
+                    sendReply(nextStatus($payloadPara[0]));
+                }else{
+                    sendReply(getField('status'));
+                }
+            }else{
+                if(is($message)){
+                    if(setStatus(getField('status'),$message)){
+                        sendReply(nextStatus(getField('status')));
+                    }else{
+                        sendReply(getField('status'));
+                    }
+                }else{
+                    sendReply(getField('status'));
+                }        
             }
-            # code...
         }
 
         /*
-        check if is new user
-        +if new creat startup data
-        + status = new
-        +ask new question
+        @ check if is new user
+        @ +if new creat startup data
+        @ + status = new
+        @ +ask new question
 
-        Check current status
-        +If status needs message then check for message
-        +if message then add message to DB and ask next question
-        Check payload
-        +update payload
-        -send status message
+        @Check payload
+        @+update payload
+        @-send next/status message
+        @Check current status
+        @+If status needs message then check for message
+        @+if message then add message to DB and ask next question
+
 
         WAIT for user input
         */
@@ -69,23 +82,76 @@ function bot_setup()
 
 function setPayload($paypara)
 {
-
+    $isSet = false;
     switch ($paypara[0]) {
         case "job":
             setField($paypara[0], $paypara[1]);
+            $isSet = true;
+            break;
         case "location":
             setField($paypara[0], $paypara[1]);
-        case "exp":
+            $isSet = true;
+            break;
+        case "experience":
             setField($paypara[0], $paypara[1]);
+            $isSet = true;
+            break;
         case "qualification":
             setField($paypara[0], $paypara[1]);
+            $isSet = true;
+            break;
         case "edit":
             sendReply($paypara[1]);
-        default:
-            sendReply('info');
+            $isSet = true;
+            break;
     }
+    return $isSet;
 }
 
+function setStatus($myStatus,$myMessage)
+{
+    $isSet = false;
+    switch ($myStatus) {
+        case "job":
+            setField($myStatus, $myMessage);
+            $isSet = true;
+            break;
+        case "location":
+            setField($myStatus, $myMessage);
+            $isSet = true;
+            break;
+        case "about":
+            setField($myStatus, $myMessage);
+            $isSet = true;
+            break;
+    }
+    return $isSet;
+}
+
+
+function nextStatus($userStatus)
+{
+if(!is($userStatus)){
+    $userStatus = getField('status');
+}
+    switch ($userStatus) {
+        case "new":
+            return("job");
+        case "job":
+            return("location");
+        case "location":
+            return("experience");
+        case "experience":
+            return("qualification");
+        case "qualification":
+            return("about");
+        case "about":
+            return("info");
+        default:
+            return("info");
+    }
+
+}
 function is($str)
 {
     if (isset($reply) && $reply != '') {
@@ -106,7 +172,7 @@ function sendReply($status)
         case "job":
             $reply = $status_job;
             break;
-        case "exp":
+        case "experience":
             $reply = $status_exp;
             break;
         case "qualification":
@@ -168,19 +234,34 @@ function getField($field)
 
 function addField($field, $value)
 {
-    $Query = "UPDATE $field from $dbTable where pageID ='$pid' and userID='$sid'";
+    $Query="UPDATE $dbTable SET ($field) = ('$value') where pageID ='$pid' and userID='$sid'";
     $rows  = pg_query($pg_conn, $Query);
-    return getField($field);
+    if(!$rows){
+        return false;
+    }else{
+        return true;
+    }
 }
 
 function insertUser()
 {
+    $Query = "INSERT INTO $dbTable (userID,pageID) VALUES ('$sid','$pid')";
+    $rows  = pg_query($pg_conn, $Query);
+    if(!$rows){
+        return false;
+    }else{
     return true;
+    }
 }
 
-function isNewUser()
+function addNewUser()
 {
-    return true;
+    if(insertUser()){
+        addField("status","new");
+        return true;
+    }else{
+        return false;
+    }
 }
 
 function setReplys()
