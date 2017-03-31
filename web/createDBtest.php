@@ -53,6 +53,7 @@ print ("</tr>");
 
 function createDB(){
     $pg_conn = pg_connect(pg_connection_string_from_database_url());
+    $dbTable = "jobsDBtest";
 $createTable = "CREATE TABLE IF NOT EXISTS ".$dbTable." (
                     pageID text NOT NULL,
                     userID text NOT NULL ,
