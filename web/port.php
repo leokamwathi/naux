@@ -12,7 +12,7 @@ global $username;
 global $datastream;
 global $user_details;
 */
-
+try{
 //Check for hub Challenge
 if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
     print_r($_GET["hub_challenge"]);
@@ -24,6 +24,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
     //function bot_setup()
     //{
         // get data stream
+
         logx("{SETUP}");
         $datastream = file_get_contents("php://input");
         //get fb data
@@ -45,12 +46,12 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             $GLOBALS['token']   = $_ENV["techware_fb_token"];
             $user_details = file_get_contents("https://graph.facebook.com/v2.6/".$GLOBALS['sid']."?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=".$GLOBALS['token'], false, $context);
             $GLOBALS['username']     = $user_details->first_name;
-            $GLOBALS['pg_conn'] = pg_connect(setup_database_connection());
+            $GLOBALS['pg_conn'] = pg_connect(pg_connection_string_from_database_url());
             setReplys();
             //chcek if new user
 
             if (isNewUser()) {
-                logx("{NEW USER}");
+                logx("{NEW USER..CREATING USER}");
                 if(addNewUser()){
                     sendReply('new');
                 }else{
@@ -115,7 +116,11 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
         logx("Waiting for user reply");
     //}
 }
-
+} catch (Exception $e) {
+    logx("{TRY ERROR}".$e->getMessage());
+    // Handle exception
+    //file_put_contents("php://stderr", "ERROR!!: = ".$e->getMessage().PHP_EOL);
+}
 
 
 function setPayload($paypara)
@@ -256,17 +261,26 @@ function setup_database_connection()
     extract(parse_url($_ENV["DATABASE_URL"]));
     return "user=$user password=$pass host=$host dbname=" . substr($path, 1); # <- you may want to add sslmode=require there too
 }
+
+function pg_connection_string_from_database_url() {
+  extract(parse_url($_ENV["DATABASE_URL"]));
+  $dbOptions = "user=$user password=$pass host=$host dbname=" . substr($path, 1); # <- you may want to add sslmode=require there too
+  logx("{DATABASE CONNECTION}".$dbOptions);
+  return $dbOptions;
+}
+
+
+
 function pg_conx()
 {
     return pg_connect(setup_database_connection());
 }
 function getField($field)
 {
-
-
-        $fielddata = "";
+    $fielddata = "";
     $Query     = "SELECT $field from ".$GLOBALS['dbTable']." where pageID ='".$GLOBALS["pid"]."' and userID='".$GLOBALS["sid"]."'";
     $rows      = pg_query($GLOBALS['pg_conn'], $Query);
+
     if(!$rows){
         logx(pg_result_error($rows));
     }else{
@@ -311,19 +325,25 @@ function insertUser()
     $rows  = pg_query($GLOBALS['pg_conn'], $Query);
     if(!$rows){
         logx("{FAILED TO CREATE USER}");
+        logx($Query);
         logx(pg_result_error($rows));
         logx(pg_last_error($GLOBALS['pg_conn']));
         return false;
     }else{
+        logx("{NEW USER CREATED}");
         return true;
     }
 }
 
 function addNewUser()
 {
-    if(insertUser()){
-        addField("status","new");
-        return true;
+    if (isNewUser()){
+        if(insertUser()){
+            addField("status","new");
+            return true;
+        }else{
+            return false;
+        }
     }else{
         return false;
     }
