@@ -52,9 +52,10 @@ if(!$result){
   }
   while ($row = pg_fetch_row($result)) {
     print ("<tr>");
-    foreach($row as $cell) {
-  print("<td>".$value."<td/>");
-}
+    for ($j = 0; $j < $i; $j++) {
+         print("<td>".$row[$j]."<td/>");
+    }
+
 print ("</tr>");
     // print("- $row[0]\n");
    }
@@ -74,37 +75,37 @@ function createDB(){
     $pg_conn = pg_connect(pg_connection_string_from_database_url());
     $dbTable = "jobsDBtest";
 $createTable = "CREATE TABLE IF NOT EXISTS ".$dbTable." (
-                    pageID text NOT NULL,
-                    userID text NOT NULL ,
-                    userType text NOT NULL ,
-                    Name text NOT NULL ,
-                    status text NOT NULL ,
-                    email text NOT NULL ,
-                    location text NOT NULL ,
-                    geoLocation text NOT NULL ,
-                    job text NOT NULL ,
-                    about text NOT NULL ,
-                    experience text NOT NULL ,
-                    qualification text NOT NULL ,
-                    companyName text NOT NULL ,
-                    companyEmail text NOT NULL ,
-                    companyUrl text NOT NULL ,
-                    companyAbout text NOT NULL ,
-                    CompanyQualification text NOT NULL ,
-                    CompanyJob text NOT NULL ,
-                    compnayExperience text NOT NULL ,
-                    compnayExpireDays text NOT NULL ,
-                    compnayExpiryDate text NOT NULL ,
-                    expireDays text NOT NULL ,
-                    expiryDate text NOT NULL ,
-                    lastNotification text NOT NULL ,
-                    companiesNotification text NOT NULL ,
-                    companiesViewed text NOT NULL ,
-                    active text NOT NULL ,
-                    joinDate text NOT NULL ,
-                    paid text NOT NULL ,
-                    amountPaid text NOT NULL ,
-                    paymentID text NOT NULL
+                    pageID text  NOT NULL,
+                    userID text  NOT NULL,
+                    userType text ,
+                    Name text,
+                    status text,
+                    email text ,
+                    location text ,
+                    geoLocation text ,
+                    job text ,
+                    about text ,
+                    experience text ,
+                    qualification text ,
+                    companyName text ,
+                    companyEmail text ,
+                    companyUrl text ,
+                    companyAbout text ,
+                    CompanyQualification text ,
+                    CompanyJob text ,
+                    compnayExperience text ,
+                    compnayExpireDays text ,
+                    compnayExpiryDate text ,
+                    expireDays text ,
+                    expiryDate text ,
+                    lastNotification text ,
+                    companiesNotification text ,
+                    companiesViewed text ,
+                    active text ,
+                    joinDate text ,
+                    paid text ,
+                    amountPaid text ,
+                    paymentID text
                     )";
                     print_r($createTable);
 $result = pg_query($pg_conn, $createTable );
@@ -150,38 +151,38 @@ $result = pg_query($pg_conn, $insertQuery );
 /*
 
 $createTable = "CREATE TABLE IF NOT EXISTS jobsDBtest (
-            pageID text NOT NULL,  #currently just this page but more can be added
-						userID text NOT NULL ,  # the senderID or Page Scope User ID (Unique for each different user)
-						userType text NOT NULL , #can be Post Job or Find Job
-						Name text NOT NULL , #Automatically gotten from Fb if its Find Job. Post Job can add a company name
-						status text NOT NULL , #What is the status of the last message sent (Keeps track of where we are)
-						email text NOT NULL , #Not sure i will need it
-						location text NOT NULL , #Gotten from user or if Fb payload. We pass it to google and get closest city and country
-						geoLocation text NOT NULL , #the geo locaion info we got from fb
-						job text NOT NULL , #What Job are you looking for
-						about text NOT NULL , #about your Self
-						experience text NOT NULL , #Your job  experience
-						qualification text NOT NULL , #Your job qualification
-            companyName text NOT NULL ,
-            companyEmail text NOT NULL ,
-            companyUrl text NOT NULL ,
-            companyAbout text NOT NULL ,
-            CompanyQualification text NOT NULL ,
-            CompanyJob text NOT NULL ,
-            companyAbout text NOT NULL ,
-            compnayExperience text NOT NULL ,
-            compnayExpireDays text NOT NULL ,
-            compnayExpiryDate text NOT NULL ,
-            expireDays text NOT NULL ,
-						expiryDate text NOT NULL ,
-						lastNotification text NOT NULL ,
-            companyNotification text NOT NULL , #CVS of Company userID that you have been send notifications of
-            companyViewed text NOT NULL , #CVS of Company userID that you have seen job posting
-						active text NOT NULL ,
-						joinDate text NOT NULL ,
-						paid text NOT NULL ,
-						amountPaid text NOT NULL ,
-						paymentID text NOT NULL
+            pageID text,  #currently just this page but more can be added
+						userID text ,  # the senderID or Page Scope User ID (Unique for each different user)
+						userType text , #can be Post Job or Find Job
+						Name text , #Automatically gotten from Fb if its Find Job. Post Job can add a company name
+						status text , #What is the status of the last message sent (Keeps track of where we are)
+						email text , #Not sure i will need it
+						location text , #Gotten from user or if Fb payload. We pass it to google and get closest city and country
+						geoLocation text , #the geo locaion info we got from fb
+						job text , #What Job are you looking for
+						about text , #about your Self
+						experience text , #Your job  experience
+						qualification text , #Your job qualification
+            companyName text ,
+            companyEmail text ,
+            companyUrl text ,
+            companyAbout text ,
+            CompanyQualification text ,
+            CompanyJob text ,
+            companyAbout text ,
+            compnayExperience text ,
+            compnayExpireDays text ,
+            compnayExpiryDate text ,
+            expireDays text ,
+						expiryDate text ,
+						lastNotification text ,
+            companyNotification text , #CVS of Company userID that you have been send notifications of
+            companyViewed text , #CVS of Company userID that you have seen job posting
+						active text ,
+						joinDate text ,
+						paid text ,
+						amountPaid text ,
+						paymentID text
                     )";
 
 */
