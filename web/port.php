@@ -44,8 +44,9 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
 
             //get username
             $GLOBALS['token']   = $_ENV["techware_fb_token"];
-            $user_details = file_get_contents("https://graph.facebook.com/v2.6/".$GLOBALS['sid']."?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=".$GLOBALS['token'], false, $context);
-            $GLOBALS['username']     = $user_details->first_name;
+            $user_details = file_get_contents("https://graph.facebook.com/v2.6/".$GLOBALS['sid']."?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=".$GLOBALS['token']);
+            $user_details =  json_decode($user_details);
+            $GLOBALS['username'] = $user_details->first_name;
             $GLOBALS['pg_conn'] = pg_connect(pg_connection_string_from_database_url());
             setReplys();
             //chcek if new user
@@ -312,9 +313,9 @@ function isNewUser()
 {
 logx("{isNEWUSER}(".$GLOBALS['sid'].") = (".getField("userID").")");
     if($GLOBALS['sid'] == getField("userID")){
-        return true;
-    }else{
         return false;
+    }else{
+        return true;
     }
 }
 
