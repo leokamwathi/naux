@@ -27,7 +27,7 @@ $app->run();
 
 //file_put_contents("fb.txt",file_get_contents("php://input"));
 
-
+/*
 
 require('../vendor/autoload.php');
 $app = new Silex\Application();
@@ -67,3 +67,4 @@ $app->get('/db/', function() use($app) {
   ));
 });
 $app->run();
+*/
