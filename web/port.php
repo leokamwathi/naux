@@ -49,8 +49,8 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             $GLOBALS['pg_conn'] = pg_connect(pg_connection_string_from_database_url());
             setReplys();
             //chcek if new user
-
-            if (isNewUser()) {
+            $isUser = isNewUser();
+            if ($isUser) {
                 logx("{NEW USER..CREATING USER}");
                 if(addNewUser()){
                     sendReply('new');
@@ -310,7 +310,7 @@ function addField($field, $value)
 
 function isNewUser()
 {
-
+logx("{isNEWUSER}(".$GLOBALS['sid'].") = (".getField("userID").")");
     if($GLOBALS['sid'] == getField("userID")){
         return true;
     }else{
