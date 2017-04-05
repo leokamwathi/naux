@@ -39,7 +39,9 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             // get message
             $GLOBALS['message']      = $fb->entry[0]->messaging[0]->message->text;
             //get payload
+            $GLOBALS['quickReply']      = $fb->entry[0]->messaging[0]->message->quick_reply->payload;
             $GLOBALS['payload']      = $fb->entry[0]->messaging[0]->postback->payload;
+            $GLOBALS['mid'] = $fb->entry[0]->messaging[0]->message->mid;
             $GLOBALS['dbTable']      = "jobsDBtest";
 
             //get username
@@ -49,6 +51,18 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             $GLOBALS['username'] = $user_details->first_name;
             $GLOBALS['pg_conn'] = pg_connect(pg_connection_string_from_database_url());
             setReplys();
+
+            //Payload processing
+            if (isset($GLOBALS['payload']) && $GLOBALS['payload'] != '') {
+                $GLOBALS['message'] = null;
+                $GLOBALS['quickReply'] = null;
+            }else{
+                if (isset($GLOBALS['quickReply']) && $GLOBALS['quickReply'] != '') {
+                    $GLOBALS['message'] = null;
+                    $GLOBALS['payload'] = $GLOBALS['quickReply'];
+                }
+            }
+
             //chcek if new user
             sendMessage($GLOBALS['isTyping']);
             if (isNewUser()) {
@@ -74,10 +88,10 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     }
                 }else{
                     if (isset($GLOBALS['message']) && $GLOBALS['message'] != '') {
-                        if($GLOBALS['message'] == getField('lastNotification') ){
+                        if($GLOBALS['mid'] == getField('lastNotification') ){
                             logx("{SAME MESSAGE AGAIN REALLY SUCKS}".$GLOBALS['message']);
                         }else{
-                        addField('lastNotification',$GLOBALS['message']);
+                        addField('lastNotification',$GLOBALS['mid']);
                         logx("{IS MESSAGE}");
                         if(setStatus(getField('status'),$GLOBALS['message'])){
                             sendReply(nextStatus(getField('status')));
@@ -259,8 +273,9 @@ function sendReply($status)
     sendMessage($reply);
     addField('status',$status);
     logx("{STATUS}.$status");
-    logx("{REPLY}".$reply);
+    //logx("{REPLY}".$reply);
     logx("{FBREPLY}".$GLOBALS['fbreply']);
+    logMSG($GLOBALS['log']);
 }
 
 function sendMessage($msg){
@@ -373,6 +388,10 @@ function addNewUser()
 }
 
 function logx($msg){
+    $GLOBALS['log'] = $GLOBALS['log']."\n".$msg; // file_put_contents("php://stderr", $msg.PHP_EOL);
+}
+
+function logMSG($msg){
     file_put_contents("php://stderr", $msg.PHP_EOL);
 }
 
