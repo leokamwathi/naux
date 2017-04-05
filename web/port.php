@@ -472,13 +472,13 @@ function setReplys()
         }';
 
     $GLOBALS['status_location'] = '
-        "{recipient":{
+        {"recipient":{
             "id":"' . $GLOBALS['sid'] . '"
         },
         "message":{
             "text":"Please enter your job location : (city,country) \n(Nairobi, Kenya) or use your current location from fbmessager.",
             "quick_replies":[
-                {"content_type":"location",}
+                {"content_type":"location"}
             ]
         }
     }';
