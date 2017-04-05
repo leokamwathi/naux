@@ -273,7 +273,7 @@ function sendReply($status)
     sendMessage($reply);
     addField('status',$status);
     logx("{STATUS}.$status");
-    //logx("{REPLY}".$reply);
+    logx("{REPLY}".$reply);
     logx("{FBREPLY}".$GLOBALS['fbreply']);
     logMSG($GLOBALS['log']);
 }
