@@ -50,11 +50,11 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             $GLOBALS['pg_conn'] = pg_connect(pg_connection_string_from_database_url());
             setReplys();
             //chcek if new user
-            $isUser = isNewUser();
-            if ($isUser) {
+            sendMessage($GLOBALS['isTyping']);
+            if (isNewUser()) {
                 logx("{NEW USER..CREATING USER}");
                 if(addNewUser()){
-                    sendReply('new');
+                    sendReply('userType');
                 }else{
                     logx("{FAILED TO CREATE USER}");
                     //sendReply('new'); #failed to add user.. really what to do????
@@ -85,13 +85,13 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                             if (is_string(getField('status'))){
                                 sendReply(getField('status'));
                             }else{
-                                sendReply('new');
+                                sendReply('userType');
                             }
                         }
                     }
                     }else{
                         logx("{NOT PAYLOAD OR MESSAGE JUST SOME FB STUFF}".$GLOBALS['message']);
-                        //sendReply('new');
+                        //sendReply('userType');
                     }
 
                 }
@@ -128,6 +128,10 @@ function setPayload($paypara)
 {
     $isSet = false;
     switch ($paypara[0]) {
+        case "userType":
+            addField($paypara[0], $paypara[1]);
+            $isSet = true;
+            break;
         case "job":
             addField($paypara[0], $paypara[1]);
             $isSet = true;
@@ -179,7 +183,7 @@ if(!is_string($userStatus)){
     $userStatus = getField('status');
 }
     switch ($userStatus) {
-        case "new":
+        case "userType":
             return("job");
         case "job":
             return("location");
@@ -204,8 +208,8 @@ function sendReply($status)
 {
 
     switch ($status) {
-        case "new":
-            $reply = $GLOBALS['status_new'];
+        case "userType":
+            $reply = $GLOBALS['status_userType'];
             break;
         case "location":
             $reply = $GLOBALS['status_location'];
@@ -214,7 +218,7 @@ function sendReply($status)
             $reply = $GLOBALS['status_job'];
             break;
         case "experience":
-            $reply = $GLOBALS['status_exp'];
+            $reply = $GLOBALS['status_experience'];
             break;
         case "qualification":
             $reply = $GLOBALS['status_qualifications'];
@@ -234,12 +238,12 @@ function sendReply($status)
             $reply = json_encode($data);
             break;
         default:
-            $status = 'new';
-            $reply = $GLOBALS['status_new'];
+            $status = 'userType';
+            $reply = $GLOBALS['status_userType'];
             break;
     }
 
-
+/*
     $options = array(
         'http' => array(
             'method' => 'POST',
@@ -251,11 +255,29 @@ function sendReply($status)
     //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
     $fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=".$GLOBALS['token'], false, $context);
     //file_put_contents("php://stderr", "FB reply: = ".$fbreply.PHP_EOL);
+*/
+    sendMessage($reply);
     addField('status',$status);
     logx("{STATUS}.$status");
     logx("{REPLY}".$reply);
-    logx("{FBREPLY}".$fbreply);
+    logx("{FBREPLY}".$GLOBALS['fbreply']);
 }
+
+function sendMessage($msg){
+
+    $options = array(
+        'http' => array(
+            'method' => 'POST',
+            'content' => $msg,
+            'header' => "Content-Type: application/json\n"
+        )
+    );
+    $context = stream_context_create($options);
+    //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
+    $GLOBALS['fbreply'] = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=".$GLOBALS['token'], false, $context);
+}
+
+
 
 function setup_database_connection()
 {
@@ -340,7 +362,7 @@ function addNewUser()
 {
     if (isNewUser()){
         if(insertUser()){
-            addField("status","new");
+            addField("status","userType");
             return true;
         }else{
             return false;
@@ -357,6 +379,14 @@ function logx($msg){
 function setReplys()
 {
     logx("{SETTING REPLIES}");
+
+
+    $GLOBALS['isTyping'] = '
+                {"recipient":{
+                    "id":"'.$GLOBALS['sid'].'"
+                },
+                "sender_action":"typing_on"
+                }';
 
     $GLOBALS['status_info'] = '
                 {"recipient":{
@@ -399,7 +429,7 @@ function setReplys()
                     ]
                 }
             }';
-    $GLOBALS['status_new']  = '
+    $GLOBALS['status_userType']  = '
             {"recipient":{
                 "id":"' .$GLOBALS['sid']. '"
             },
@@ -412,18 +442,18 @@ function setReplys()
                     {
                         "content_type":"text",
                         "title":"Find Job",
-                        "payload":"new_Find-Job"
+                        "payload":"userType_Find-Job"
                     },
                     {
                         "content_type":"text",
                         "title":"Post Job",
-                        "payload":"new_Post-Job"
+                        "payload":"userType_Post-Job"
                     }
                 ]
             }
         }';
 
-    $GLOBALS['$status_location'] = '
+    $GLOBALS['status_location'] = '
         "{recipient":{
             "id":"' . $GLOBALS['sid'] . '"
         },
@@ -437,7 +467,7 @@ function setReplys()
         }
     }';
 
-    $GLOBALS['$status_job'] = '
+    $GLOBALS['status_job'] = '
     {"recipient":{
         "id":"' . $GLOBALS['sid'] . '"
     },
