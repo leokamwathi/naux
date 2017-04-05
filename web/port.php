@@ -80,12 +80,18 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     logx("{ISPAYLOAD}");
                     //job_findjob , qualification_collage-diploma
                     $payldPara = explode("_", $GLOBALS['payload']);
+                    if($payldPara[0]=='search'){
+                        //search_search-jobs
+                        //search_job2
+                        sendReply($GLOBALS['payload']);
+                    }else{
                     if(setPayload($payldPara))
                     {
                         sendReply(nextStatus($payldPara[0]));
                     }else{
                         sendReply(getField('status'));
                     }
+                }
                 }else{
                     if (isset($GLOBALS['message']) && $GLOBALS['message'] != '') {
                         if($GLOBALS['mid'] == getField('lastNotification') ){
@@ -260,6 +266,9 @@ function sendReply($status)
             break;
         case "info":
             $reply = $GLOBALS['status_info'];
+            break;
+        case "search":
+            $reply = $GLOBALS[$GLOBALS['payload']];
             break;
         case "payload":
             $data  = array(
@@ -468,7 +477,7 @@ function setReplys()
                         {
                             "content_type":"text",
                             "title":"Search Jobs",
-                            "payload":"search_jobs"
+                            "payload":"search_job2"
                         }
                     ]
                 }
@@ -605,7 +614,7 @@ function setReplys()
 }';
 
     //payload with links and images
-    $GLOBALS['status_test'] = '{"recipient": {
+    $GLOBALS['status_search_job1'] = '{"recipient": {
     "id": "' . $GLOBALS['sid'] . '"
 },
 "message": {
@@ -614,22 +623,83 @@ function setReplys()
         "payload": {
             "template_type": "generic",
             "elements": [{
-                "title": "rift",
-                "subtitle": "Next-generation virtual reality",
-                "item_url": "https://www.oculus.com/en-us/rift/",
-                "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+                "title": "SuperJob Test Ltd.",
+                "subtitle": "We have a job opening for a '. getField('job') .'",
                 "buttons": [{
                     "type": "web_url",
                     "url": "https://www.oculus.com/en-us/rift/",
-                    "title": "Open Web URL"
+                    "title": "See Job 1"
                 }, {
                     "type": "postback",
-                    "title": "Callback",
-                    "payload": "PayloadTest"
+                    "title": "Search Again",
+                    "payload": "search_job2"
+                }, {
+                    "type": "postback",
+                    "title": "Edit Profile",
+                    "payload": "edit_info"
                 }]
             }]
         }
     }
 }
 }';
+
+$GLOBALS['status_search_job2'] = '{"recipient": {
+"id": "' . $GLOBALS['sid'] . '"
+},
+"message": {
+"attachment": {
+    "type": "template",
+    "payload": {
+        "template_type": "generic",
+        "elements": [{
+            "title": "SuperJob Test Ltd.",
+            "subtitle": "We have a job opening for a '. getField('job') .'",
+            "buttons": [{
+                "type": "web_url",
+                "url": "https://www.oculus.com/en-us/rift/",
+                "title": "See Job 2"
+            }, {
+                "type": "postback",
+                "title": "Search Again",
+                "payload": "search_job1"
+            }, {
+                "type": "postback",
+                "title": "Edit Profile",
+                "payload": "edit_info"
+            }]
+        }]
+    }
+}
+}
+}';
+
+$GLOBALS['status_test'] = '{"recipient": {
+"id": "' . $GLOBALS['sid'] . '"
+},
+"message": {
+"attachment": {
+    "type": "template",
+    "payload": {
+        "template_type": "generic",
+        "elements": [{
+            "title": "SuperJob Test Ltd.",
+            "subtitle": "We have a job opening for a '. getField('job') .' ",
+            "item_url": "https://www.oculus.com/en-us/rift/",
+            "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+            "buttons": [{
+                "type": "web_url",
+                "url": "https://www.oculus.com/en-us/rift/",
+                "title": "Open Web URL"
+            }, {
+                "type": "postback",
+                "title": "Callback",
+                "payload": "PayloadTest"
+            }]
+        }]
+    }
+}
+}
+}';
+
 }
