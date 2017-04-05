@@ -83,7 +83,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     if($payldPara[0]=='search'){
                         //search_search-jobs
                         //search_job2
-                        sendReply($GLOBALS['payload']);
+                        sendReply($payldPara[0]);
                     }else{
                     if(setPayload($payldPara))
                     {
