@@ -417,8 +417,7 @@ function setReplys()
                     Job:' . getField('job') . '\n
                     Qualification:' . getField('qualification') . '\n
                     Experience:' . getField('experience') . '\n
-                    About:' . getField('about') . '\n
-                    ",
+                    About:' . getField('about') . '\n",
                     "quick_replies":[
                         {
                             "content_type":"text",
@@ -477,9 +476,7 @@ function setReplys()
             "id":"' . $GLOBALS['sid'] . '"
         },
         "message":{
-            "text":"Please enter your job location : (city,country) \n
-            eg. \n
-            (Nairobi, Kenya) or use your current location from fbmessager.",
+            "text":"Please enter your job location : (city,country) \n(Nairobi, Kenya) or use your current location from fbmessager.",
             "quick_replies":[
                 {"content_type":"location",}
             ]
@@ -491,9 +488,7 @@ function setReplys()
         "id":"' . $GLOBALS['sid'] . '"
     },
     "message":{
-        "text":"What kind of job are you looking for (Just one Job)?\n
-         eg. n\
-         (Part time, Accountant, Web Designer,Chef, Sales Person, Programmer, House Help)"
+        "text":"What kind of job are you looking for (Just one Job)?\n eg. Part time, Accountant, Web Designer,Chef, Sales Person, Programmer, House Help)"
     }
 }';
 
