@@ -264,7 +264,7 @@ function sendReply($status)
 }
 
 function sendMessage($msg){
-
+    $msg = trim(preg_replace('/\s+/', ' ', $msg));
     $options = array(
         'http' => array(
             'method' => 'POST',
