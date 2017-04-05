@@ -83,7 +83,8 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     if($payldPara[0]=='search'){
                         //search_search-jobs
                         //search_job2
-                        sendReply($payldPara[0]);
+                         sendMessage($GLOBALS[$GLOBALS['payload']]);
+                        //sendReply($payldPara[0]);
                     }else{
                     if(setPayload($payldPara))
                     {
@@ -442,7 +443,8 @@ function setReplys()
                     "id":"'.$GLOBALS['sid'].'"
                 },
                 "message":{
-                    "text":"Hi '.$GLOBALS['username'].', This is the info we have from you.\n
+                    "text":"Hi '.$GLOBALS['username'].', \n
+                    This is the info we have from you.\n
                     Location:' . getField('location') . '\n
                     Job:' . getField('job') . '\n
                     Qualification:' . getField('qualification') . '\n
