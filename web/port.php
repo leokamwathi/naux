@@ -240,6 +240,9 @@ function sendReply($status)
         case "about":
             $reply = $GLOBALS['status_about'];
             break;
+        case "info":
+            $reply = $GLOBALS['status_info'];
+            break;
         case "payload":
             $data  = array(
                 'recipient' => array(
