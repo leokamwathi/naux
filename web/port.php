@@ -163,13 +163,22 @@ function setPayload($paypara)
             $isSet = true;
             break;
         case "edit":
-            sendReply($paypara[1]);
+            addField('status',$paypara[1]);
+            addField('mode',$GLOBALS['payload']);
+            //sendReply($paypara[1]);
             $isSet = true;
             break;
     }
+    if ($paypara[0]!='edit' && $isSet == true){
+        setMode();
+    }
     return $isSet;
 }
-
+function setMode()
+{
+    addField('mode','');
+    addField('status', 'info');
+}
 function setStatus($myStatus,$myMessage)
 {
     $isSet = false;
@@ -187,6 +196,9 @@ function setStatus($myStatus,$myMessage)
             $isSet = true;
             break;
     }
+    if ($isSet == true){
+        setMode();
+    }
     return $isSet;
 }
 
@@ -196,6 +208,13 @@ function nextStatus($userStatus)
 if(!is_string($userStatus)){
     $userStatus = getField('status');
 }
+
+$isMode = getField('mode');
+    if(isset($isMode) && $isMode != ''){
+        setMode();
+        return("info");
+    }
+
     switch ($userStatus) {
         case "userType":
             return("job");
@@ -212,7 +231,6 @@ if(!is_string($userStatus)){
         default:
             return("info");
     }
-
 }
 function isStr($str)
 {
@@ -255,8 +273,8 @@ function sendReply($status)
             $reply = json_encode($data);
             break;
         default:
-            $status = 'userType';
-            $reply = $GLOBALS['status_userType'];
+            $status = 'info';
+            $reply = $GLOBALS['status_info'];
             break;
     }
 
@@ -446,6 +464,11 @@ function setReplys()
                             "content_type":"text",
                             "title":"Edit About",
                             "payload":"edit_about"
+                        },
+                        {
+                            "content_type":"text",
+                            "title":"Search Jobs",
+                            "payload":"search_jobs"
                         }
                     ]
                 }
