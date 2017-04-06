@@ -1,4 +1,15 @@
 <?php
+/*
+THINGS TO add
+-Call button  https://developers.facebook.com/docs/messenger-platform/send-api-reference/call-button
+-Share button. https://developers.facebook.com/docs/messenger-platform/send-api-reference/share-button
+-MENUS MAN WTH!!!!!! - SOCIAL NEWS!!!!
+
+
+
+*/
+
+
 
 //GLOBAL variables
 /*
