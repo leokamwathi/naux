@@ -83,7 +83,11 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     if($payldPara[0]=='search'){
                         //search_search-jobs
                         //search_job2
-                         sendMessage($GLOBALS[$GLOBALS['payload']]);
+                        logx('{SEARCHING....}');
+                        logx($GLOBALS['payload']);
+                        sendMessage($GLOBALS[$GLOBALS['payload']]);
+                        logx($GLOBALS['smsg']);
+                        logMSG($GLOBALS['log']);
                         //sendReply($payldPara[0]);
                     }else{
                     if(setPayload($payldPara))
@@ -310,6 +314,7 @@ function sendReply($status)
 }
 
 function sendMessage($msg){
+    $GLOBALS['smsg'] = $msg;
     $msg = trim(preg_replace('/\s+/', ' ', $msg));
     $options = array(
         'http' => array(
