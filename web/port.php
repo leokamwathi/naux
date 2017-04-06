@@ -85,7 +85,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         //search_job2
                         logx('{SEARCHING....}');
                         logx($GLOBALS['payload']);
-                        sendMessage($GLOBALS[$GLOBALS['payload']]);
+                        sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
                         logx($GLOBALS['smsg']);
                         logMSG($GLOBALS['log']);
                         //sendReply($payldPara[0]);
