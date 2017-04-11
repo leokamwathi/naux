@@ -4,9 +4,7 @@ THINGS TO add
 -Call button  https://developers.facebook.com/docs/messenger-platform/send-api-reference/call-button
 -Share button. https://developers.facebook.com/docs/messenger-platform/send-api-reference/share-button
 -MENUS MAN WTH!!!!!! - SOCIAL NEWS!!!!
-
-
-
+-dont do shenzhen until post job is done!!!!!
 */
 
 
@@ -224,6 +222,49 @@ function setStatus($myStatus,$myMessage)
     return $isSet;
 }
 
+
+
+function nextCompanyStatus($userStatus)
+{
+if(!is_string($userStatus)){
+    $userStatus = getField('status');
+}
+
+$isMode = getField('mode');
+    if(isset($isMode) && $isMode != ''){
+        setMode();
+        return("info");
+    }
+    /*
+    status_companyname
+    status_companydescription
+    status_companyjob
+    status_companyexperience
+    status_companyqualifications
+    */
+    switch ($userStatus) {
+        case "userType":
+            return("job");
+        case "companyname":
+            return("companydescription");
+        case "companydescription":
+            return("companyjob");
+        case "companyjob":
+            return("companyexperience");
+        case "companyexperience":
+            return("companyqualifications");
+        case "companyqualifications":
+            return("companywebsite");
+        case "companywebsite":
+            return("companyemail");
+        case "companyemail":
+            return("companyphone");
+        case "companyphone":
+            return("companyinfo");
+        default:
+            return("companyinfo");
+    }
+}
 
 function nextStatus($userStatus)
 {
@@ -719,5 +760,119 @@ $GLOBALS['status_test'] = '{"recipient": {
 }
 }
 }';
+
+
+
+// _________{COMPANY INFO}_________
+/*
+status_companyname
+status_companydescription
+status_companyjob
+status_companyexperience
+status_companyqualifications
+*/
+
+$GLOBALS['status_companyname'] = '
+{"recipient":{
+    "id":"' . $GLOBALS['sid'] . '"
+},
+"message":{
+    "text":"What is the name of your company."
+}
+}';
+
+
+$GLOBALS['status_companydescription'] = '
+{"recipient":{
+    "id":"' . $GLOBALS['sid'] . '"
+},
+"message":{
+    "text":"Enter a short description about the job."
+}
+}';
+
+$GLOBALS['status_companyjob'] = '
+{"recipient":{
+    "id":"' . $GLOBALS['sid'] . '"
+},
+"message":{
+    "text":"What is the job opening you are posting for? (e.g. Accountant, Web Designer, Chef, Sales)."
+}
+}';
+
+$GLOBALS['status_companyexperience'] = '
+{"recipient":{
+"id":"' . $GLOBALS['sid'] . '"
+},
+"message":{
+"text":"How much experience should job applicants have for this job?",
+"quick_replies":[
+    {
+        "content_type":"text",
+        "title":"None",
+        "payload":"companyexperience_None"
+    },
+    {
+        "content_type":"text",
+        "title":"1 month and over",
+        "payload":"companyexperience_1-month-and-over"
+    },
+    {
+        "content_type":"text",
+        "title":"1 year and over",
+        "payload":"companyexperience_1-year-and-over"
+    },
+    {
+        "content_type":"text",
+        "title":"4 years and over",
+        "payload":"companyexperience_4-years-and-over"
+    },
+    {
+        "content_type":"text",
+        "title":"9 years and over",
+        "payload":"companyexpexperience_9-years-and-over"
+    }
+]
+}
+}';
+
+$GLOBALS['status_companyqualifications'] = '
+{"recipient":{
+"id":"' . $GLOBALS['sid'] . '"
+},
+"message":{
+"text":"What is the minimum qualification Level needed for the job?",
+"quick_replies":[
+    {
+        "content_type":"text",
+        "title":"Self Taught",
+        "payload":"companyqualification_Self-Taught"
+    },
+    {
+        "content_type":"text",
+        "title":"Certificate",
+        "payload":"companyqualification_Certificate"
+    },
+    {
+        "content_type":"text",
+        "title":"Collage Diploma",
+        "payload":"companyqualification_Collage-Diploma"
+    },
+    {
+        "content_type":"text",
+        "title":"University Degree",
+        "payload":"companyqualification_University-Degree"
+    },
+    {
+        "content_type":"text",
+        "title":"Masters Degree",
+        "payload":"companyqualification_Masters-Degree"
+    }
+]
+}
+}';
+
+
+
 
 }
