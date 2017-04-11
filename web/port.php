@@ -99,7 +99,9 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     }else{
                     if(setPayload($payldPara))
                     {
-                        sendReply(nextStatus($payldPara[0]));
+                        $myNextStatus = nextStatus($payldPara[0]);
+                        logx("{NEXT STATUS}".$myNextStatus);
+                        sendReply($myNextStatus);
                     }else{
                         sendReply(getField('status'));
                     }
@@ -112,11 +114,14 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         addField('lastNotification',$GLOBALS['mid']);
                         logx("{IS MESSAGE}");
                         if(setStatus(getField('status'),$GLOBALS['message'])){
-                            sendReply(nextStatus(getField('status')));
+                            $myNextStatus = nextStatus(getField('status'));
+                            logx("{NEXT STATUS}".$myNextStatus);
+                            sendReply($myNextStatus);
                         }else{
                             if (is_string(getField('status'))){
                                 sendReply(getField('status'));
                             }else{
+                                logx("{SO THIS HAPPENS}");
                                 sendReply('userType');
                             }
                         }
@@ -210,11 +215,13 @@ function setPayload($paypara)
 }
 function setMode()
 {
-    addField('mode','');
-    if (getField("userType")=="Find-Job"){
-        addField('status', 'info');
-    }else{
-        addField('status', 'companyinfo');
+    if(getField("mode")!=""){
+        addField('mode','');
+        if (getField("userType")=="Find-Job"){
+            addField('status', 'info');
+        }else{
+            addField('status', 'companyinfo');
+        }
     }
 }
 function setStatus($myStatus,$myMessage)
@@ -346,27 +353,27 @@ function sendReply($status)
         case "about":
             $reply = $GLOBALS['status_about'];
             break;
-            case "location":
-                $reply = $GLOBALS['status_location'];
+        case "location":
+            $reply = $GLOBALS['status_companylocation'];
+            break;
+        case "companyname":
+                $reply = $GLOBALS['status_companyname'];
                 break;
-            case "companyname":
-                    $reply = $GLOBALS['status_companyname'];
-                    break;
-            case "companyjob":
-                $reply = $GLOBALS['status_companyjob'];
-                break;
-            case "companyexperience":
-                $reply = $GLOBALS['status_companyexperience'];
-                break;
-            case "companyqualification":
-                $reply = $GLOBALS['status_companyqualifications'];
-                break;
-            case "companydescription":
-                $reply = $GLOBALS['status_companydescription'];
-                break;
-            case "companyinfo":
-                $reply = $GLOBALS['status_companyinfo'];
-                break;
+        case "companyjob":
+            $reply = $GLOBALS['status_companyjob'];
+            break;
+        case "companyexperience":
+            $reply = $GLOBALS['status_companyexperience'];
+            break;
+        case "companyqualification":
+            $reply = $GLOBALS['status_companyqualifications'];
+            break;
+        case "companydescription":
+            $reply = $GLOBALS['status_companydescription'];
+            break;
+        case "companyinfo":
+            $reply = $GLOBALS['status_companyinfo'];
+            break;
         case "info":
             $reply = $GLOBALS['status_info'];
             break;
@@ -418,7 +425,7 @@ function sendCompanyReply($status)
             $reply = $GLOBALS['status_userType'];
             break;
         case "location":
-            $reply = $GLOBALS['status_location'];
+            $reply = $GLOBALS['status_compnaylocation'];
             break;
         case "companyname":
                 $reply = $GLOBALS['status_companyname'];
