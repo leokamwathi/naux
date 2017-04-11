@@ -3,11 +3,9 @@
 THINGS TO add
 -Call button  https://developers.facebook.com/docs/messenger-platform/send-api-reference/call-button
 -Share button. https://developers.facebook.com/docs/messenger-platform/send-api-reference/share-button
--MENUS MAN WTH!!!!!! - SOCIAL NEWS!!!!
+-MENUS MAN WTH!!!!!! - SOCIAL NEWS!!!! https://developers.facebook.com/docs/messenger-platform/messenger-profile/persistent-menu
 -dont do shenzhen until post job is done!!!!!
 */
-
-
 
 //GLOBAL variables
 /*
@@ -182,6 +180,22 @@ function setPayload($paypara)
             addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
+        case "companyjob":
+            addField($paypara[0], $paypara[1]);
+            $isSet = true;
+            break;
+        case "companylocation":
+            addField($paypara[0], $paypara[1]);
+            $isSet = true;
+            break;
+        case "companyexperience":
+            addField($paypara[0], $paypara[1]);
+            $isSet = true;
+            break;
+        case "companyqualification":
+            addField($paypara[0], $paypara[1]);
+            $isSet = true;
+            break;
         case "edit":
             addField('status',$paypara[1]);
             addField('mode',$GLOBALS['payload']);
@@ -197,7 +211,11 @@ function setPayload($paypara)
 function setMode()
 {
     addField('mode','');
-    addField('status', 'info');
+    if (getField("userType")=="Find-Job"){
+        addField('status', 'info');
+    }else{
+        addField('status', 'companyinfo');
+    }
 }
 function setStatus($myStatus,$myMessage)
 {
@@ -215,55 +233,42 @@ function setStatus($myStatus,$myMessage)
             addField($myStatus, $myMessage);
             $isSet = true;
             break;
+        case "companyname":
+            addField($myStatus, $myMessage);
+            $isSet = true;
+            break;
+        case "companyjob":
+            addField($myStatus, $myMessage);
+            $isSet = true;
+            break;
+        case "companylocation":
+            addField($myStatus, $myMessage);
+            $isSet = true;
+            break;
+        case "companydescription":
+            addField($myStatus, $myMessage);
+            $isSet = true;
+            break;
+        case "companyemail":
+            //TODO:test for valid email
+            addField($myStatus, $myMessage);
+            $isSet = true;
+            break;
+        case "companyphone":
+            //TODO:test valid phone
+            addField($myStatus, $myMessage);
+            $isSet = true;
+            break;
+        case "companywebsite":
+            //TODO:test valid website
+            addField($myStatus, $myMessage);
+            $isSet = true;
+            break;
     }
     if ($isSet == true){
         setMode();
     }
     return $isSet;
-}
-
-
-
-function nextCompanyStatus($userStatus)
-{
-if(!is_string($userStatus)){
-    $userStatus = getField('status');
-}
-
-$isMode = getField('mode');
-    if(isset($isMode) && $isMode != ''){
-        setMode();
-        return("info");
-    }
-    /*
-    status_companyname
-    status_companydescription
-    status_companyjob
-    status_companyexperience
-    status_companyqualifications
-    */
-    switch ($userStatus) {
-        case "userType":
-            return("job");
-        case "companyname":
-            return("companydescription");
-        case "companydescription":
-            return("companyjob");
-        case "companyjob":
-            return("companyexperience");
-        case "companyexperience":
-            return("companyqualifications");
-        case "companyqualifications":
-            return("companywebsite");
-        case "companywebsite":
-            return("companyemail");
-        case "companyemail":
-            return("companyphone");
-        case "companyphone":
-            return("companyinfo");
-        default:
-            return("companyinfo");
-    }
 }
 
 function nextStatus($userStatus)
@@ -280,7 +285,11 @@ $isMode = getField('mode');
 
     switch ($userStatus) {
         case "userType":
-            return("job");
+            if (getField("userType")=="Find-Job"){
+                return("job");
+            }else{
+                return("companyname");
+            }
         case "job":
             return("location");
         case "location":
@@ -288,11 +297,27 @@ $isMode = getField('mode');
         case "experience":
             return("qualification");
         case "qualification":
-            return("about");
-        case "about":
             return("info");
+        case "companyname":
+            return("companydescription");
+        case "companydescription":
+            return("companyjob");
+        case "companyjob":
+            return("companylocation");
+        case "companylocation":
+            return("companyexperience");
+        case "companyexperience":
+            return("companyqualifications");
+        case "companyqualifications":
+            return("companywebsite");
+        case "companywebsite":
+            return("companyemail");
+        case "companyemail":
+            return("companyphone");
+        case "companyphone":
+            return("companyinfo");
         default:
-            return("info");
+            return("userType");
     }
 }
 function isStr($str)
@@ -321,6 +346,27 @@ function sendReply($status)
         case "about":
             $reply = $GLOBALS['status_about'];
             break;
+            case "location":
+                $reply = $GLOBALS['status_location'];
+                break;
+            case "companyname":
+                    $reply = $GLOBALS['status_companyname'];
+                    break;
+            case "companyjob":
+                $reply = $GLOBALS['status_companyjob'];
+                break;
+            case "companyexperience":
+                $reply = $GLOBALS['status_companyexperience'];
+                break;
+            case "companyqualification":
+                $reply = $GLOBALS['status_companyqualifications'];
+                break;
+            case "companydescription":
+                $reply = $GLOBALS['status_companydescription'];
+                break;
+            case "companyinfo":
+                $reply = $GLOBALS['status_companyinfo'];
+                break;
         case "info":
             $reply = $GLOBALS['status_info'];
             break;
@@ -364,7 +410,74 @@ function sendReply($status)
     logx("{FBREPLY}".$GLOBALS['fbreply']);
     logMSG($GLOBALS['log']);
 }
+function sendCompanyReply($status)
+{
 
+    switch ($status) {
+        case "userType":
+            $reply = $GLOBALS['status_userType'];
+            break;
+        case "location":
+            $reply = $GLOBALS['status_location'];
+            break;
+        case "companyname":
+                $reply = $GLOBALS['status_companyname'];
+                break;
+        case "companyjob":
+            $reply = $GLOBALS['status_companyjob'];
+            break;
+        case "companyexperience":
+            $reply = $GLOBALS['status_companyexperience'];
+            break;
+        case "companyqualification":
+            $reply = $GLOBALS['status_companyqualifications'];
+            break;
+        case "companydescription":
+            $reply = $GLOBALS['status_companydescription'];
+            break;
+        case "companyinfo":
+            $reply = $GLOBALS['status_companyinfo'];
+            break;
+        case "search":
+            $reply = $GLOBALS[$GLOBALS['payload']];
+            break;
+        case "payload":
+            $data  = array(
+                'recipient' => array(
+                    'id' => $GLOBALS['sid']
+                ),
+                'message' => array(
+                    'text' => "Payload => " . $GLOBALS['payload']
+                )
+            );
+            $reply = json_encode($data);
+            break;
+        default:
+            $status = 'info';
+            $reply = $GLOBALS['status_info'];
+            break;
+    }
+
+/*
+    $options = array(
+        'http' => array(
+            'method' => 'POST',
+            'content' => $reply,
+            'header' => "Content-Type: application/json\n"
+        )
+    );
+    $context = stream_context_create($options);
+    //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
+    $fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=".$GLOBALS['token'], false, $context);
+    //file_put_contents("php://stderr", "FB reply: = ".$fbreply.PHP_EOL);
+*/
+    sendMessage($reply);
+    addField('status',$status);
+    logx("{STATUS}.$status");
+    logx("{REPLY}".$reply);
+    logx("{FBREPLY}".$GLOBALS['fbreply']);
+    logMSG($GLOBALS['log']);
+}
 function sendMessage($msg){
     $GLOBALS['smsg'] = $msg;
     $msg = trim(preg_replace('/\s+/', ' ', $msg));
@@ -483,6 +596,36 @@ function logMSG($msg){
     file_put_contents("php://stderr", $msg.PHP_EOL);
 }
 
+function getCompanyButtons(){
+$buttons = "";
+//'.getCompanyButtons($GLOBALS['sid']).'
+//TODO: add share button first.
+if(getField("companywebsite")!=''){
+    $button = $button + '{
+        "type": "web_url",
+        "url": "'.getField("companywebsite").'",
+        "title": "Job Website"
+    },';
+}
+if(getField("companyemail")!=''){
+    $button = $button + '{
+        "type": "web_url",
+        "url": "mailto:'.getField("companyemail").'",
+        "title": "Email Company"
+    },';
+}
+if(getField("companyphone")!=''){
+    $button = $button + '{
+          "type":"phone_number",
+          "title":"Call Company",
+          "payload":"'.getField("companyphone").'"
+      },';
+}
+$button = $button + '{
+        "type":"element_share"
+      }';
+    return $button;
+}
 function setReplys()
 {
     logx("{SETTING REPLIES}");
@@ -541,6 +684,7 @@ function setReplys()
                     ]
                 }
             }';
+
     $GLOBALS['status_userType']  = '
             {"recipient":{
                 "id":"' .$GLOBALS['sid']. '"
@@ -781,6 +925,123 @@ $GLOBALS['status_companyname'] = '
 }
 }';
 
+$GLOBALS['status_companyinfo'] = '{"recipient": {
+"id": "' . $GLOBALS['sid'] . '"
+},
+"message": {
+"attachment": {
+    "type": "template",
+    "payload": {
+        "template_type": "generic",
+        "elements": [{
+            "title": "'.$GLOBALS['companyname'].'",
+            "subtitle": "
+            Job Description:- '.$GLOBALS['companydescription'].'\n
+            Job:- '.$GLOBALS['companyjob'].'\n
+            Location:- '.$GLOBALS['companyLocation'].'\n
+            Experience:- '.$GLOBALS['companyexperience'].'\n
+            Qualification:- '.$GLOBALS['companyqualification'].'\n
+            ",
+            "buttons": [
+            {
+                "type": "postback",
+                "title": "Edit Name",
+                "payload": "edit_companyname"
+            },
+            {
+                "type": "postback",
+                "title": "Edit Description",
+                "payload": "edit_companydescription"
+            },
+            {
+                "type": "postback",
+                "title": "Edit Location",
+                "payload": "edit_companylocation"
+            },
+            {
+                "type": "postback",
+                "title": "Edit Experience",
+                "payload": "edit_companyexperience"
+            },
+            {
+                "type": "postback",
+                "title": "Edit Qualification",
+                "payload": "edit_companyqualification"
+            },
+            {
+                "type": "postback",
+                "title": "Exetend Time",
+                "payload": "edit_companyjobtime"
+            },
+            {
+                "type": "postback",
+                "title": "Delete Job Posting",
+                "payload": "edit_companydelete"
+            }]
+        }]
+    }
+}
+}
+}';
+
+$GLOBALS['status_companyinfo2'] = '
+{"recipient":{
+    "id":"'.$GLOBALS['sid'].'"
+},
+"message":{
+    "text":"Hi '.$GLOBALS['companyname'].', \n
+    This is the info we have from you.\n
+    Location:' . getField('location') . '\n
+    Job:' . getField('job') . '\n
+    Qualification:' . getField('qualification') . '\n
+    Experience:' . getField('experience') . '\n
+    About:' . getField('about') . '\n",
+    "quick_replies":[
+        {
+            "content_type":"text",
+            "title":"Edit Location",
+            "payload":"edit_location"
+        },
+        {
+            "content_type":"text",
+            "title":"Edit Job",
+            "payload":"edit_job"
+        },
+        {
+            "content_type":"text",
+            "title":"Edit Qualification",
+            "payload":"edit_qualification"
+        },
+        {
+            "content_type":"text",
+            "title":"Edit Experience",
+            "payload":"edit_experience"
+        },
+        {
+            "content_type":"text",
+            "title":"Edit About",
+            "payload":"edit_about"
+        },
+        {
+            "content_type":"text",
+            "title":"Search Jobs",
+            "payload":"search_job2"
+        }
+    ]
+}
+}';
+
+$GLOBALS['status_companylocation'] = '
+    {"recipient":{
+        "id":"' . $GLOBALS['sid'] . '"
+    },
+    "message":{
+        "text":"Please enter your job location : (city,country) \n(Nairobi, Kenya) or use your current location from fbmessager.",
+        "quick_replies":[
+            {"content_type":"location"}
+        ]
+    }
+}';
 
 $GLOBALS['status_companydescription'] = '
 {"recipient":{
