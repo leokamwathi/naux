@@ -163,6 +163,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
 
 function setPayload($paypara)
 {
+    logx("{CHECKING PAYLOAD}");
     $isSet = false;
     switch ($paypara[0]) {
         case "userType":
@@ -215,6 +216,7 @@ function setPayload($paypara)
 }
 function setMode()
 {
+    logx("{SETTING MODE}");
     if(getField("mode")!=""){
         addField('mode','');
         if (getField("userType")=="Find-Job"){
@@ -226,6 +228,7 @@ function setMode()
 }
 function setStatus($myStatus,$myMessage)
 {
+    logx("{UPDATING STATUS INFO}");
     $isSet = false;
     switch ($myStatus) {
         case "job":
@@ -273,6 +276,7 @@ function setStatus($myStatus,$myMessage)
             break;
     }
     if ($isSet == true){
+        logx("{STATUS UPDATED}");
         setMode();
     }
     return $isSet;
@@ -280,10 +284,11 @@ function setStatus($myStatus,$myMessage)
 
 function nextStatus($userStatus)
 {
+
 if(!is_string($userStatus)){
     $userStatus = getField('status');
 }
-
+logx("{GETTING NEXT STATUS CURRENT}".$userStatus);
 $isMode = getField('mode');
     if(isset($isMode) && $isMode != ''){
         setMode();
@@ -324,6 +329,7 @@ $isMode = getField('mode');
         case "companyphone":
             return("companyinfo");
         default:
+            logx("{SETTING DEFAULT STATUS}");
             return("userType");
     }
 }
@@ -413,7 +419,7 @@ function sendReply($status)
     sendMessage($reply);
     addField('status',$status);
     logx("{STATUS}.$status");
-    logx("{REPLY}".$reply);
+    //logx("{REPLY}".$reply);
     logx("{FBREPLY}".$GLOBALS['fbreply']);
     logMSG($GLOBALS['log']);
 }
