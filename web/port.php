@@ -347,6 +347,9 @@ function sendReply($status)
         case "location":
             $reply = $GLOBALS['status_location'];
             break;
+        case "companylocation":
+            $reply = $GLOBALS['status_companylocation'];
+            break;
         case "job":
             $reply = $GLOBALS['status_job'];
             break;
@@ -363,8 +366,8 @@ function sendReply($status)
             $reply = $GLOBALS['status_companylocation'];
             break;
         case "companyname":
-                $reply = $GLOBALS['status_companyname'];
-                break;
+            $reply = $GLOBALS['status_companyname'];
+            break;
         case "companyjob":
             $reply = $GLOBALS['status_companyjob'];
             break;
@@ -376,6 +379,15 @@ function sendReply($status)
             break;
         case "companydescription":
             $reply = $GLOBALS['status_companydescription'];
+            break;
+        case "companyemail":
+            $reply = basicReply("Enter the email where applicants can send job appications.");
+            break;
+        case "companywebsite":
+            $reply = basicReply("Enter the website/page where applicants can go to send job appications.");
+            break;
+        case "companyphone":
+            $reply = basicReply("Enter the phone number where applicants can call to inquire about the job posting.");
             break;
         case "companyinfo":
             $reply = $GLOBALS['status_companyinfo'];
@@ -639,6 +651,20 @@ $button = $button + '{
       }';
     return $button;
 }
+
+function basicReply($msg){
+    $myReply = '
+    {"recipient":{
+        "id":"' . $GLOBALS['sid'] . '"
+    },
+    "message":{
+        "text":"'.$msg.'"
+    }
+}';
+return $myReply;
+}
+
+
 function setReplys()
 {
     logx("{SETTING REPLIES}");
