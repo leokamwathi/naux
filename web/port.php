@@ -198,7 +198,7 @@ function setPayload($paypara)
             addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
-        case "companyqualification":
+        case "companyqualifications":
             addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
