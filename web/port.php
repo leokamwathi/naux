@@ -441,7 +441,7 @@ function sendReply($status)
     sendMessage($reply);
     addField('status',$status);
     logx("{STATUS}.$status");
-    logx("{REPLY}".$reply);
+    logx("{REPLY JSON ---===>>>>}}}". trim(preg_replace('/\s+/', ' ', $reply)));
     logx("{FBREPLY}".$GLOBALS['fbreply']);
     logMSG($GLOBALS['log']);
 }
@@ -941,7 +941,7 @@ $GLOBALS['status_companyinfo'] = '{"recipient": {
             {
                 "type": "postback",
                 "title": "Edit Qualification",
-                "payload": "edit_companyqualification"
+                "payload": "edit_companyqualifications"
             },
             {
                 "type": "postback",
