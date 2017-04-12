@@ -374,7 +374,7 @@ function sendReply($status)
         case "companyexperience":
             $reply = $GLOBALS['status_companyexperience'];
             break;
-        case "companyqualification":
+        case "companyqualifications":
             $reply = $GLOBALS['status_companyqualifications'];
             break;
         case "companydescription":
