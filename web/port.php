@@ -916,13 +916,7 @@ $GLOBALS['status_companyinfo'] = '{"recipient": {
         "template_type": "generic",
         "elements": [{
             "title": "'.getField('companyname').'",
-            "subtitle": "
-            Job Description:- '.getField('companydescription').'\n
-            Job:- '.getField('companyjob').'\n
-            Location:- '.getField('companyLocation').'\n
-            Experience:- '.getField('companyexperience').'\n
-            Qualification:- '.getField('companyqualifications').'\n
-            ",
+            "subtitle": "Job Description:- '.getField('companydescription').'\n Job:- '.getField('companyjob').'\n Location:- '.getField('companyLocation').'\n Experience:- '.getField('companyexperience').'\n Qualification:- '.getField('companyqualifications').' ",
             "buttons": [
             {
                 "type": "postback",
