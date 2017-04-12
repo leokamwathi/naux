@@ -292,9 +292,19 @@ logx("{GETTING NEXT STATUS CURRENT}".$userStatus);
 $isMode = getField('mode');
     if(isset($isMode) && $isMode != ''){
         setMode();
-        return("info");
+        if (getField("userType")=="Find-Job"){
+            return("info");
+        }else{
+            return("companyinfo");
+        }
     }
 
+    if ($userStatus == "info"){
+        return($userStatus);
+    }
+    if ($userStatus == "companyinfo"){
+        return($userStatus);
+    }
     switch ($userStatus) {
         case "userType":
             if (getField("userType")=="Find-Job"){
@@ -905,13 +915,13 @@ $GLOBALS['status_companyinfo'] = '{"recipient": {
     "payload": {
         "template_type": "generic",
         "elements": [{
-            "title": "'.$GLOBALS['companyname'].'",
+            "title": "'.getField('companyname').'",
             "subtitle": "
-            Job Description:- '.$GLOBALS['companydescription'].'\n
-            Job:- '.$GLOBALS['companyjob'].'\n
-            Location:- '.$GLOBALS['companyLocation'].'\n
-            Experience:- '.$GLOBALS['companyexperience'].'\n
-            Qualification:- '.$GLOBALS['companyqualification'].'\n
+            Job Description:- '.getField('companydescription').'\n
+            Job:- '.getField('companyjob').'\n
+            Location:- '.getField('companyLocation').'\n
+            Experience:- '.getField('companyexperience').'\n
+            Qualification:- '.getField('companyqualifications').'\n
             ",
             "buttons": [
             {
