@@ -1078,27 +1078,27 @@ $GLOBALS['status_companyqualifications'] = '
     {
         "content_type":"text",
         "title":"Self Taught",
-        "payload":"companyqualification_Self-Taught"
+        "payload":"companyqualifications_Self-Taught"
     },
     {
         "content_type":"text",
         "title":"Certificate",
-        "payload":"companyqualification_Certificate"
+        "payload":"companyqualifications_Certificate"
     },
     {
         "content_type":"text",
         "title":"Collage Diploma",
-        "payload":"companyqualification_Collage-Diploma"
+        "payload":"companyqualifications_Collage-Diploma"
     },
     {
         "content_type":"text",
         "title":"University Degree",
-        "payload":"companyqualification_University-Degree"
+        "payload":"companyqualifications_University-Degree"
     },
     {
         "content_type":"text",
         "title":"Masters Degree",
-        "payload":"companyqualification_Masters-Degree"
+        "payload":"companyqualifications_Masters-Degree"
     }
 ]
 }
