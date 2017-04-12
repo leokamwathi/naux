@@ -442,6 +442,8 @@ function sendReply($status)
     addField('status',$status);
     logx("{STATUS}.$status");
     logx("{REPLY JSON ---===>>>>}}}". trim(preg_replace('/\s+/', ' ', $reply)));
+    $tempjson = json_decode($reply);
+    logx("{JSON ERROR}".json_last_error());
     logx("{FBREPLY}".$GLOBALS['fbreply']);
     logMSG($GLOBALS['log']);
 }
@@ -932,33 +934,35 @@ $GLOBALS['status_companyinfo'] = '{"recipient": {
                 "type": "postback",
                 "title": "Edit Location",
                 "payload": "edit_companylocation"
-            },
-            {
-                "type": "postback",
-                "title": "Edit Experience",
-                "payload": "edit_companyexperience"
-            },
-            {
-                "type": "postback",
-                "title": "Edit Qualification",
-                "payload": "edit_companyqualifications"
-            },
-            {
-                "type": "postback",
-                "title": "Exetend Time",
-                "payload": "edit_companyjobtime"
-            },
-            {
-                "type": "postback",
-                "title": "Delete Job Posting",
-                "payload": "edit_companydelete"
             }]
         }]
     }
 }
 }
 }';
-
+/*
+,
+{
+    "type": "postback",
+    "title": "Edit Experience",
+    "payload": "edit_companyexperience"
+},
+{
+    "type": "postback",
+    "title": "Edit Qualification",
+    "payload": "edit_companyqualifications"
+},
+{
+    "type": "postback",
+    "title": "Exetend Time",
+    "payload": "edit_companyjobtime"
+},
+{
+    "type": "postback",
+    "title": "Delete Job Posting",
+    "payload": "edit_companydelete"
+}
+*/
 $GLOBALS['status_companyinfo2'] = '
 {"recipient":{
     "id":"'.$GLOBALS['sid'].'"
