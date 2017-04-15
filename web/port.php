@@ -337,6 +337,8 @@ $isMode = getField('mode');
         case "companyemail":
             return("companyphone");
         case "companyphone":
+            return("companyjobtime");
+        case "companyjobtime":
             return("companyinfo");
         default:
             logx("{SETTING DEFAULT STATUS}");
@@ -398,6 +400,9 @@ function sendReply($status)
             break;
         case "companyphone":
             $reply = basicReply("Enter the phone number where applicants can call to inquire about the job posting.");
+            break;
+        case "companyjobtime":
+            $reply = basicReply("Please enter the number of days you want to run the job posting. (30 days Maximum. You can extend the duration at any time.)");
             break;
         case "companyinfo":
             $reply = $GLOBALS['status_companyinfo'];
@@ -908,7 +913,7 @@ $GLOBALS['status_companyname'] = '
 }
 }';
 
-$GLOBALS['status_companyinfo'] = '{"recipient": {
+$GLOBALS['status_search_job'] = '{"recipient": {
 "id": "' . $GLOBALS['sid'] . '"
 },
 "message": {
@@ -963,48 +968,60 @@ $GLOBALS['status_companyinfo'] = '{"recipient": {
     "payload": "edit_companydelete"
 }
 */
-$GLOBALS['status_companyinfo2'] = '
+$GLOBALS['status_companyinfo'] = '
 {"recipient":{
     "id":"'.$GLOBALS['sid'].'"
 },
 "message":{
-    "text":"Hi '.$GLOBALS['companyname'].', \n
-    This is the info we have from you.\n
-    Location:' . getField('location') . '\n
-    Job:' . getField('job') . '\n
-    Qualification:' . getField('qualification') . '\n
-    Experience:' . getField('experience') . '\n
-    About:' . getField('about') . '\n",
+    "text":"Welcome '.getField('companyname').', \n
+    This is the information you have entered. \n
+    Applicants matching your job requirements will be notified of your job posting.\n
+                                                        \n
+    Job Description:- '.getField('companydescription').'\n
+                                                        \n
+    Job:- '.getField('companyjob').'\n
+    Location:- '.getField('companyLocation').'\n
+    Experience:- '.getField('companyexperience').'\n
+    Qualification:- '.getField('companyqualifications').'\n
+    Website:- '.getField('companyqualifications').'\n
+    Phone:- '.getField('companyqualifications').'\n
+    Duration of Job Posting:- '.getField('edit_companyjobtime').' day(s)\n
+    End date of Job Posting:- '.getField('companyEndDate').' ",
     "quick_replies":[
         {
             "content_type":"text",
-            "title":"Edit Location",
-            "payload":"edit_location"
+            "title": "Edit Name",
+            "payload": "edit_companyname"
         },
         {
             "content_type":"text",
-            "title":"Edit Job",
-            "payload":"edit_job"
+            "title": "Edit Description",
+            "payload": "edit_companydescription"
         },
         {
             "content_type":"text",
-            "title":"Edit Qualification",
-            "payload":"edit_qualification"
+            "title": "Edit Location",
+            "payload": "edit_companylocation"
         },
         {
             "content_type":"text",
-            "title":"Edit Experience",
-            "payload":"edit_experience"
+            "title": "Edit Experience",
+            "payload": "edit_companyexperience"
         },
         {
             "content_type":"text",
-            "title":"Edit About",
-            "payload":"edit_about"
+            "title": "Edit Qualification",
+            "payload": "edit_companyqualifications"
         },
         {
             "content_type":"text",
-            "title":"Search Jobs",
-            "payload":"search_job2"
+            "title": "Exetend Time",
+            "payload": "edit_companyjobtime"
+        },
+        {
+            "content_type":"text",
+            "title": "Delete Job Posting",
+            "payload": "edit_companydelete"
         }
     ]
 }
