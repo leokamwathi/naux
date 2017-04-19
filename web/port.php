@@ -222,7 +222,7 @@ function setPayload($paypara)
             addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
-        case "companyqualifications":
+        case "companyqualification":
             addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
@@ -317,15 +317,32 @@ function setStatus($myStatus,$myMessage)
 
         case "companyphone":
             //TODO:test valid phone
-            if (!filter_var($myMessage, FILTER_VALIDATE_EMAIL) === false) {
-                addField($myStatus, $myMessage);
-                $isSet = true;
-                break;
-            } else {
-                sendMessage(basicReply( "(".$myMessage.") is not a valid email. Please enter a valid email address."));
-                $isSet = false;
-                break;
+            $phone = $myMessage;
+            $plus = "";
+            if(preg_match("+",$phone)){
+                $plus = "+";
             }
+                $phone = preg_replace('/\s+/', '', $phone);
+                $phone = str_replace('+', '', $phone);
+                $phone = str_replace(' ', '', $phone);
+                $phone = str_replace('#', '', $phone);
+                $phone = str_replace('.', '', $phone);
+                $phone = str_replace('-', '', $phone);
+                $phone = str_replace('*', '', $phone);
+                $phone = str_replace('(', '', $phone);
+                $phone = str_replace(')', '', $phone);
+                $phone = preg_replace("/[^0-9,.]/", "", $phone );
+                $phone = preg_replace('~\D~', '', $phone);
+
+                if (ctype_digit ($phone) && strlen($phone) < 20 && strlen($phone) > 3){
+                    addField($myStatus, $plus.$phone);
+                    $isSet = true;
+                    break;
+                }else{
+                    sendMessage(basicReply( "(".$myMessage.") is not a valid phone number. Please enter a valid phone number (+254 723456789 , 0723456789 , 020 123456)."));
+                    $isSet = false;
+                    break;
+                }
         case "companywebsite":
             //TODO:test valid website
             if (!filter_var($myMessage, FILTER_VALIDATE_URL) === false) {
@@ -408,12 +425,12 @@ $isMode = getField('mode');
         case "companylocation":
             return("companyexperience");
         case "companyexperience":
-            return("companyqualifications");
-        case "companyqualifications":
-            return("companywebsite");
-        case "companywebsite":
-            return("companyemail");
-        case "companyemail":
+            return("companyqualification");
+        case "companyqualification":
+//            return("companywebsite");
+//        case "companywebsite":
+//            return("companyemail");
+//        case "companyemail":
             return("companyphone");
         case "companyphone":
             return("companyjobtime");
@@ -512,7 +529,7 @@ function sendReply($status)
             $reply = $GLOBALS['status_experience'];
             break;
         case "qualification":
-            $reply = $GLOBALS['status_qualifications'];
+            $reply = $GLOBALS['status_qualification'];
             break;
         case "about":
             $reply = $GLOBALS['status_about'];
@@ -529,8 +546,8 @@ function sendReply($status)
         case "companyexperience":
             $reply = $GLOBALS['status_companyexperience'];
             break;
-        case "companyqualifications":
-            $reply = $GLOBALS['status_companyqualifications'];
+        case "companyqualification":
+            $reply = $GLOBALS['status_companyqualification'];
             break;
         case "companydescription":
             $reply = $GLOBALS['status_companydescription'];
@@ -900,7 +917,7 @@ function setReplys()
 }
 }';
 
-    $GLOBALS['status_qualifications'] = '
+    $GLOBALS['status_qualification'] = '
 {"recipient":{
     "id":"' . $GLOBALS['sid'] . '"
 },
@@ -1047,7 +1064,7 @@ status_companyname
 status_companydescription
 status_companyjob
 status_companyexperience
-status_companyqualifications
+status_companyqualification
 */
 
 $GLOBALS['status_companyname'] = '
@@ -1069,7 +1086,7 @@ $GLOBALS['status_search_job'] = '{"recipient": {
         "template_type": "generic",
         "elements": [{
             "title": "'.getField('companyname').'",
-            "subtitle": "Job Description:- '.getField('companydescription').'\n Job:- '.getField('companyjob').'\n Location:- '.getField('companyLocation').'\n Experience:- '.getField('companyexperience').'\n Qualification:- '.getField('companyqualifications').' ",
+            "subtitle": "Job Description:- '.getField('companydescription').'\n Job:- '.getField('companyjob').'\n Location:- '.getField('companyLocation').'\n Experience:- '.getField('companyexperience').'\n Qualification:- '.getField('companyqualification').' ",
             "buttons": [
             {
                 "type": "postback",
@@ -1101,7 +1118,7 @@ $GLOBALS['status_search_job'] = '{"recipient": {
 {
     "type": "postback",
     "title": "Edit Qualification",
-    "payload": "edit_companyqualifications"
+    "payload": "edit_companyqualification"
 },
 {
     "type": "postback",
@@ -1128,9 +1145,9 @@ $GLOBALS['status_companyinfo'] = '
     Job:- '.getField('companyjob').'\n
     Location:- '.getField('companyLocation').'\n
     Experience:- '.getField('companyexperience').'\n
-    Qualification:- '.getField('companyqualifications').'\n
-    Website:- '.getField('companyqualifications').'\n
-    Phone:- '.getField('companyqualifications').'\n
+    Qualification:- '.getField('companyqualification').'\n
+    Website:- '.getField('companyqualification').'\n
+    Phone:- '.getField('companyqualification').'\n
     Duration of Job Posting:- '.getField('edit_companyjobtime').' day(s)\n
     End date of Job Posting:- '.getField('companyEndDate').' ",
     "quick_replies":[
@@ -1157,7 +1174,7 @@ $GLOBALS['status_companyinfo'] = '
         {
             "content_type":"text",
             "title": "Edit Qualification",
-            "payload": "edit_companyqualifications"
+            "payload": "edit_companyqualification"
         },
         {
             "content_type":"text",
@@ -1239,7 +1256,7 @@ $GLOBALS['status_companyexperience'] = '
 }
 }';
 
-$GLOBALS['status_companyqualifications'] = '
+$GLOBALS['status_companyqualification'] = '
 {"recipient":{
 "id":"' . $GLOBALS['sid'] . '"
 },
@@ -1249,27 +1266,27 @@ $GLOBALS['status_companyqualifications'] = '
     {
         "content_type":"text",
         "title":"Self Taught",
-        "payload":"companyqualifications_Self-Taught"
+        "payload":"companyqualification_Self-Taught"
     },
     {
         "content_type":"text",
         "title":"Certificate",
-        "payload":"companyqualifications_Certificate"
+        "payload":"companyqualification_Certificate"
     },
     {
         "content_type":"text",
         "title":"Collage Diploma",
-        "payload":"companyqualifications_Collage-Diploma"
+        "payload":"companyqualification_Collage-Diploma"
     },
     {
         "content_type":"text",
         "title":"University Degree",
-        "payload":"companyqualifications_University-Degree"
+        "payload":"companyqualification_University-Degree"
     },
     {
         "content_type":"text",
         "title":"Masters Degree",
-        "payload":"companyqualifications_Masters-Degree"
+        "payload":"companyqualification_Masters-Degree"
     }
 ]
 }
