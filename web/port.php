@@ -41,13 +41,13 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             //print_r(json_last_error());
             file_put_contents("php://stderr", json_last_error().PHP_EOL);
         } else {
-            $GLOBALS['pid']          = $fb->entry[0]->id;
-            $GLOBALS['sid']          = $fb->entry[0]->messaging[0]->sender->id;
+            $GLOBALS['pid'] = $fb->entry[0]->id;
+            $GLOBALS['sid'] = $fb->entry[0]->messaging[0]->sender->id;
             // get message
-            $GLOBALS['message']      = $fb->entry[0]->messaging[0]->message->text;
+            $GLOBALS['message'] = $fb->entry[0]->messaging[0]->message->text;
             //get payload
-            $GLOBALS['quickReply']      = $fb->entry[0]->messaging[0]->message->quick_reply->payload;
-            $GLOBALS['payload']      = $fb->entry[0]->messaging[0]->postback->payload;
+            $GLOBALS['quickReply'] = $fb->entry[0]->messaging[0]->message->quick_reply->payload;
+            $GLOBALS['payload'] = $fb->entry[0]->messaging[0]->postback->payload;
             $GLOBALS['mid'] = $fb->entry[0]->messaging[0]->message->mid;
             $GLOBALS['dbTable']      = "jobsDBtest";
 
