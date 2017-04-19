@@ -67,6 +67,21 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
 
             //Payload processing
             addField("fbjsondata",$datastream);
+
+
+            if (isset($GLOBALS['locationGeoLat']) && $GLOBALS['locationGeoLat'] != '' && isset($GLOBALS['locationGeoLong']) && $GLOBALS['locationGeoLong'] != '') {
+                //GET LOCATION FROM GOOGLE
+                $GLOBALS['geoLoc'] = $GLOBALS['locationGeoLat'].",".$GLOBALS['locationGeoLong'];
+                addField('geolocation',$GLOBALS['geoLoc'] );
+                $cityCountry = GetCityCountry($GLOBALS['geoLoc']);
+                if($cityCountry != 'false'){
+                    addField($myStatus,$cityCountry);
+                    $GLOBALS['message'] = $cityCountry;
+                    $GLOBALS['payload'] = null;
+                }
+            }
+
+
             if (isset($GLOBALS['payload']) && $GLOBALS['payload'] != '') {
                 $GLOBALS['message'] = null;
                 $GLOBALS['quickReply'] = null;
@@ -245,13 +260,13 @@ function setStatus($myStatus,$myMessage)
             $isSet = true;
             break;
         case "location":
-
+/*
         if (isset($GLOBALS['locationTitle']) && $GLOBALS['locationTitle'] != ''&&isset($GLOBALS['locationGeoLat']) && $GLOBALS['locationGeoLat'] != ''&&isset($GLOBALS['locationGeoLong']) && $GLOBALS['locationGeoLong'] != '') {
     //GET LOCATION FROM GOOGLE
             $GLOBALS['geoLoc'] = $GLOBALS['locationGeoLat'].",".$GLOBALS['locationGeoLong'];
             addField('geolocation',$GLOBALS['geoLoc'] );
             $cityCountry = GetCityCountry($GLOBALS['geoLoc']);
-            if($cityCountry != 'false'){    
+            if($cityCountry != 'false'){
                 addField($myStatus,$cityCountry);
                 $isSet = true;
                 break;
@@ -261,11 +276,12 @@ function setStatus($myStatus,$myMessage)
             }
         }else{
         //dsdsd
+        */
         //TODO: Get from geolocation
             addField($myStatus, $myMessage);
             $isSet = true;
             break;
-        }
+
         case "about":
             addField($myStatus, $myMessage);
             $isSet = true;
