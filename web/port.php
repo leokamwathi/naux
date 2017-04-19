@@ -118,6 +118,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                             logx("{NEXT STATUS}".$myNextStatus);
                             sendReply($myNextStatus);
                         }else{
+                            //TODO: Sometimes Error Message might be send first
                             if (is_string(getField('status'))){
                                 sendReply(getField('status'));
                             }else{
@@ -261,19 +262,55 @@ function setStatus($myStatus,$myMessage)
             break;
         case "companyemail":
             //TODO:test for valid email
-            addField($myStatus, $myMessage);
-            $isSet = true;
-            break;
+            if (!filter_var($myMessage, FILTER_VALIDATE_EMAIL) === false) {
+                addField($myStatus, $myMessage);
+                $isSet = true;
+                break;
+            } else {
+                sendMessage(basicReply( "(".$myMessage.") is not a valid email. Please enter a valid email address."));
+                $isSet = false;
+                break;
+            }
+
+
         case "companyphone":
             //TODO:test valid phone
-            addField($myStatus, $myMessage);
-            $isSet = true;
-            break;
+            if (!filter_var($myMessage, FILTER_VALIDATE_EMAIL) === false) {
+                addField($myStatus, $myMessage);
+                $isSet = true;
+                break;
+            } else {
+                sendMessage(basicReply( "(".$myMessage.") is not a valid email. Please enter a valid email address."));
+                $isSet = false;
+                break;
+            }
         case "companywebsite":
             //TODO:test valid website
-            addField($myStatus, $myMessage);
-            $isSet = true;
-            break;
+            if (!filter_var($myMessage, FILTER_VALIDATE_URL) === false) {
+                addField($myStatus, $myMessage);
+                $isSet = true;
+                break;
+            } else {
+                sendMessage(basicReply( "(".$myMessage.") is not a valid website. Please enter a valid website address."));
+                $isSet = false;
+                break;
+            }
+        case "companyjobtime":
+            //TODO:test valid day (Number)
+            if (!filter_var($myMessage, FILTER_VALIDATE_INT) === false) {
+                if ($myMessage > 30 || $myMessage < 1){
+                    sendMessage(basicReply( "Please enter a number between 1 and 30."));
+                    $isSet = false;
+                    break;
+                }
+                addField($myStatus, $myMessage);
+                $isSet = true;
+                break;
+            } else {
+                sendMessage(basicReply( "(".$myMessage.") is not a valid number of days. Please enter a number of days."));
+                $isSet = false;
+                break;
+            }
     }
     if ($isSet == true){
         logx("{STATUS UPDATED}");
@@ -510,7 +547,7 @@ function getField($field)
 
 function addField($field, $value)
 {
-
+    $value = addslashes($value);  // make it safe
     $Query="UPDATE ".$GLOBALS['dbTable']." SET ($field) = ('$value') where pageID ='".$GLOBALS['pid']."' and userID='".$GLOBALS['sid']."'";
     $rows  = pg_query($GLOBALS['pg_conn'], $Query);
     if(!$rows){
