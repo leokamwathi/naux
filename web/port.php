@@ -48,6 +48,12 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             //get payload
             $GLOBALS['quickReply'] = $fb->entry[0]->messaging[0]->message->quick_reply->payload;
             $GLOBALS['payload'] = $fb->entry[0]->messaging[0]->postback->payload;
+            $GLOBALS['locationGeoLat'] = $fb->entry[0]->messaging[0]->message->attachments[0]->payload->coordinates->lat;
+            $GLOBALS['locationGeoLong'] = $fb->entry[0]->messaging[0]->message->attachments[0]->payload->coordinates->long;
+            $GLOBALS['locationTitle'] = $fb->entry[0]->messaging[0]->message->attachments[0]->title;
+            /*
+
+            */
             $GLOBALS['mid'] = $fb->entry[0]->messaging[0]->message->mid;
             $GLOBALS['dbTable']      = "jobsDBtest";
 
@@ -60,6 +66,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             setReplys();
 
             //Payload processing
+            addField("fbjsondata",$datastream);
             if (isset($GLOBALS['payload']) && $GLOBALS['payload'] != '') {
                 $GLOBALS['message'] = null;
                 $GLOBALS['quickReply'] = null;
@@ -176,6 +183,7 @@ function setPayload($paypara)
             $isSet = true;
             break;
         case "location":
+        //does thi happen? I wonder
             addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
@@ -237,9 +245,26 @@ function setStatus($myStatus,$myMessage)
             $isSet = true;
             break;
         case "location":
+
+        if (isset($GLOBALS['locationTitle']) && $GLOBALS['locationTitle'] != ''&&isset($GLOBALS['locationGeoLat']) && $GLOBALS['locationGeoLat'] != ''&&isset($GLOBALS['locationGeoLong']) && $GLOBALS['locationGeoLong'] != '') {
+    //GET LOCATION FROM GOOGLE
+            $geoLoc = $GLOBALS['locationGeoLat'].",".$GLOBALS['locationGeoLong'];
+            $cityCountry = GetCityCountry($geoLoc);
+            if($cityCountry != 'false'){
+                addField($myStatus,$cityCountry);
+                $isSet = true;
+                break;
+            }else{
+                $isSet = false;
+                break;
+            }
+        }else{
+        //dsdsd
+        //TODO: Get from geolocation
             addField($myStatus, $myMessage);
             $isSet = true;
             break;
+        }
         case "about":
             addField($myStatus, $myMessage);
             $isSet = true;
@@ -382,6 +407,71 @@ $isMode = getField('mode');
             return("userType");
     }
 }
+
+function GetCityCountry($geoLoc){
+try{
+$url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=".$geoLoc."&sensor=true";
+    $data = @file_get_contents($url);
+    $jsondata = json_decode($data,true);
+  if(is_array($jsondata) && $jsondata['status'] == "OK")
+    {
+	$location = array();
+	$results = $jsondata['results']['0'];
+	//print_r($results);
+  foreach ($results['address_components'] as $component) {
+
+    switch ($component['types']) {
+      case in_array('street_number', $component['types']):
+        $location['street_number'] = $component['long_name'];
+        break;
+      case in_array('route', $component['types']):
+        $location['street'] = $component['long_name'];
+        break;
+      case in_array('sublocality', $component['types']):
+        $location['sublocality'] = $component['long_name'];
+        break;
+      case in_array('locality', $component['types']):
+        $location['locality'] = $component['long_name'];
+        break;
+      case in_array('administrative_area_level_2', $component['types']):
+        $location['admin_2'] = $component['long_name'];
+        break;
+      case in_array('administrative_area_level_1', $component['types']):
+        $location['admin_1'] = $component['long_name'];
+        break;
+      case in_array('postal_code', $component['types']):
+        $location['postal_code'] = $component['long_name'];
+        break;
+      case in_array('country', $component['types']):
+        $location['country'] = $component['long_name'];
+        break;
+    }
+	}
+
+	 $city = "";
+  $country = $location['country'];
+
+  if($location['locality'] != ''){
+  $city = $location['locality'];
+  }else if($location['sublocality'] != ''){
+    $city = $location['sublocality'];
+  }else if($location['admin_1'] != ''){
+    $city = $location['admin_1'];
+  }else if($location['street'] != ''){
+    $city = $location['street'];
+  }else{
+   $city = $location['country'];
+  }
+ return($city.",".$country);
+//print_r( $location);
+  }else{
+  return("false");
+  }
+} catch (Exception $e) {
+ return("false");
+}
+}
+
 function isStr($str)
 {
      return(isset($GLOBALS['message']) && $GLOBALS['message'] != '');
@@ -483,10 +573,10 @@ function sendReply($status)
     sendMessage($reply);
     addField('status',$status);
     logx("{STATUS}.$status");
-    logx("{REPLY JSON ---===>>>>}}}". trim(preg_replace('/\s+/', ' ', $reply)));
+    logx("{REPLY JSON}see db");
     $tempjson = json_decode($reply);
     logx("{JSON ERROR}".json_last_error());
-    logx("{FBREPLY}".$GLOBALS['fbreply']);
+    logx("{FBREPLY}see db");
     logMSG($GLOBALS['log']);
 }
 function sendMessage($msg){
@@ -502,6 +592,9 @@ function sendMessage($msg){
     $context = stream_context_create($options);
     //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
     $GLOBALS['fbreply'] = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=".$GLOBALS['token'], false, $context);
+    addField('lastReplyJson',$msg);
+    addField("fbreply",$GLOBALS['fbreply']);
+    addField("mylog",$GLOBALS['log']);
 }
 
 
