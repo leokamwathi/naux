@@ -33,9 +33,20 @@ $google_places->radius   = 800;
 }
 
 // Requires keyword, name or types
-$results                 = $google_places->nearbySearch();
+$results = $google_places->nearbySearch();
 
-print_r($results);
+print_r( json_encode($results));
+//DIRECTIONS
+//get https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=london
+
+//if photo show photo if not show icon easy pezzy
+//show photos
+//https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CnRvAAAAwMpdHeWlXl-lH0vp7lez4znKPIWSWvgvZFISdKx45AwJVP1Qp37YOrH7sqHMJ8C-vBDC546decipPHchJhHZL94RcTUfPa1jWzo-rSHaTlbNtjh-N68RkcToUCuY9v2HNpo5mziqkir37WU8FJEqVBIQ4k938TI3e7bf8xq-uwDZcxoUbO_ZJzPxremiQurAYzCTwRhE_V0&sensor=false&key=AddYourOwnKeyHere
+
+//show place
+//
+
+
 } catch (Exception $e) {
     print_r($e->getMessage());
 }
