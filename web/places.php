@@ -1,5 +1,5 @@
 <?php
-
+try{
 require_once 'GooglePlaces.php';
 require_once 'GooglePlacesClient.php';
 
@@ -27,5 +27,7 @@ $google_places->types    = 'restaurant';
 $results                 = $google_places->nearbySearch();
 
 print_r($results);
-
+} catch (Exception $e) {
+    print_r($e->getMessage());
+}
 ?>
