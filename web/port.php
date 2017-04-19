@@ -215,11 +215,11 @@ function setPayload($paypara)
             addField('status',$paypara[1]);
             addField('mode',$GLOBALS['payload']);
             //sendReply($paypara[1]);
-            $isSet = true;
+            $isSet = false;
             break;
     }
     if ($paypara[0]!='edit' && $isSet == true){
-        setMode();
+        //setMode();
     }
     return $isSet;
 }
