@@ -248,9 +248,10 @@ function setStatus($myStatus,$myMessage)
 
         if (isset($GLOBALS['locationTitle']) && $GLOBALS['locationTitle'] != ''&&isset($GLOBALS['locationGeoLat']) && $GLOBALS['locationGeoLat'] != ''&&isset($GLOBALS['locationGeoLong']) && $GLOBALS['locationGeoLong'] != '') {
     //GET LOCATION FROM GOOGLE
-            $geoLoc = $GLOBALS['locationGeoLat'].",".$GLOBALS['locationGeoLong'];
-            $cityCountry = GetCityCountry($geoLoc);
-            if($cityCountry != 'false'){
+            $GLOBALS['geoLoc'] = $GLOBALS['locationGeoLat'].",".$GLOBALS['locationGeoLong'];
+            addField('geolocation',$GLOBALS['geoLoc'] );
+            $cityCountry = GetCityCountry($GLOBALS['geoLoc']);
+            if($cityCountry != 'false'){    
                 addField($myStatus,$cityCountry);
                 $isSet = true;
                 break;
@@ -419,7 +420,6 @@ $url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=".$geoLoc."&sens
 	$results = $jsondata['results']['0'];
 	//print_r($results);
   foreach ($results['address_components'] as $component) {
-
     switch ($component['types']) {
       case in_array('street_number', $component['types']):
         $location['street_number'] = $component['long_name'];
