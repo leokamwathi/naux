@@ -125,7 +125,18 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     logx("{ISPAYLOAD}");
                     //job_findjob , qualification_collage-diploma
                     $payldPara = explode("_", $GLOBALS['payload']);
-                    if($payldPara[0]=='search'){
+                    if($payldPara[0]=='getting'){
+                        if (isNewUser()) {
+                            logx("{NEW USER..CREATING USER}");
+                            if(addNewUser()){
+                                sendReply('userType');
+                            }else{
+                                logx("{FAILED TO CREATE USER}");
+                                //sendReply('new'); #failed to add user.. really what to do????
+                            }
+                        }
+
+                    }elseif($payldPara[0]=='search'){
                         //search_job2jobs
                         //search_job2
                         //TODO: SEARCH - DONE
@@ -716,7 +727,7 @@ if($status == "info"){
         $status = 'companyinfo';
     }
 }
-    
+
     switch ($status) {
         case "userType":
             $reply = $GLOBALS['status_userType'];
@@ -1015,7 +1026,8 @@ function setReplys()
                     Location:' . getField('location') . '\n
                     Job:' . getField('job') . '\n
                     Qualification:' . getField('qualification') . '\n
-                    Experience:' . getField('experience') . '\n,
+                    Experience:' . getField('experience') . '\n\n
+                    I will send you daily notifications when I get job opennings matching your requirements",
                     "quick_replies":[
                         {
                             "content_type":"text",
