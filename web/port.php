@@ -110,8 +110,9 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     //job_findjob , qualification_collage-diploma
                     $payldPara = explode("_", $GLOBALS['payload']);
                     if($payldPara[0]=='search'){
-                        //search_search-jobs
+                        //search_job2jobs
                         //search_job2
+                        //TODO: SEARCH
                         logx('{SEARCHING....}');
                         logx($GLOBALS['payload']);
                         sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
@@ -130,6 +131,10 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 }
                 }else{
                     if (isset($GLOBALS['message']) && $GLOBALS['message'] != '') {
+                        if(strtolower(trim($GLOBALS['message']))=='help'){
+                        //if(strpos($GLOBALS['message'],'help')!=false){
+                                sendMessage(basicReply( "Help Info: This app will help you find a job or post a job opennig for other users to apply."));
+                        }else{
                         if($GLOBALS['mid'] == getField('lastNotification') ){
                             logx("{SAME MESSAGE AGAIN REALLY SUCKS}".$GLOBALS['message']);
                         }else{
@@ -149,6 +154,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                             }
                         }
                     }
+                }
                     }else{
                         logx("{NOT PAYLOAD OR MESSAGE JUST SOME FB STUFF}".$GLOBALS['message']);
                         //sendReply('userType');
@@ -238,6 +244,7 @@ function setPayload($paypara)
     }
     return $isSet;
 }
+
 function setMode()
 {
     logx("{SETTING MODE}");
@@ -250,6 +257,7 @@ function setMode()
         }
     }
 }
+
 function setStatus($myStatus,$myMessage)
 {
     logx("{UPDATING STATUS INFO}");
@@ -281,7 +289,6 @@ function setStatus($myStatus,$myMessage)
             addField($myStatus, $myMessage);
             $isSet = true;
             break;
-
         case "about":
             addField($myStatus, $myMessage);
             $isSet = true;
@@ -444,7 +451,9 @@ $isMode = getField('mode');
 
 function GetCityCountry($geoLoc){
 try{
-$url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=".$geoLoc."&sensor=true";
+$url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=".$geoLoc."&sensor=true&key=".$_ENV["google_maps_key"];
+    //google_maps_key
+
     $data = @file_get_contents($url);
     $jsondata = json_decode($data,true);
   if(is_array($jsondata) && $jsondata['status'] == "OK")
@@ -651,6 +660,117 @@ function pg_conx()
 {
     return pg_connect(setup_database_connection());
 }
+
+function searchJobs($page)
+{
+    if(!(is_numeric($page) && $page > 0)){
+        $page = 0;
+    }
+
+    $fielddata = "";
+
+    $searchQuery = "
+        AND companyjob = '".getField('job')."'
+        AND '". getSearchQualification(getField('qualification')) ."'
+        AND '". getSearchExperience(getField('experience')) ."'
+        AND companylocation= '".getField('')."'
+    ";
+
+    $Query     = "SELECT $userID from ".$GLOBALS['dbTable']." where pageID ='".$GLOBALS["pid"]."' and userID='".$GLOBALS["sid"]."'".$searchQuery;
+    $rows      = pg_query($GLOBALS['pg_conn'], $Query);
+
+    if(!$rows){
+        logx(pg_result_error($rows));
+        //Send sorry we could not find and jobs matching your requirements (Please review your profile or try again later.)
+    }else{
+    if (!pg_num_rows($rows)) {
+        //no rows = no data
+        //Send sorry we could not find and jobs matching your requirements (Please review your profile or try again later.)
+    } else {
+        //Head
+        $GLOBALS['status_search_results'] =
+        '{"recipient": {
+        "id": "' . $GLOBALS['sid'] . '"
+        },
+        "message": {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic","elements": [';
+                $count = 1 ;
+                while ($row = pg_fetch_row($rows) && $count < 12) {
+                    $element = '
+                    {
+                        "title": "'.$rows['companyname'].'",
+                        "subtitle": "Job Description:- '.$rows('companydescription').'\n Job:- '.$rows('companyjob').'\n Location:- '.$rows('companyLocation').'\n Experience:- '.$rows('companyexperience').'\n Qualification:- '.$rows('companyqualification').' ",
+                        "buttons": [
+                            {
+                                  "type":"phone_number",
+                                  "title":"Call '.$rows('companyname').'",
+                                  "payload":"'.$rows("companyphone").'"
+                            },
+                            {
+                                "type":"element_share"
+                            }
+                        ]
+                    },
+                    ';
+                    $GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].$element;
+                    $count = $count + 1 ;
+                }
+                $GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].']}}}}';
+    //sdfsdf
+        //tail
+        //sdfsdf
+    }
+}
+    //return $fielddata;
+}
+
+function getSearchQualification($qualification)
+{
+    switch ($qualification) {
+        case "Self-Taught":
+            return ("(companyqualification = 'Self-Taught' OR companyqualification = 'Certificate' OR companyqualification = 'Collage Diploma' OR companyqualification = 'University Degree' OR companyqualification =  'Masters Degree')");
+            break;
+        case "Certificate":
+            return ("(companyqualification = 'Certificate' OR companyqualification = 'Collage Diploma' OR companyqualification = 'University Degree' OR companyqualification =  'Masters Degree')");
+            break;
+        case "Collage Diploma":
+            return ("(companyqualification = 'Collage Diploma' OR companyqualification = 'University Degree' OR companyqualification =  'Masters Degree')");
+            break;
+        case "University Degree":
+            return ("(companyqualification = 'University Degree' OR companyqualification =  'Masters Degree')");
+            break;
+        case "Masters Degree":
+            return ("(companyqualification =  'Masters Degree')");
+            break;
+        }
+}
+
+function getSearchExperience($experience){
+
+switch ($experience) {
+
+    case "First Job":
+        return ("(companyqualification = 'First Job' OR companyqualification = 'Under 1 year' OR companyqualification = '1 to 3 years' OR companyqualification = '4 to 8 years' OR companyqualification =  '9 years and over')");
+        break;
+    case "Under 1 year":
+        return ("(companyqualification = 'Under 1 year' OR companyqualification = '1 to 3 years' OR companyqualification = '4 to 8 years' OR companyqualification =  '9 years and over')");
+        break;
+    case "1 to 3 years":
+        return ("(companyqualification = '1 to 3 years' OR companyqualification = '4 to 8 years' OR companyqualification =  '9 years and over')");
+        break;
+    case "4 to 8 years":
+        return ("(companyqualification = '4 to 8 years' OR companyqualification =  '9 years and over')");
+        break;
+    case "9 years and over":
+        return ("(companyqualification =  '9 years and over')");
+        break;
+}
+
+}
+
 function getField($field)
 {
     $fielddata = "";
@@ -842,9 +962,9 @@ function setReplys()
             },
             "message":{
                 "text":"Hi ' . $GLOBALS['username'] . ',\n
-                My name is Job Bot (job for short :-p ). \n
-                I can help you find a job or find job applicants. \n
-                What do you want to do?",
+                Welcome to the myKaziBot app. I am Kazibot. \n
+                I can help you find a job or find job applicants for your job. \n
+                What would you like to do?",
                 "quick_replies":[
                     {
                         "content_type":"text",
@@ -961,7 +1081,7 @@ function setReplys()
     "text":"Tell us a bit about yourself and the job you are looking for.\n
     eg.\n
     Hi,\n
-    My name is job. \n
+    My is job. \n
     I am 1 year old and I and very passionate about helping people find jobs and employees.\n
     I like challenges and will raise to any challenge i meet or atleat try my hardest."
 }
