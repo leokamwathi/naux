@@ -34,6 +34,10 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
 
         logx("{SETUP}");
         $datastream = file_get_contents("php://input");
+        if(!(isset($datastream))){
+            file_put_contents("php://stderr", "!!!!!!!!-----FORCED EXIT-----!!!!!!!!!".PHP_EOL);
+            exit("");
+        }
         //get fb data
         logx($datastream);
          $fb = json_decode($datastream);
@@ -43,6 +47,15 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
         } else {
             $GLOBALS['pid'] = $fb->entry[0]->id;
             $GLOBALS['sid'] = $fb->entry[0]->messaging[0]->sender->id;
+
+            $GLOBALS['isTyping'] = '
+                        {"recipient":{
+                            "id":"'.$GLOBALS['sid'].'"
+                        },
+                        "sender_action":"typing_on"
+                        }';
+            sendMessage($GLOBALS['isTyping']);
+
             // get message
             $GLOBALS['message'] = $fb->entry[0]->messaging[0]->message->text;
             //get payload
@@ -66,7 +79,8 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             setReplys();
 
             //Payload processing
-            addField("fbjsondata",$datastream);
+
+                addField("fbjsondata",$datastream);
 
 
             if (isset($GLOBALS['locationGeoLat']) && $GLOBALS['locationGeoLat'] != '' && isset($GLOBALS['locationGeoLong']) && $GLOBALS['locationGeoLong'] != '') {
@@ -81,7 +95,6 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 }
             }
 
-
             if (isset($GLOBALS['payload']) && $GLOBALS['payload'] != '') {
                 $GLOBALS['message'] = null;
                 $GLOBALS['quickReply'] = null;
@@ -93,7 +106,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             }
 
             //chcek if new user
-            sendMessage($GLOBALS['isTyping']);
+
             if (isNewUser()) {
                 logx("{NEW USER..CREATING USER}");
                 if(addNewUser()){
@@ -206,6 +219,7 @@ function setPayload($paypara)
             break;
         case "location":
         //does thi happen? I wonder
+        //this breaks the system
             addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
@@ -234,6 +248,7 @@ function setPayload($paypara)
             $isSet = true;
             break;
         case "edit":
+            logx("{EDIT PAYLOAD}");
             addField('status',$paypara[1]);
             addField('mode',$GLOBALS['payload']);
             //sendReply($paypara[1]);
@@ -241,6 +256,7 @@ function setPayload($paypara)
             break;
     }
     if ($paypara[0]!='edit' && $isSet == true){
+        logx("{SET PAYLOAD}=>".$paypara[0]." - ".$paypara[1]);
         //setMode();
     }
     return $isSet;
