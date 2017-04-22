@@ -31,7 +31,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
     //function bot_setup()
     //{
         // get data stream
-
+       //slibwslibd
         logx("{SETUP}");
         $datastream = file_get_contents("php://input");
         if(!(isset($datastream))){
@@ -125,12 +125,16 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     if($payldPara[0]=='search'){
                         //search_job2jobs
                         //search_job2
-                        //TODO: SEARCH
+                        //TODO: SEARCH - DONE
                         logx('{SEARCHING....}');
                         logx($GLOBALS['payload']);
-                        sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
+                        searchJobs(0);
+                        sendMessage($GLOBALS['status_search_results']);
+                        //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
                         logx($GLOBALS['smsg']);
                         logMSG($GLOBALS['log']);
+                        //=======================================//
+                        sendReply(getField('status'));
                         //sendReply($payldPara[0]);
                     }else{
                     if(setPayload($payldPara))
@@ -147,6 +151,10 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         if(strtolower(trim($GLOBALS['message']))=='help'){
                         //if(strpos($GLOBALS['message'],'help')!=false){
                                 sendMessage(basicReply( "Help Info: This app will help you find a job or post a job opennig for other users to apply."));
+                                sendReply(getField('status'));
+                        }elseif(strtolower(trim($GLOBALS['message']))=='hi' || strtolower(trim($GLOBALS['message']))=='hello' || strtolower(trim($GLOBALS['message']))=='good morning' || strtolower(trim($GLOBALS['message']))=='please' || strtolower(trim($GLOBALS['message']))=='hey'){
+                        //if(strpos($GLOBALS['message'],'help')!=false){
+                                sendMessage(basicReply( $GLOBALS['message']." ".$GLOBALS['username']."," ));
                                 sendReply(getField('status'));
                         }else{
                         if($GLOBALS['mid'] == getField('lastNotification') ){
@@ -535,6 +543,146 @@ function isStr($str)
 {
      return(isset($GLOBALS['message']) && $GLOBALS['message'] != '');
 }
+
+
+function searchJobs($page)
+{
+$hasRows = false;
+$GLOBALS['status_search_results'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any jobs matching your requirements (Please review your profile or try again later.)');
+    if(!(is_numeric($page) && $page > 0)){
+        $page = 0;
+    }
+
+//$GLOBALS['sid'] = "1360046804041611";
+//$GLOBALS["pid"] = "1292677864114230";
+
+	$searchJobQuery = "";
+    $searchQualQuery= "";
+    $searchExpQuery = "";
+    $searchlocQuery = "";
+
+    $searchJobQuery = " AND LOWER(companyjob) = '".getField('job')."' ";
+    $searchQualQuery = " AND ". getSearchQualification(getField('qualification'));
+    $searchExpQuery = " AND ". getSearchExperience(getField('experience'));
+    $searchlocQuery = " AND LOWER(companylocation)= '".getField('location')."'";
+
+	 $searchQuery = strtolower($searchJobQuery.$searchQualQuery.$searchExpQuery.$searchlocQuery);
+//
+$Query     = "SELECT * from ".$GLOBALS['dbTable']." where usertype = 'Post-Job' ".$searchQuery;
+
+	//print_r($Query);
+
+    $results      = pg_query($GLOBALS['pg_conn'], $Query);
+
+    if(!$results){
+        logx(pg_result_error($results));
+        //$GLOBALS['status_search_results'] = basicReply('Send sorry we could not find and jobs matching your requirements (Please review your profile or try again later.)');
+    }else{
+    if (!pg_num_rows($results)) {
+        //no rows = no data
+        //$GLOBALS['status_search_results'] = basicReply('Send sorry we could not find and jobs matching your requirements (Please review your profile or try again later.)');
+    } else {
+        //Head
+        $GLOBALS['status_search_results'] =
+        '{"recipient": {
+        "id": "' . $GLOBALS['sid'] . '"
+        },
+        "message": {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic","elements": [';
+
+				$count = 0;
+
+				$rows = pg_fetch_all($results);
+
+				foreach ($rows as $row) {
+				if($count==11){
+					break;
+				}
+
+					//print_r($count." - ".$row['companyname']." - ".$row['companylocation']." - ".$row['companyjob']." - ".$row['companyqualification']." - ".$row['companyexperience']."\n");
+					/*
+					$count = $count + 1;
+					*/
+					 $element = '
+                    {
+                        "title": "'.$row['companyname'].'",
+                        "subtitle": "Job:'.$row['companyjob'].'|Loc:'.$row['companylocation'].'|Exp:'.$row['companyexperience'].'|Qualification:'.$row['companyqualification'].' ",
+                        "buttons": [
+                            {
+                                  "type":"phone_number",
+                                  "title":"Call '.$row['companyname'].'",
+                                  "payload":"'.$row["companyphone"].'"
+                            },
+                            {
+                                "type":"element_share"
+                            }
+                        ]
+                    }';
+					if($count == 0){
+						$hasRows = true;
+						$GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].$element;
+					}else{
+						$GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].",".$element;
+					}
+                    $count = $count + 1 ;
+				}
+
+                $GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].']}}}}';
+
+    }
+}
+    return $hasRows;
+}
+
+function getSearchQualification($qualification)
+{
+    switch (strtolower($qualification)) {
+        case "masters-degree":
+            return ("(LOWER(companyqualification)= 'Self-Taught' OR LOWER(companyqualification)= 'Certificate' OR LOWER(companyqualification)= 'Collage-Diploma' OR LOWER(companyqualification)= 'university-degree' OR LOWER(companyqualification)=  'masters-degree')");
+            break;
+        case "university-degree":
+            return ("(LOWER(companyqualification)= 'Self-Taught' OR LOWER(companyqualification)= 'Certificate' OR LOWER(companyqualification)= 'Collage-Diploma' OR LOWER(companyqualification)= 'university-degree')");
+            break;
+        case "collage-diploma":
+            return ("(LOWER(companyqualification)= 'Self-Taught' OR LOWER(companyqualification)= 'Certificate' OR LOWER(companyqualification)= 'Collage-Diploma')");
+            break;
+        case "certificate":
+            return ("(LOWER(companyqualification)= 'Self-Taught' OR LOWER(companyqualification)= 'Certificate')");
+            break;
+        case "self-taught":
+            return ("(LOWER(companyqualification)=  'self-taught')");
+            break;
+        }
+		return("false");
+}
+
+function getSearchExperience($experience){
+
+switch (strtolower($experience)) {
+
+    case "First-Job":
+        return ("(LOWER(companyexperience) = 'none')");
+        break;
+    case "some":
+         return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'Some' )");
+        break;
+    case "1-to-3-years":
+        return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'Some' OR LOWER(companyexperience) = '1-year-and-over')");
+        break;
+    case "4-to-8-years":
+       return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'Some' OR LOWER(companyexperience) = '1-year-and-over' OR LOWER(companyexperience) = '4-years-and-over')");
+        break;
+    case "9-years-and-over":
+        return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'Some' OR LOWER(companyexperience) = '1-year-and-over' OR LOWER(companyexperience) = '4-years-and-over' OR LOWER(companyexperience)=  '9-years-and-over')");
+        break;
+}
+    return("false");
+}
+
+
 function sendReply($status)
 {
     setReplys();
@@ -676,116 +824,6 @@ function pg_connection_string_from_database_url() {
 function pg_conx()
 {
     return pg_connect(setup_database_connection());
-}
-
-function searchJobs($page)
-{
-    if(!(is_numeric($page) && $page > 0)){
-        $page = 0;
-    }
-
-    $fielddata = "";
-
-    $searchQuery = "
-        AND companyjob = '".getField('job')."'
-        AND '". getSearchQualification(getField('qualification')) ."'
-        AND '". getSearchExperience(getField('experience')) ."'
-        AND companylocation= '".getField('')."'
-    ";
-
-    $Query     = "SELECT $userID from ".$GLOBALS['dbTable']." where pageID ='".$GLOBALS["pid"]."' and userID='".$GLOBALS["sid"]."'".$searchQuery;
-    $rows      = pg_query($GLOBALS['pg_conn'], $Query);
-
-    if(!$rows){
-        logx(pg_result_error($rows));
-        //Send sorry we could not find and jobs matching your requirements (Please review your profile or try again later.)
-    }else{
-    if (!pg_num_rows($rows)) {
-        //no rows = no data
-        //Send sorry we could not find and jobs matching your requirements (Please review your profile or try again later.)
-    } else {
-        //Head
-        $GLOBALS['status_search_results'] =
-        '{"recipient": {
-        "id": "' . $GLOBALS['sid'] . '"
-        },
-        "message": {
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "generic","elements": [';
-                $count = 1 ;
-                while ($row = pg_fetch_row($rows) && $count < 12) {
-                    $element = '
-                    {
-                        "title": "'.$rows['companyname'].'",
-                        "subtitle": "Job Description:- '.$rows('companydescription').'\n Job:- '.$rows('companyjob').'\n Location:- '.$rows('companyLocation').'\n Experience:- '.$rows('companyexperience').'\n Qualification:- '.$rows('companyqualification').' ",
-                        "buttons": [
-                            {
-                                  "type":"phone_number",
-                                  "title":"Call '.$rows('companyname').'",
-                                  "payload":"'.$rows("companyphone").'"
-                            },
-                            {
-                                "type":"element_share"
-                            }
-                        ]
-                    },
-                    ';
-                    $GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].$element;
-                    $count = $count + 1 ;
-                }
-                $GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].']}}}}';
-    //sdfsdf
-        //tail
-        //sdfsdf
-    }
-}
-    //return $fielddata;
-}
-
-function getSearchQualification($qualification)
-{
-    switch ($qualification) {
-        case "Self-Taught":
-            return ("(companyqualification = 'Self-Taught' OR companyqualification = 'Certificate' OR companyqualification = 'Collage Diploma' OR companyqualification = 'University Degree' OR companyqualification =  'Masters Degree')");
-            break;
-        case "Certificate":
-            return ("(companyqualification = 'Certificate' OR companyqualification = 'Collage Diploma' OR companyqualification = 'University Degree' OR companyqualification =  'Masters Degree')");
-            break;
-        case "Collage Diploma":
-            return ("(companyqualification = 'Collage Diploma' OR companyqualification = 'University Degree' OR companyqualification =  'Masters Degree')");
-            break;
-        case "University Degree":
-            return ("(companyqualification = 'University Degree' OR companyqualification =  'Masters Degree')");
-            break;
-        case "Masters Degree":
-            return ("(companyqualification =  'Masters Degree')");
-            break;
-        }
-}
-
-function getSearchExperience($experience){
-
-switch ($experience) {
-
-    case "First Job":
-        return ("(companyqualification = 'First Job' OR companyqualification = 'Under 1 year' OR companyqualification = '1 to 3 years' OR companyqualification = '4 to 8 years' OR companyqualification =  '9 years and over')");
-        break;
-    case "Under 1 year":
-        return ("(companyqualification = 'Under 1 year' OR companyqualification = '1 to 3 years' OR companyqualification = '4 to 8 years' OR companyqualification =  '9 years and over')");
-        break;
-    case "1 to 3 years":
-        return ("(companyqualification = '1 to 3 years' OR companyqualification = '4 to 8 years' OR companyqualification =  '9 years and over')");
-        break;
-    case "4 to 8 years":
-        return ("(companyqualification = '4 to 8 years' OR companyqualification =  '9 years and over')");
-        break;
-    case "9 years and over":
-        return ("(companyqualification =  '9 years and over')");
-        break;
-}
-
 }
 
 function getField($field)
