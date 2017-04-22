@@ -134,6 +134,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         if(strtolower(trim($GLOBALS['message']))=='help'){
                         //if(strpos($GLOBALS['message'],'help')!=false){
                                 sendMessage(basicReply( "Help Info: This app will help you find a job or post a job opennig for other users to apply."));
+                                sendReply(getField('status'));
                         }else{
                         if($GLOBALS['mid'] == getField('lastNotification') ){
                             logx("{SAME MESSAGE AGAIN REALLY SUCKS}".$GLOBALS['message']);
