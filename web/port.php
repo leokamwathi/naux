@@ -521,7 +521,7 @@ function isStr($str)
 }
 function sendReply($status)
 {
-
+    setReplys();
     switch ($status) {
         case "userType":
             $reply = $GLOBALS['status_userType'];
@@ -790,6 +790,16 @@ function getField($field)
     }
 }
     return $fielddata;
+}
+
+function refreshDB()
+{
+    $totaladds = 3;
+    $Query     = "SELECT * from ".$GLOBALS['dbTable'];
+    for ($x = 0; $x < $totaladds; $x++) {
+        $results      = pg_query($GLOBALS['pg_conn'], $Query);
+        pg_free_result($results);
+    }
 }
 
 function addField($field, $value)
