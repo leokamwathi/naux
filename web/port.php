@@ -5,6 +5,9 @@ THINGS TO add
 -Share button. https://developers.facebook.com/docs/messenger-platform/send-api-reference/share-button
 -MENUS MAN WTH!!!!!! - SOCIAL NEWS!!!! https://developers.facebook.com/docs/messenger-platform/messenger-profile/persistent-menu
 -dont do shenzhen until post job is done!!!!!
+
+// => ✖ ✔️ 🆗 🔘 ❤ 🤖 📲 📞 📱
+
 */
 
 //GLOBAL variables
@@ -136,6 +139,27 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         //=======================================//
                         sendReply(getField('status'));
                         //sendReply($payldPara[0]);
+                    }elseif($payldPara[0]=='delete'){
+                        logx('{DELETING....}');
+                        logx($GLOBALS['payload']);
+                        if($payldPara[0]=='profile'){
+                            logx('{DELETE CONFIRMATION....}');
+                            sendMessage($GLOBALS['status_delete']);
+                        }elseif($payldPara[0]=='yes'){
+                            logx('{YES DELETE....}');
+                            if(deleteprofile()){
+                                sendMessage(basicReply("Your Profile has been deleted.\nThank you, I hope I was able to help you out."));
+                            }else{
+                                sendMessage(basicReply("Your Profile was not deleted. Something went wrong. :-(\nPlease try again later."));
+                                sendReply(getField('status'));
+                            }
+                        }elseif($payldPara[0]=='no'){
+                            logx('{NO DELETE....}');
+                            sendReply(getField('status'));
+                        }
+                        //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
+                        logx($GLOBALS['smsg']);
+                        logMSG($GLOBALS['log']);
                     }else{
                     if(setPayload($payldPara))
                     {
@@ -980,13 +1004,17 @@ function setReplys()
                 },
                 "message":{
                     "text":"Hi '.$GLOBALS['username'].', \n
-                    This is the info we have from you.\n
+                    Your profile information.\n
                     Location:' . getField('location') . '\n
                     Job:' . getField('job') . '\n
                     Qualification:' . getField('qualification') . '\n
-                    Experience:' . getField('experience') . '\n
-                    About:' . getField('about') . '\n",
+                    Experience:' . getField('experience') . '\n,
                     "quick_replies":[
+                        {
+                            "content_type":"text",
+                            "title":"Search Jobs",
+                            "payload":"search_jobs"
+                        },
                         {
                             "content_type":"text",
                             "title":"Edit Location",
@@ -1009,13 +1037,8 @@ function setReplys()
                         },
                         {
                             "content_type":"text",
-                            "title":"Edit About",
-                            "payload":"edit_about"
-                        },
-                        {
-                            "content_type":"text",
-                            "title":"Search Jobs",
-                            "payload":"search_job2"
+                            "title":"Delete Profile",
+                            "payload":"delete_profile"
                         }
                     ]
                 }
@@ -1182,7 +1205,27 @@ function setReplys()
     }
 }
 }';
-
+//✖ ✔️
+$GLOBALS['status_delete'] = '
+{"recipient":{
+"id":"' . $GLOBALS['sid'] . '"
+},
+"message":{
+"text":"Are you sure you want to delete your profile?",
+"quick_replies":[
+    {
+        "content_type":"text",
+        "title":"Yes ✔️",
+        "payload":"delete_yes"
+    },
+    {
+        "content_type":"text",
+        "title":"No ✖",
+        "payload":"delete_no"
+    }
+]
+}
+}';
 $GLOBALS['status_search_job2'] = '{"recipient": {
 "id": "' . $GLOBALS['sid'] . '"
 },
