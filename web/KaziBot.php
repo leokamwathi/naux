@@ -4,7 +4,7 @@ THINGS TO add
 -Call button  https://developers.facebook.com/docs/messenger-platform/send-api-reference/call-button
 -Share button. https://developers.facebook.com/docs/messenger-platform/send-api-reference/share-button
 -MENUS MAN WTH!!!!!! - SOCIAL NEWS!!!! https://developers.facebook.com/docs/messenger-platform/messenger-profile/persistent-menu
--dont do shenzhen until post job is done!!!!!
+-dont do shenzhen until post job is done!!!!! ok
 
 // => ✖ ✔️ 🆗 🔘 ❤ 🤖 📲 📞 📱
 
@@ -22,7 +22,7 @@ global $username;
 global $datastream;
 global $user_details;
 */
-try{
+//try{
 //Check for hub Challenge
 if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
     print_r($_GET["hub_challenge"]);
@@ -48,64 +48,41 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             //print_r(json_last_error());
             file_put_contents("php://stderr", json_last_error().PHP_EOL);
         } else {
-            $GLOBALS['pid'] = $fb->entry[0]->id;
-            $GLOBALS['sid'] = $fb->entry[0]->messaging[0]->sender->id;
-
-            $GLOBALS['isTyping'] = '
-                        {"recipient":{
-                            "id":"'.$GLOBALS['sid'].'"
-                        },
-                        "sender_action":"typing_on"
-                        }';
+		
+		
+		foreach ($fb->entry as $entry) {
+            $GLOBALS['pid'] = $entry->id;
+            $GLOBALS['sid'] = $entry->messaging[0]->sender->id;
+            $GLOBALS['isTyping'] = '{"recipient":{"id":"'.$GLOBALS['sid'].'"},"sender_action":"typing_on"}';
             sendMessage($GLOBALS['isTyping']);
 
             // get message
-            $GLOBALS['message'] = $fb->entry[0]->messaging[0]->message->text;
+            $GLOBALS['message'] = $entry->messaging[0]->message->text;
             //get payload
-            $GLOBALS['quickReply'] = $fb->entry[0]->messaging[0]->message->quick_reply->payload;
-            $GLOBALS['payload'] = $fb->entry[0]->messaging[0]->postback->payload;
-            $GLOBALS['locationGeoLat'] = $fb->entry[0]->messaging[0]->message->attachments[0]->payload->coordinates->lat;
-            $GLOBALS['locationGeoLong'] = $fb->entry[0]->messaging[0]->message->attachments[0]->payload->coordinates->long;
-            $GLOBALS['locationTitle'] = $fb->entry[0]->messaging[0]->message->attachments[0]->title;
-            /*
-            {
-                "object":"page",
-                "entry":[
-                    {
-                        "id":"1292677864114230",
-                        "time":1492906358117,
-                        "messaging":[
-                            {
-                                "recipient":{
-                                    "id":"1292677864114230"
-                                },
-                                "timestamp":1492906358117,
-                                "sender":{
-                                    "id":"1360046804041611"
-                                },
-                                "postback":{
-                                    "payload":"getting_started"
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-            */
-            $GLOBALS['mid'] = $fb->entry[0]->messaging[0]->message->mid;
-            $GLOBALS['dbTable']      = "jobsDBtest";
-
+            $GLOBALS['quickReply'] = $entry->messaging[0]->message->quick_reply->payload;
+            $GLOBALS['payload'] = $entry->messaging[0]->postback->payload;
+            $GLOBALS['locationGeoLat'] = $entry->messaging[0]->message->attachments[0]->payload->coordinates->lat;
+            $GLOBALS['locationGeoLong'] = $entry->messaging[0]->message->attachments[0]->payload->coordinates->long;
+            $GLOBALS['locationTitle'] = $entry->messaging[0]->message->attachments[0]->title;
+         
+            $GLOBALS['mid'] = $entry->messaging[0]->message->mid;
+            KaziBot();
+		}
+	}
+}
+		function KaziBot(){	
+			$GLOBALS['dbTable']      = "jobsDBtest";
             //get username
             $GLOBALS['token']   = $_ENV["techware_fb_token"];
             $user_details = file_get_contents("https://graph.facebook.com/v2.6/".$GLOBALS['sid']."?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=".$GLOBALS['token']);
             $user_details =  json_decode($user_details);
             $GLOBALS['username'] = $user_details->first_name;
             $GLOBALS['pg_conn'] = pg_connect(pg_connection_string_from_database_url());
+			
+			
             setReplys();
-
             //Payload processing
-
-                addField("fbjsondata",$datastream);
+			addField("fbjsondata",$datastream);
 
 
             if (isset($GLOBALS['locationGeoLat']) && $GLOBALS['locationGeoLat'] != '' && isset($GLOBALS['locationGeoLong']) && $GLOBALS['locationGeoLong'] != '') {
@@ -276,6 +253,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             WAIT for user input
             */
         }
+/*
         logx("Waiting for user reply");
     //}
 }
@@ -284,7 +262,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
     // Handle exception
     //file_put_contents("php://stderr", "ERROR!!: = ".$e->getMessage().PHP_EOL);
 }
-
+*/
 
 function setPayload($paypara)
 {
@@ -1284,7 +1262,7 @@ function setReplys()
     }
 }
 }';
-//✖ ✔️
+//✖ ✔️ <----TODO: dont forget to fix this stuff
 $GLOBALS['status_delete'] = '
 {"recipient":{
 "id":"' . $GLOBALS['sid'] . '"
@@ -1379,7 +1357,7 @@ $GLOBALS['status_companyname'] = '
     "id":"' . $GLOBALS['sid'] . '"
 },
 "message":{
-    "text":"What is the name of the company or person posting the job."
+    "text":"What is the name of your company."
 }
 }';
 
@@ -1445,13 +1423,18 @@ $GLOBALS['status_companyinfo'] = '
 "message":{
     "text":"Welcome '.getField('companyname').', \n
     This is the information you have entered. \n
-    Job applicants matching your requirements will be notified of your job posting.\n
+    Applicants matching your job requirements will be notified of your job posting.\n
+                                                        \n
+    Job Description:- '.getField('companydescription').'\n
                                                         \n
     Job:- '.getField('companyjob').'\n
     Location:- '.getField('companyLocation').'\n
     Experience:- '.getField('companyexperience').'\n
     Qualification:- '.getField('companyqualification').'\n
-    Phone:- '.getField('companyqualification').'\n",
+    Website:- '.getField('companyqualification').'\n
+    Phone:- '.getField('companyqualification').'\n
+    Duration of Job Posting:- '.getField('edit_companyjobtime').' day(s)\n
+    End date of Job Posting:- '.getField('companyEndDate').' ",
     "quick_replies":[
         {
             "content_type":"text",
@@ -1480,8 +1463,13 @@ $GLOBALS['status_companyinfo'] = '
         },
         {
             "content_type":"text",
+            "title": "Exetend Time",
+            "payload": "edit_companyjobtime"
+        },
+        {
+            "content_type":"text",
             "title": "Delete Job Posting",
-            "payload": "delete_profile"
+            "payload": "edit_companydelete"
         }
     ]
 }
