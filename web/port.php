@@ -68,7 +68,29 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             $GLOBALS['locationGeoLong'] = $fb->entry[0]->messaging[0]->message->attachments[0]->payload->coordinates->long;
             $GLOBALS['locationTitle'] = $fb->entry[0]->messaging[0]->message->attachments[0]->title;
             /*
-
+            {
+                "object":"page",
+                "entry":[
+                    {
+                        "id":"1292677864114230",
+                        "time":1492906358117,
+                        "messaging":[
+                            {
+                                "recipient":{
+                                    "id":"1292677864114230"
+                                },
+                                "timestamp":1492906358117,
+                                "sender":{
+                                    "id":"1360046804041611"
+                                },
+                                "postback":{
+                                    "payload":"getting_started"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
             */
             $GLOBALS['mid'] = $fb->entry[0]->messaging[0]->message->mid;
             $GLOBALS['dbTable']      = "jobsDBtest";
@@ -134,6 +156,8 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                                 logx("{FAILED TO CREATE USER}");
                                 //sendReply('new'); #failed to add user.. really what to do????
                             }
+                        }else{
+                            sendReply(getField('status'));
                         }
 
                     }elseif($payldPara[0]=='search'){
