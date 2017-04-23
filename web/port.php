@@ -550,7 +550,9 @@ $isMode = getField('mode');
 
 function GetCityCountry($geoLoc){
 try{
-$url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=".$geoLoc."&sensor=true&key=".$_ENV["google_maps_key"];
+//$url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=".$geoLoc."&sensor=true&key=".$_ENV["google_maps_key"];
+//TODO:make this work with the googlemap key. ^^^^^^ see above link
+$url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=".$geoLoc."&sensor=true";
     //google_maps_key
 
     $data = @file_get_contents($url);
