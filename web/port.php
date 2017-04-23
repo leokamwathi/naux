@@ -950,6 +950,25 @@ function addField($field, $value)
     }
 }
 
+function deleteprofile()
+{
+    logx("{DELETINGPROFILE-FUNCTION}");
+    try{
+    $Query     = "DELETE from ".$GLOBALS['dbTable']." where pageID ='".$GLOBALS["pid"]."' and userID='".$GLOBALS["sid"]."'";
+    $rows      = pg_query($GLOBALS['pg_conn'], $Query);
+    if(!$rows){
+        logx(pg_result_error($rows));
+        return false;
+    }else{
+        return true;
+    }
+    return false;
+} catch (Exception $e) {
+    logx("{DELETE ERROR}".$e->getMessage());
+    return false;
+}
+
+}
 function isNewUser()
 {
 logx("{isNEWUSER}(".$GLOBALS['sid'].") = (".getField("userID").")");
