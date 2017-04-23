@@ -207,9 +207,15 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 }
                 }else{
                     if (isset($GLOBALS['message']) && $GLOBALS['message'] != '') {
-                        if(strtolower(trim($GLOBALS['message']))=='help'){
+                        if(strtolower(trim($GLOBALS['message']))=='hello kazi'){
+                            sendMessage(basicReply( "Hello ".$GLOBALS['username']."," ));
+                        }elseif(strtolower(trim($GLOBALS['message']))=='hi kazi'){
+                            sendMessage(basicReply( "Hi ".$GLOBALS['username']."," ));
+                        }elseif(strtolower(trim($GLOBALS['message']))=='help me'){
+                            sendMessage(basicReply( "Help Info: This app will help you find a job or post a job opening for other users to apply."));
+                        }elseif(strtolower(trim($GLOBALS['message']))=='help'){
                         //if(strpos($GLOBALS['message'],'help')!=false){
-                                sendMessage(basicReply( "Help Info ❤: This app will help you find a job or post a job opennig for other users to apply."));
+                                sendMessage(basicReply( "Help Info ❤: This app will help you find a job or post a job opening for other users to apply."));
                                 sendReply('info');
                         }elseif(strtolower(trim($GLOBALS['message']))=='hi' || strtolower(trim($GLOBALS['message']))=='hello' || strtolower(trim($GLOBALS['message']))=='good morning' || strtolower(trim($GLOBALS['message']))=='please' || strtolower(trim($GLOBALS['message']))=='hey'){
                         //if(strpos($GLOBALS['message'],'help')!=false){
