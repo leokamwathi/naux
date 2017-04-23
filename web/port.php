@@ -152,7 +152,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 logx("{CURRENT STATUS}".getField('status'));
                 logx("{READING REPLY....}".$GLOBALS['message']);
                 if (isset($GLOBALS['payload']) && $GLOBALS['payload'] != '') {
-                    logx("{ISPAYLOAD}");
+                    logx("{ISPAYLOAD}=>".$GLOBALS['payload']);
                     //job_findjob , qualification_collage-diploma
                     $payldPara = explode("_", $GLOBALS['payload']);
                     if($payldPara[0]=='getting'){
@@ -215,6 +215,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 }
                 }else{
                     if (isset($GLOBALS['message']) && $GLOBALS['message'] != '') {
+                        logx("{IS MESSAGE}".$GLOBALS['message']);
                         if(strtolower(trim($GLOBALS['message']))=='hello kazi'){
                             sendMessage(basicReply( "Hello ".$GLOBALS['username']."," ));
                         }elseif(strtolower(trim($GLOBALS['message']))=='hi kazi'){
@@ -234,7 +235,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                             logx("{SAME MESSAGE AGAIN REALLY SUCKS}".$GLOBALS['message']);
                         }else{
                         addField('lastNotification',$GLOBALS['mid']);
-                        logx("{IS MESSAGE}");
+
                         if(setStatus(getField('status'),$GLOBALS['message'])){
                             $myNextStatus = nextStatus(getField('status'));
                             logx("{NEXT STATUS}".$myNextStatus);
