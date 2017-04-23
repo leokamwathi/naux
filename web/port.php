@@ -522,8 +522,8 @@ $isMode = getField('mode');
         case "qualification":
             return("info");
         case "companyname":
-            return("companydescription");
-        case "companydescription":
+    //        return("companydescription");
+    //    case "companydescription":
             return("companyjob");
         case "companyjob":
             return("companylocation");
@@ -538,8 +538,8 @@ $isMode = getField('mode');
 //        case "companyemail":
             return("companyphone");
         case "companyphone":
-            return("companyjobtime");
-        case "companyjobtime":
+        //    return("companyjobtime");
+        //case "companyjobtime":
             return("companyinfo");
         default:
             logx("{SETTING DEFAULT STATUS}");
@@ -1458,7 +1458,7 @@ $GLOBALS['status_companyinfo'] = '
     Location:- '.getField('companyLocation').'\n
     Experience:- '.getField('companyexperience').'\n
     Qualification:- '.getField('companyqualification').'\n
-    Phone:- '.getField('companyqualification').'\n",
+    Phone:- '.getField('companyphone').'\n",
     "quick_replies":[
         {
             "content_type":"text",
