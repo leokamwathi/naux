@@ -1467,8 +1467,8 @@ $GLOBALS['status_companyinfo'] = '
         },
         {
             "content_type":"text",
-            "title": "Edit Description",
-            "payload": "edit_companydescription"
+            "title": "Edit Job",
+            "payload": "edit_companyjob"
         },
         {
             "content_type":"text",
