@@ -185,10 +185,10 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                     }elseif($payldPara[0]=='delete'){
                         logx('{DELETING....}');
                         logx($GLOBALS['payload']);
-                        if($payldPara[0]=='profile'){
+                        if($payldPara[1]=='profile'){
                             logx('{DELETE CONFIRMATION....}');
                             sendMessage($GLOBALS['status_delete']);
-                        }elseif($payldPara[0]=='yes'){
+                        }elseif($payldPara[1]=='yes'){
                             logx('{YES DELETE....}');
                             if(deleteprofile()){
                                 sendMessage(basicReply("Your Profile has been deleted.\nThank you, I hope I was able to help you out."));
@@ -196,7 +196,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                                 sendMessage(basicReply("Your Profile was not deleted. Something went wrong. :-(\nPlease try again later."));
                                 sendReply(getField('status'));
                             }
-                        }elseif($payldPara[0]=='no'){
+                        }elseif($payldPara[1]=='no'){
                             logx('{NO DELETE....}');
                             sendReply(getField('status'));
                         }
