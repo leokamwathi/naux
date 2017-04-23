@@ -135,7 +135,15 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             if (isNewUser()) {
                 logx("{NEW USER..CREATING USER}");
                 if(addNewUser()){
-                    sendReply('userType');
+                    if(strtolower(trim($GLOBALS['message']))=='hello kazi'){
+                        sendMessage(basicReply( "Hello ".$GLOBALS['username']."," ));
+                    }elseif(strtolower(trim($GLOBALS['message']))=='hi kazi'){
+                        sendMessage(basicReply( "Hi ".$GLOBALS['username']."," ));
+                    }elseif(strtolower(trim($GLOBALS['message']))=='help me'){
+                        sendMessage(basicReply( "Help Info: This app will help you find a job or post a job opening for other users to apply."));
+                    }else{
+                        sendReply('userType');
+                    }
                 }else{
                     logx("{FAILED TO CREATE USER}");
                     //sendReply('new'); #failed to add user.. really what to do????
