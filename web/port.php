@@ -107,7 +107,6 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
 
                 addField("fbjsondata",$datastream);
 
-
             if (isset($GLOBALS['locationGeoLat']) && $GLOBALS['locationGeoLat'] != '' && isset($GLOBALS['locationGeoLong']) && $GLOBALS['locationGeoLong'] != '') {
                 //GET LOCATION FROM GOOGLE
                 $GLOBALS['geoLoc'] = $GLOBALS['locationGeoLat'].",".$GLOBALS['locationGeoLong'];
@@ -763,11 +762,11 @@ function sendReply($status)
 {
     setReplys();
 
-if($status == "info"){
-    if(getField('usertype')=='Post-Job'){
-        $status = 'companyinfo';
+    if($status == "info"){
+        if(getField('usertype')=='Post-Job'){
+            $status = 'companyinfo';
+        }
     }
-}
 
     switch ($status) {
         case "userType":
@@ -842,8 +841,12 @@ if($status == "info"){
             $reply = json_encode($data);
             break;
         default:
-            $status = 'info';
-            $reply = $GLOBALS['status_info'];
+            if(getField('usertype')=='Post-Job'){
+                $status = 'companyinfo';
+            }else{
+                $status = 'info';
+            }
+            $reply = $GLOBALS['status_'.$status];
             break;
     }
 
@@ -864,9 +867,13 @@ if($status == "info"){
     addField('status',$status);
     logx("{STATUS}.$status");
     logx("{REPLY JSON}see db");
-    $tempjson = json_decode($reply);
+    $tempjson = json_decode($GLOBALS['fbreply']);
     logx("{JSON ERROR}".json_last_error());
-    logx("{FBREPLY}see db");
+    if (json_last_error() != "JSON_ERROR_NONE") {
+        logx("{FBREPLY - GOT ERROR}=>".trim(preg_replace('/\s+/', ' ', $GLOBALS['fbreply'])));
+    }else{
+        logx("{FBREPLY}see db");
+    }
     logMSG($GLOBALS['log']);
 }
 function sendMessage($msg){
