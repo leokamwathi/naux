@@ -225,11 +225,11 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         }elseif(strtolower(trim($GLOBALS['message']))=='help'){
                         //if(strpos($GLOBALS['message'],'help')!=false){
                                 sendMessage(basicReply( "Help Info ❤: This app will help you find a job or post a job opening for other users to apply."));
-                                sendReply('info');
+                                sendReply(getField('status'));
                         }elseif(strtolower(trim($GLOBALS['message']))=='hi' || strtolower(trim($GLOBALS['message']))=='hello' || strtolower(trim($GLOBALS['message']))=='good morning' || strtolower(trim($GLOBALS['message']))=='please' || strtolower(trim($GLOBALS['message']))=='hey'){
-                        //if(strpos($GLOBALS['message'],'help')!=false){
+                                //if(strpos($GLOBALS['message'],'help')!=false){
                                 //sendMessage(basicReply( $GLOBALS['message']." ".$GLOBALS['username']."," ));
-                                sendReply('info');
+                                sendReply(getField('status'));
                         }else{
                         if($GLOBALS['mid'] == getField('lastNotification') ){
                             logx("{SAME MESSAGE AGAIN REALLY SUCKS}".$GLOBALS['message']);
