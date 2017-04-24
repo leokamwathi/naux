@@ -87,11 +87,11 @@ function findPlace($find){
 
     //$results = $google_places->nearbySearch();
 
-    $jsondata = $google_places->nearbySearch();
+    $results = $google_places->nearbySearch();
 
-    //$jsondata = json_decode($results );
+    $jsondata = json_decode(json_encode($results));
 
-      if($jsondata->status == "OK" && isset($geocodestr) && $geocodestr != '')
+      if($jsondata->status == "OK")
         {
 
 
@@ -138,7 +138,7 @@ function findPlace($find){
                 return true;
             }
     	}else{
-            $geolog= $geolog.'{STATUS NOT OK} = [[['.$jsondata->status."]]]<<<<<<".$results.">>>>>>".$geocodestr.$find;
+            $geolog= $geolog.'{STATUS NOT OK} = [[['.$jsondata->status."]]]<<<<<<".$results."|||||||||||||||||||".$jsondata.">>>>>>".$geocodestr.$find;
             $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
     	    return false;
     	}
