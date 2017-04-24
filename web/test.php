@@ -77,6 +77,9 @@ function findPlace($find){
 
     $google_places->rankby   = 'distance';
     $google_places->types    = $find; // Requires keyword, name or types
+    $google_places->radius   = 1000;
+
+
     $results                 = $google_places->nearbySearch();
 
     $jsondata = json_decode($results );
