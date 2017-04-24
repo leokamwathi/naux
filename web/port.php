@@ -690,7 +690,7 @@ function findPlace($find){
         }
     }
 
-    //$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
+    $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find." at ".$geocodestr);
 
     //$google_places->location = array($lat,$lng);
 
