@@ -61,8 +61,8 @@ function findPlace($find){
         $geocodestr = getField('location');
         if(isset($geocodestr) && $geocodestr != ''){
             $geodata = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.$geocodestr);
-            $jsondata=json_decode($geodata);
-            $google_places->location = array($jsondata->results[0]->geometry->location->lat,$jsondata->results[0]->geometry->location->lng);
+            $jsondatax=json_decode($geodata);
+            $google_places->location = array($jsondatax->results[0]->geometry->location->lat,$jsondatax->results[0]->geometry->location->lng);
                 $geolog= $geolog.'{GEOCODING REVERSE SET} '.$geocodestr.$find;
         }else{
                 $geolog= $geolog.'{GEOCODING ERROR} '.$geocodestr.$find;
@@ -128,7 +128,7 @@ function findPlace($find){
                 return true;
             }
     	}else{
-            $geolog= $geolog.'{STATUS NOT OK} = [[['.$jsondata->status."]]]".$geocodestr.$find;
+            $geolog= $geolog.'{STATUS NOT OK} = [[['.$jsondata->status."]]]<<<<<<".$results.">>>>>>".$geocodestr.$find;
             $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
     	    return false;
     	}
