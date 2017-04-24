@@ -46,6 +46,11 @@ if (isNewUser()) {
 
 function findPlace($find){
 
+    if (isset($_GET["type"]) && $_GET["type"] != '') {
+    $find   =  array($_GET["type"]);
+    }else{
+    $find   = 'restaurant';
+    }
 
 	$geolog = "{start}";
     $google_places = new joshtronic\GooglePlaces('AIzaSyCICsrT6NnZb0JkS_bJdNRVHx-jtIsog6Q');
@@ -56,7 +61,7 @@ function findPlace($find){
     if(isset($geocodestr) && $geocodestr != ''){
         $geoarg = explode(',', $geocodestr);
         $google_places->location = array($geoarg[0],$geoarg [1]);
-        $geolog= $geolog.'{GEOCODING LOC SET} '.$geocodestr.$find;
+        $geolog= $geolog.'{GEOCODING LOC SET} '.$geocodestr."---".$geoarg[0].$geoarg [1].$find;
     }else{
         $geocodestr = getField('location');
         if(isset($geocodestr) && $geocodestr != ''){
@@ -77,12 +82,14 @@ function findPlace($find){
 
     $google_places->rankby   = 'distance';
     $google_places->types    = $find; // Requires keyword, name or types
-    $google_places->radius   = 1000;
+    $google_places->radius   = 800;
 
 
-    $results                 = $google_places->nearbySearch();
+    //$results = $google_places->nearbySearch();
 
-    $jsondata = json_decode($results );
+    $jsondata = $google_places->nearbySearch();
+
+    //$jsondata = json_decode($results );
 
       if($jsondata->status == "OK" && isset($geocodestr) && $geocodestr != '')
         {

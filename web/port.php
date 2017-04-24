@@ -698,9 +698,9 @@ $geolog = "{start}";
 
     $google_places->rankby   = 'distance';
     $google_places->types    = $find; // Requires keyword, name or types
-    $results                 = $google_places->nearbySearch();
+    $jsondata                = $google_places->nearbySearch();
 
-    $jsondata = json_decode($results );
+    //$jsondata = json_decode($results );
 
       if($jsondata->status == "OK" && isset($geocodestr) && $geocodestr != '')
         {
