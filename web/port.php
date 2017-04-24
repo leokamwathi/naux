@@ -665,7 +665,7 @@ function isStr($str)
 
 function findPlace($find){
 
-$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
+
 
     $google_places = new joshtronic\GooglePlaces('AIzaSyCICsrT6NnZb0JkS_bJdNRVHx-jtIsog6Q');
 
@@ -675,16 +675,20 @@ $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we 
     if(isset($geocodestr) && $geocodestr != ''){
         $geoarg = explode(',', $geocodestr);
         $google_places->location = array($geoarg[0],$geoarg [1]);
+        $geolog= $geolog.'{GEOCODING LOC SET} '.$geocodestr.$find;
     }else{
         $geocodestr = getField('location');
         if(isset($geocodestr) && $geocodestr != ''){
             $geodata = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.$geocodestr);
             $jsondata=json_decode($geodata);
             $google_places->location = array($jsondata->results[0]->geometry->location->lat,$jsondata->results[0]->geometry->location->lng);
+                $geolog= $geolog.'{GEOCODING REVERSE SET} '.$geocodestr.$find;
         }else{
-
+                $geolog= $geolog.'{GEOCODING ERROR} '.$geocodestr.$find;
         }
     }
+
+    //$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
 
     //$google_places->location = array($lat,$lng);
 
@@ -713,8 +717,7 @@ $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we 
     	   foreach ($jsondata->results as $component) {
     		$geolatx = $component->geometry->location->lat.",".$component->geometry->location->lng;
     		//markers=icon:https://maps.gstatic.com/mapfiles/place_api/icons/school-64.png%7Cshadow:true
-    		$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo";
-    		$marker="markers=".$geolatx;
+    		$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx;
 
             $element = '
            {
@@ -736,8 +739,16 @@ $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we 
            $count = $count + 1 ;
     	}
             $GLOBALS['status_places'] = $GLOBALS['status_places'].']}}}}';
-            return true;
+            if($count == 0){
+                $geolog= $geolog.'{ZERO COUNT-DO TEXT SEARCH}'.$geocodestr.$find;
+                $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
+                   return false;
+            }else{
+                return true;
+            }
     	}else{
+            $geolog= $geolog.'{STATUS NOT OK} = [[['.$jsondata->status."]]]".$geocodestr.$find;
+            $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
     	    return false;
     	}
     }
