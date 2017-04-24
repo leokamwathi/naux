@@ -248,7 +248,9 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                                 logx("{PLACES REPLY}".$GLOBALS['status_places']);
                                 sendMessage($GLOBALS['status_places']);
                             }else{
-                                sendMessage(basicReply( "Hi ".$GLOBALS['username'].", I could not find any nearby locations that match [".$place."] either change your location or what you are looking for." ));
+                                sendMessage($GLOBALS['status_places']);
+                                //$GLOBALS['status_places']
+                                //sendMessage(basicReply( "Hi ".$GLOBALS['username'].", I could not find any nearby locations that match [".$place."] either change your location or what you are looking for." ));
                             }
                             //sendMessage($GLOBALS['status_places']);
                             //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
