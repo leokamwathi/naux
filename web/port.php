@@ -668,7 +668,7 @@ function isStr($str)
 function findPlace($find){
 
 
-
+$geolog = "{start}";
     $google_places = new joshtronic\GooglePlaces('AIzaSyCICsrT6NnZb0JkS_bJdNRVHx-jtIsog6Q');
 
     //get geocode or reverse code
