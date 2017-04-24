@@ -737,8 +737,10 @@ $geolog = "{start}";
            if($count == 0){
                $hasRows = true;
                $GLOBALS['status_places'] = $GLOBALS['status_places'].$element;
-           }else{
+           }elseif($count < 8){
                $GLOBALS['status_places'] = $GLOBALS['status_places'].",".$element;
+           }else{
+               break;
            }
            $count = $count + 1 ;
     	}
