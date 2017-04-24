@@ -1,4 +1,8 @@
 <?php
+//More to come
+require_once 'GooglePlaces.php';
+require_once 'GooglePlacesClient.php';
+
 /*
 THINGS TO add
 -Call button  https://developers.facebook.com/docs/messenger-platform/send-api-reference/call-button
@@ -167,6 +171,24 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                             sendReply(getField('status'));
                         }
 
+                    }elseif($payldPara[0]=='find'){
+                        //search_job2jobs
+                        //search_job2
+                        //TODO: SEARCH - DONE
+                        logx('{FINDING....}');
+                        logx($GLOBALS['payload']);
+                        if(findPlace($place)){
+                        sendMessage($GLOBALS['status_places']);
+                    }else{
+
+                    }
+
+                        //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
+                        logx($GLOBALS['smsg']);
+                        logMSG($GLOBALS['log']);
+                        //=======================================//
+                        sendReply(getField('status'));
+                        //sendReply($payldPara[0]);
                     }elseif($payldPara[0]=='search'){
                         //search_job2jobs
                         //search_job2
@@ -215,6 +237,26 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 }else{
                     if (isset($GLOBALS['message']) && $GLOBALS['message'] != '') {
                         logx("{IS MESSAGE}".$GLOBALS['message']);
+                        if(strpos($GLOBALS['message'],'find')===0){
+                            $place = $GLOBALS['message'];
+                            $place = trim(str_replace('find', '', $place));
+                            //TODO:
+                            //sdfsdf jojo
+                            logx('{FINDING....}');
+                            logx($GLOBALS['message']);
+                            if(findPlace($place)){
+                                sendMessage($GLOBALS['status_places']);
+                            }else{
+                                sendMessage(basicReply( "Hi ".$GLOBALS['username'].", I could not find any nearby locations that match [".$place."] either change your location or what you are looking for." ));
+                            }
+                            //sendMessage($GLOBALS['status_places']);
+                            //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
+                            logx($GLOBALS['smsg']);
+                            logMSG($GLOBALS['log']);
+                            //=======================================//
+                            //sendReply(getField('status'));
+                            exit("");
+                        }
                         if(strtolower(trim($GLOBALS['message']))=='hello kazi'){
                             sendMessage(basicReply( "Hello ".$GLOBALS['username']."," ));
                         }elseif(strtolower(trim($GLOBALS['message']))=='hi kazi'){
@@ -223,12 +265,12 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                             sendMessage(basicReply( "Help Info: This app will help you find a job or post a job opening for other users to apply."));
                         }elseif(strtolower(trim($GLOBALS['message']))=='help'){
                         //if(strpos($GLOBALS['message'],'help')!=false){
-                                sendMessage(basicReply( "Help Info ❤: This app will help you find a job or post a job opening for other users to apply."));
-                                sendReply(getField('status'));
-                        }elseif(strtolower(trim($GLOBALS['message']))=='hi' || strtolower(trim($GLOBALS['message']))=='hello' || strtolower(trim($GLOBALS['message']))=='good morning' || strtolower(trim($GLOBALS['message']))=='please' || strtolower(trim($GLOBALS['message']))=='hey'){
-                                //if(strpos($GLOBALS['message'],'help')!=false){
-                                //sendMessage(basicReply( $GLOBALS['message']." ".$GLOBALS['username']."," ));
-                                sendReply(getField('status'));
+                            sendMessage(basicReply( "Help Info ❤: This app will help you find a job or post a job opening for other users to apply."));
+                            sendReply(getField('status'));
+
+                            //if(strpos($GLOBALS['message'],'help')!=false){
+                            //sendMessage(basicReply( $GLOBALS['message']." ".$GLOBALS['username']."," ));
+                            sendReply(getField('status'));
                         }else{
                         if($GLOBALS['mid'] == getField('lastNotification') ){
                             logx("{SAME MESSAGE AGAIN REALLY SUCKS}".$GLOBALS['message']);
@@ -424,7 +466,7 @@ function setStatus($myStatus,$myMessage)
             //TODO:test valid phone
             $phone = $myMessage;
             $plus = "";
-            if(preg_match("+",$phone)){
+            if(strpos($phone,'+')===0){
                 $plus = "+";
             }
                 $phone = preg_replace('/\s+/', '', $phone);
@@ -619,6 +661,88 @@ function isStr($str)
      return(isset($GLOBALS['message']) && $GLOBALS['message'] != '');
 }
 
+function findPlace($find){
+
+$GLOBALS['status_search_results'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
+
+    $google_places = new joshtronic\GooglePlaces('AIzaSyCICsrT6NnZb0JkS_bJdNRVHx-jtIsog6Q');
+
+    //get geocode or reverse code
+    $geocodestr = getField('geolocation');
+
+    if(isset($geocodestr) && $geocodestr != ''){
+        $geoarg = explode(',', $geocodestr);
+        $google_places->location = array($geoarg[0],$geoarg [1]);
+    }else{
+        $geocodestr = getField('location');
+        if(isset($geocodestr) && $geocodestr != ''){
+            $geodata = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.$geocodestr);
+            $jsondata=json_decode($geodata);
+            $google_places->location = array($jsondata->results[0]->geometry->location->lat,$jsondata->results[0]->geometry->location->lng);
+        }else{
+
+        }
+    }
+
+    //$google_places->location = array($geocode);
+
+
+
+    //$google_places->rankby   = 'distance';
+    $google_places->types    = $find; // Requires keyword, name or types
+    $results                 = $google_places->nearbySearch();
+
+    $jsondata = json_decode($results );
+
+      if($jsondata->status == "OK" && isset($geocodestr) && $geocodestr != '')
+        {
+
+
+            $GLOBALS['status_search_results'] =
+            '{"recipient": {
+            "id": "' . $GLOBALS['sid'] . '"
+            },
+            "message": {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic","elements": [';
+           $count = 0;
+    	   foreach ($jsondata->results as $component) {
+    		$geolatx = $component->geometry->location->lat.",".$component->geometry->location->lng;
+    		//markers=icon:https://maps.gstatic.com/mapfiles/place_api/icons/school-64.png%7Cshadow:true
+    		$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo";
+    		$marker="markers=".$geolatx;
+
+            $element = '
+           {
+               "title": "'.$component->name.'",
+               "subtitle": "'.$component->vicinity.'",
+               "image_url": "'.$imgurl.'",
+               "buttons": [
+                   {
+                       "type":"element_share"
+                   }
+               ]
+           }';
+           if($count == 0){
+               $hasRows = true;
+               $GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].$element;
+           }else{
+               $GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].",".$element;
+           }
+           $count = $count + 1 ;
+    	}
+            $GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].']}}}}';
+            return true;
+    	}else{
+    	    return false;
+    	}
+    }
+
+
+
+
 
 function searchJobs($page)
 {
@@ -681,10 +805,27 @@ $Query     = "SELECT * from ".$GLOBALS['dbTable']." where usertype = 'Post-Job' 
 					/*
 					$count = $count + 1;
 					*/
+
+
+                    $geolocation = $row['geolocation'];
+
+					if(isset($geolocation) && $geolocation != ''){
+					$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolocation."&size=500x260&markers=".$geolocation."&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo";
+					}else{
+						$geolocation = $row['companylocation'];
+						if(isset($geolocation) && $geolocation != ''){
+						$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolocation."&size=500x260&markers=".$geolocation."&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo";
+						}else{
+							$geolocation = getField('location');
+							$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolocation."&size=500x260&markers=".$geolocation."&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo";
+						}
+					}
+
 					 $element = '
                     {
                         "title": "'.$row['companyname'].'",
                         "subtitle": "Job:'.$row['companyjob'].'|Loc:'.$row['companylocation'].'|Exp:'.$row['companyexperience'].'|Qualification:'.$row['companyqualification'].' ",
+                        "image_url": "'.$imgurl.'",
                         "buttons": [
                             {
                                   "type":"phone_number",
