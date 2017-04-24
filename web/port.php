@@ -245,6 +245,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                             logx('{FINDING....}');
                             logx($GLOBALS['message']);
                             if(findPlace($place)){
+                                logx("{PLACES REPLY}".$GLOBALS['status_places']);
                                 sendMessage($GLOBALS['status_places']);
                             }else{
                                 sendMessage(basicReply( "Hi ".$GLOBALS['username'].", I could not find any nearby locations that match [".$place."] either change your location or what you are looking for." ));
@@ -320,6 +321,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
         logx("Waiting for user reply");
     //}
 }
+logMSG($GLOBALS['log']);
 } catch (Exception $e) {
     logx("{TRY ERROR}".$e->getMessage());
     // Handle exception
@@ -663,7 +665,7 @@ function isStr($str)
 
 function findPlace($find){
 
-$GLOBALS['status_search_results'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
+$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
 
     $google_places = new joshtronic\GooglePlaces('AIzaSyCICsrT6NnZb0JkS_bJdNRVHx-jtIsog6Q');
 
@@ -684,11 +686,11 @@ $GLOBALS['status_search_results'] = basicReply('Hi '.$GLOBALS['username'].', \nS
         }
     }
 
-    //$google_places->location = array($geocode);
+    //$google_places->location = array($lat,$lng);
 
 
 
-    //$google_places->rankby   = 'distance';
+    $google_places->rankby   = 'distance';
     $google_places->types    = $find; // Requires keyword, name or types
     $results                 = $google_places->nearbySearch();
 
@@ -698,7 +700,7 @@ $GLOBALS['status_search_results'] = basicReply('Hi '.$GLOBALS['username'].', \nS
         {
 
 
-            $GLOBALS['status_search_results'] =
+            $GLOBALS['status_places'] =
             '{"recipient": {
             "id": "' . $GLOBALS['sid'] . '"
             },
@@ -727,13 +729,13 @@ $GLOBALS['status_search_results'] = basicReply('Hi '.$GLOBALS['username'].', \nS
            }';
            if($count == 0){
                $hasRows = true;
-               $GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].$element;
+               $GLOBALS['status_places'] = $GLOBALS['status_places'].$element;
            }else{
-               $GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].",".$element;
+               $GLOBALS['status_places'] = $GLOBALS['status_places'].",".$element;
            }
            $count = $count + 1 ;
     	}
-            $GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].']}}}}';
+            $GLOBALS['status_places'] = $GLOBALS['status_places'].']}}}}';
             return true;
     	}else{
     	    return false;
@@ -1165,6 +1167,9 @@ function logx($msg){
 }
 
 function logMSG($msg){
+    if($msg == $GLOBALS['log']){
+        $GLOBALS['log']="";
+    }
     file_put_contents("php://stderr", $msg.PHP_EOL);
 }
 
