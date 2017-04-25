@@ -26,7 +26,7 @@ global $username;
 global $datastream;
 global $user_details;
 */
-try{
+//try{
 //Check for hub Challenge
 if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
     print_r($_GET["hub_challenge"]);
@@ -52,55 +52,35 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             //print_r(json_last_error());
             file_put_contents("php://stderr", json_last_error().PHP_EOL);
         } else {
-            $GLOBALS['pid'] = $fb->entry[0]->id;
-            $GLOBALS['sid'] = $fb->entry[0]->messaging[0]->sender->id;
-
-            $GLOBALS['isTyping'] = '
-                        {"recipient":{
-                            "id":"'.$GLOBALS['sid'].'"
-                        },
-                        "sender_action":"typing_on"
-                        }';
-            sendMessage($GLOBALS['isTyping']);
-
-            // get message
-            $GLOBALS['message'] = $fb->entry[0]->messaging[0]->message->text;
-            //get payload
-            $GLOBALS['quickReply'] = $fb->entry[0]->messaging[0]->message->quick_reply->payload;
-            $GLOBALS['payload'] = $fb->entry[0]->messaging[0]->postback->payload;
-            $GLOBALS['locationGeoLat'] = $fb->entry[0]->messaging[0]->message->attachments[0]->payload->coordinates->lat;
-            $GLOBALS['locationGeoLong'] = $fb->entry[0]->messaging[0]->message->attachments[0]->payload->coordinates->long;
-            $GLOBALS['locationTitle'] = $fb->entry[0]->messaging[0]->message->attachments[0]->title;
-            /*
-            {
-                "object":"page",
-                "entry":[
-                    {
-                        "id":"1292677864114230",
-                        "time":1492906358117,
-                        "messaging":[
-                            {
-                                "recipient":{
-                                    "id":"1292677864114230"
-                                },
-                                "timestamp":1492906358117,
-                                "sender":{
-                                    "id":"1360046804041611"
-                                },
-                                "postback":{
-                                    "payload":"getting_started"
-                                }
-                            }
-                        ]
-                    }
-                ]
+            foreach ($fb->entry as $entry) {
+                $GLOBALS['pid'] = $entry->id;
+                $GLOBALS['sid'] = $entry->messaging[0]->sender->id;
+                $GLOBALS['token'] = $_ENV["techware_fb_token"];
+                $GLOBALS['isTyping'] = '{"recipient":{"id":"'.$GLOBALS['sid'].'"},"sender_action":"typing_on"}';
+                sendMessage($GLOBALS['isTyping']);
+                //send the is typing message
+                // get message
+                $GLOBALS['message'] = $entry->messaging[0]->message->text;
+                //get payload
+                $GLOBALS['quickReply'] = $entry->messaging[0]->message->quick_reply->payload;
+                $GLOBALS['payload'] = $entry->messaging[0]->postback->payload;
+                $GLOBALS['locationGeoLat'] = $entry->messaging[0]->message->attachments[0]->payload->coordinates->lat;
+                $GLOBALS['locationGeoLong'] = $entry->messaging[0]->message->attachments[0]->payload->coordinates->long;
+                $GLOBALS['locationTitle'] = $entry->messaging[0]->message->attachments[0]->title;
+                $GLOBALS['mid'] = $entry->messaging[0]->message->mid;
+                $GLOBALS['dbTable']      = "jobsDBtest";
+                KaziBot();
             }
-            */
-            $GLOBALS['mid'] = $fb->entry[0]->messaging[0]->message->mid;
-            $GLOBALS['dbTable']      = "jobsDBtest";
-
+            //    } catch (Exception $e) {
+            //  logx("{TRY ERROR}".$e->getMessage());
+            // Handle exception
+            //file_put_contents("php://stderr", "ERROR!!: = ".$e->getMessage().PHP_EOL);
+            //    }
+        }
+        }
             //get username
-            $GLOBALS['token']   = $_ENV["techware_fb_token"];
+            function KaziBot(){
+try{
             $user_details = file_get_contents("https://graph.facebook.com/v2.6/".$GLOBALS['sid']."?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=".$GLOBALS['token']);
             $user_details =  json_decode($user_details);
             $GLOBALS['username'] = $user_details->first_name;
@@ -108,18 +88,24 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
             setReplys();
 
             //Payload processing
-
-                addField("fbjsondata",$datastream);
-
+            addField("fbjsondata",$datastream);
             if (isset($GLOBALS['locationGeoLat']) && $GLOBALS['locationGeoLat'] != '' && isset($GLOBALS['locationGeoLong']) && $GLOBALS['locationGeoLong'] != '') {
                 //GET LOCATION FROM GOOGLE
                 $GLOBALS['geoLoc'] = $GLOBALS['locationGeoLat'].",".$GLOBALS['locationGeoLong'];
-                addField('geolocation',$GLOBALS['geoLoc'] );
                 $cityCountry = GetCityCountry($GLOBALS['geoLoc']);
                 if($cityCountry != 'false'){
-                    addField($myStatus,$cityCountry);
+                    if(getField('isfindlocation')=='YES' || getField('findgeolocation')==''){
+                        addField('findgeolocation',$GLOBALS['geoLoc']);
+                        addField('findlocation',$cityCountry);
+                        addField('isfindlocation','NO');
+                        exit("");
+                    }else{
+                        addField('geolocation',$GLOBALS['geoLoc'] );
+                        addField($myStatus,$cityCountry);
+                    }
                     $GLOBALS['message'] = $cityCountry;
                     $GLOBALS['payload'] = null;
+                    $GLOBALS['quickReply'] = null;
                 }
             }
 
@@ -155,6 +141,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 logx("{CURRENT STATUS}".getField('status'));
                 logx("{READING REPLY....}".$GLOBALS['message']);
                 if (isset($GLOBALS['payload']) && $GLOBALS['payload'] != '') {
+                    addField('isfindlocation','NO');
                     logx("{ISPAYLOAD}=>".$GLOBALS['payload']);
                     //job_findjob , qualification_collage-diploma
                     $payldPara = explode("_", $GLOBALS['payload']);
@@ -172,23 +159,44 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                         }
 
                     }elseif($payldPara[0]=='find'){
-                        //search_job2jobs
-                        //search_job2
-                        //TODO: SEARCH - DONE
                         logx('{FINDING....}');
-                        logx($GLOBALS['payload']);
-                        if(findPlace($place)){
-                        sendMessage($GLOBALS['status_places']);
-                    }else{
+                        if ($payldPara[1]=='location') {
+                            addField('isfindlocation','YES');
+                            sendMessage($GLOBALS['find_location']);
+                        }elseif ($payldPara[1]=='place') {
+                            $myLoc = getField('findlocation');
+                            if($myLoc==''){
+                                sendMessage($GLOBALS['find_location_place']);
+                            }else{
+                                sendMessage(basicReply("Hi ".$GLOBALS['username'].",\nI can help you find places around ".$myLoc.".\nJust type the command 'find [place]'.(e.g.find hospital,find police,find atm)."));
+                            }
+                        }
 
-                    }
-
-                        //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
                         logx($GLOBALS['smsg']);
                         logMSG($GLOBALS['log']);
-                        //=======================================//
-                        sendReply(getField('status'));
-                        //sendReply($payldPara[0]);
+
+                    }elseif($payldPara[0]=='toggle'){
+                        if(getField('userType')=="Find-Job"){
+                            if(getField('isNotification')=="YES"){
+                                addField('isNotification',"NO");
+                                sendMessage(basicReply("Daily notifications have been disabled."));
+                            }else{
+                                addField('isNotification',"YES");
+                                sendMessage(basicReply("Daily notifications have been enable."));
+                            }
+                        }else{
+                            sendMessage(basicReply("Only users finding jobs can toggle daily notifications."));
+                        }
+                    }elseif($payldPara[0]=='view'){
+                        sendReply('info');
+                    }elseif($payldPara[0]=='help'){
+                        if ($payldPara[1]=='find-job') {
+                            sendMessage(basicReply("About find job\nI help connect users looking for jobs with users looking for workers. Once you complete your find job profile you will be able to search for job openings.I will also send you daily job openings notifications."));
+                        }elseif ($payldPara[1]=='post-job') {
+                            sendMessage(basicReply("About post job\nI help connect users looking for jobs with users looking for workers. Once you complete your post job profile. I will notify users who match your job requirement of the opening. They will then be able to contact you for further information."));
+                        }elseif ($payldPara[1]=='find') {
+                            sendMessage(basicReply("About Find Places\nI can help you find places around you. I will only get locations that are in the public domain. I will also only show you more relevant places. Refining your find command can get you better results."));
+                        }
                     }elseif($payldPara[0]=='search'){
                         //search_job2jobs
                         //search_job2
@@ -236,6 +244,19 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 }
                 }else{
                     if (isset($GLOBALS['message']) && $GLOBALS['message'] != '') {
+
+                        if(getField('isfindlocation')=='YES'){
+                            addField('findlocation',$GLOBALS['message']);
+                            $geodata = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.getField('findlocation'));
+                            $jsondata=json_decode($geodata);
+                            //$google_places->location = array($jsondata->results[0]->geometry->location->lat,$jsondata->results[0]->geometry->location->lng);
+                            $geocodestr = $jsondata->results[0]->geometry->location->lat.",".$jsondata->results[0]->geometry->location->lng;
+                            addField('findgeolocation',$geocodestr);
+                            addField('isfindlocation','NO');
+                            sendReply(getField('status'));
+                            //exit("");
+                        }
+
                         logx("{IS MESSAGE}".$GLOBALS['message']);
                         if(strpos($GLOBALS['message'],'find')===0){
                             $place = $GLOBALS['message'];
@@ -319,17 +340,17 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
 
             WAIT for user input
             */
-        }
+
         logx("Waiting for user reply");
     //}
-}
+
 logMSG($GLOBALS['log']);
 } catch (Exception $e) {
     logx("{TRY ERROR}".$e->getMessage());
     // Handle exception
     //file_put_contents("php://stderr", "ERROR!!: = ".$e->getMessage().PHP_EOL);
 }
-
+}
 
 function setPayload($paypara)
 {
@@ -347,6 +368,10 @@ function setPayload($paypara)
         case "location":
         //does thi happen? I wonder
         //this breaks the system
+            if(getField('isfindlocation')=='YES' || (getField('findgeolocation')=='' && getField('findlocation')=='')){
+                addField('findlocation',paypara[1]);
+                addField('isfindlocation','NO');
+            }
             addField($paypara[0], $paypara[1]);
             $isSet = true;
             break;
@@ -431,6 +456,20 @@ function setStatus($myStatus,$myMessage)
         */
         //TODO: Get from geolocation
             addField($myStatus, $myMessage);
+
+            if(getField('isfindlocation')=='YES' || (getField('findgeolocation')=='' && getField('findlocation')=='')){
+                addField('findlocation',$GLOBALS['message']);
+                $geodata = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.getField('findlocation'));
+                $jsondata=json_decode($geodata);
+                //$google_places->location = array($jsondata->results[0]->geometry->location->lat,$jsondata->results[0]->geometry->location->lng);
+                $geocodestr = $jsondata->results[0]->geometry->location->lat.",".$jsondata->results[0]->geometry->location->lng;
+                addField('findgeolocation',$geocodestr);
+                addField('geolocation',$geocodestr);
+                addField('isfindlocation','NO');
+                sendReply(getField('status'));
+                //exit("");
+            }
+
             $isSet = true;
             break;
         case "about":
@@ -672,14 +711,14 @@ $geolog = "{start}";
 
 
     //get geocode or reverse code
-    $geocodestr = getField('geolocation');
+    $geocodestr = getField('findgeolocation');
 
     if(isset($geocodestr) && $geocodestr != ''){
         //$geoarg = explode(',', $geocodestr);
         //$google_places->location = array($geoarg[0],$geoarg [1]);
         $geolog= $geolog.'{GEOCODING LOC SET} '.$geocodestr.$find;
     }else{
-        $geocodestr = getField('location');
+        $geocodestr = getField('findlocation');
         //TODO:get geoloc for above location
         if(isset($geocodestr) && $geocodestr != ''){
             $geodata = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.$geocodestr);
@@ -695,7 +734,7 @@ $geolog = "{start}";
         }
     }
 
-    $geoclocation = getField('location');
+    $geoclocation = getField('findlocation');
 
     //$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find." at ".$geocodestr);
 
@@ -707,11 +746,26 @@ $geolog = "{start}";
     //$google_places->types    = $find; // Requires keyword, name or types
     //$results               = $google_places->nearbySearch();
 if(isset($geocodestr) && $geocodestr != ''){
-    $results =  file_get_contents('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=5000&type='.$find.'&keyword='.$find.'&key='.$_ENV['google_places_key']);
+    //$geoURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=5000&type='.$find.'&keyword='.$find.'&key='.$_ENV['google_places_key'];
+    $geoURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=5000&keyword='.$find.'&key='.$_ENV['google_places_key'];
+    $results =  file_get_contents($geoURL);
     //$jsondata = json_decode($results );
 
         //$jsondata = json_decode(json_encode($results));
         $jsondata = json_decode($results);
+/*
+        if($jsondata->status != "OK")
+          {
+              $geoURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=50000&type='.$find.'&keyword='.$find.'&key='.$_ENV['google_places_key'];
+              $results =  file_get_contents($geoURL);
+              $jsondata = json_decode($results);
+          }
+
+*/
+//if($GLOBALS['username']=='Leo'){
+    $geolog= $geolog."  <<< ".$geoURL." >>>  ";
+//}
+
 
       if($jsondata->status == "OK")
         {
@@ -732,8 +786,6 @@ if(isset($geocodestr) && $geocodestr != ''){
             //https://maps.googleapis.com/maps/api/staticmap?center=Dandora%20Girl%27s%20Secondary%20School%20nairobi%20kenya&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo&markers=Dandora%20Girl%27s%20Secondary%20School&zoom=17
             $geolatx = $component->name."+,".$component->vicinity."+,".$geoclocation;
             $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx."&zoom=17";
-
-
 
             $element = '
            {
@@ -759,6 +811,7 @@ if(isset($geocodestr) && $geocodestr != ''){
             $GLOBALS['status_places'] = $GLOBALS['status_places'].']}}}}';
             if($count == 0){
                 $geolog= $geolog.'{ZERO COUNT-DO TEXT SEARCH}'.$geocodestr.$find;
+                if($GLOBALS['username']!='Leo'){ $geolog = "";}
                 $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
                    return false;
             }else{
@@ -766,6 +819,7 @@ if(isset($geocodestr) && $geocodestr != ''){
             }
     	}else{
             $geolog= $geolog.'{STATUS NOT OK} = [[['.$jsondata->status."]]]".$geocodestr.$find;
+            if($GLOBALS['username']!='Leo'){ $geolog = "";}
             $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
     	    return false;
     	}
@@ -1181,6 +1235,7 @@ function addNewUser()
     if (isNewUser()){
         if(insertUser()){
             addField("status","userType");
+            addField('isNotification','YES');
             return true;
         }else{
             return false;
@@ -1249,14 +1304,14 @@ function setReplys()
 {
     logx("{SETTING REPLIES}");
 
-
+/*
     $GLOBALS['isTyping'] = '
                 {"recipient":{
                     "id":"'.$GLOBALS['sid'].'"
                 },
                 "sender_action":"typing_on"
                 }';
-
+*/
     $GLOBALS['status_info'] = '
                 {"recipient":{
                     "id":"'.$GLOBALS['sid'].'"
@@ -1274,6 +1329,11 @@ function setReplys()
                             "content_type":"text",
                             "title":"Search Jobs",
                             "payload":"search_jobs"
+                        },
+                        {
+                            "content_type":"text",
+                            "title":"Find Place",
+                            "payload":"find_place"
                         },
                         {
                             "content_type":"text",
@@ -1323,6 +1383,11 @@ function setReplys()
                         "content_type":"text",
                         "title":"Post Job",
                         "payload":"userType_Post-Job"
+                    },
+                    {
+                        "content_type":"text",
+                        "title":"Find Place",
+                        "payload":"find_place"
                     }
                 ]
             }
@@ -1333,7 +1398,35 @@ function setReplys()
             "id":"' . $GLOBALS['sid'] . '"
         },
         "message":{
-            "text":"Please enter your job location : (city,country) \n(Nairobi, Kenya) or use your current location from fbmessager.",
+            "text":"Please send me your prefered job location.\nEnter a city,country or send the location using the [send location] button below.",
+            "quick_replies":[
+                {"content_type":"location"}
+            ]
+        }
+    }';
+//"Hi ".$GLOBALS['username'].",\nI can help you find places around ".$myLoc.".\nJust type the command 'find [place]'.(e.g.find hospital,find police,find atm).")
+$GLOBALS['find_location_place'] = '
+    {"recipient":{
+        "id":"' . $GLOBALS['sid'] . '"
+    },
+    "message":{
+        "text":"Hi '.$GLOBALS['username'].',\nI can help you find places around you.\nBut first I need the location you wish to find the place from.",
+        "quick_replies":[
+            {
+                "content_type":"text",
+                "title":"Enter Location",
+                "payload":"find_location"
+            }
+        ]
+    }
+}';
+
+    $GLOBALS['find_location'] = '
+        {"recipient":{
+            "id":"' . $GLOBALS['sid'] . '"
+        },
+        "message":{
+            "text":"Please send me the loction your wish to find places from.\nEither enter a city,country or send the location using the [send location] button below.",
             "quick_replies":[
                 {"content_type":"location"}
             ]
@@ -1638,6 +1731,11 @@ $GLOBALS['status_companyinfo'] = '
             "content_type":"text",
             "title": "Edit Name",
             "payload": "edit_companyname"
+        },
+        {
+            "content_type":"text",
+            "title":"Find Place",
+            "payload":"find_place"
         },
         {
             "content_type":"text",
