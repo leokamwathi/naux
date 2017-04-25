@@ -667,7 +667,7 @@ function isStr($str)
 
 function findPlace($find){
 
-
+$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
 $geolog = "{start}";
     $google_places = new joshtronic\GooglePlaces('AIzaSyCICsrT6NnZb0JkS_bJdNRVHx-jtIsog6Q');
 
@@ -690,7 +690,9 @@ $geolog = "{start}";
         }
     }
 
-    $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find." at ".$geocodestr);
+    $geoclocation = getField('location');
+
+    //$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find." at ".$geocodestr);
 
     //$google_places->location = array($lat,$lng);
 
@@ -706,8 +708,6 @@ $geolog = "{start}";
 
       if($jsondata->status == "OK")
         {
-
-
             $GLOBALS['status_places'] =
             '{"recipient": {
             "id": "' . $GLOBALS['sid'] . '"
@@ -721,7 +721,12 @@ $geolog = "{start}";
     	   foreach ($jsondata->results as $component) {
     		$geolatx = $component->geometry->location->lat.",".$component->geometry->location->lng;
     		//markers=icon:https://maps.gstatic.com/mapfiles/place_api/icons/school-64.png%7Cshadow:true
-    		$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx;
+    		//$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx;
+            //https://maps.googleapis.com/maps/api/staticmap?center=Dandora%20Girl%27s%20Secondary%20School%20nairobi%20kenya&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo&markers=Dandora%20Girl%27s%20Secondary%20School&zoom=17
+            $geolatx = $component->name."+,".$component->vicinity."+,".$geoclocation;
+            $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx."&zoom=17";
+
+
 
             $element = '
            {
@@ -758,10 +763,6 @@ $geolog = "{start}";
     	    return false;
     	}
     }
-
-
-
-
 
 function searchJobs($page)
 {
