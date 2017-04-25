@@ -669,24 +669,29 @@ function findPlace($find){
 
 $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
 $geolog = "{start}";
-    $google_places = new joshtronic\GooglePlaces('AIzaSyCICsrT6NnZb0JkS_bJdNRVHx-jtIsog6Q');
+
 
     //get geocode or reverse code
     $geocodestr = getField('geolocation');
 
     if(isset($geocodestr) && $geocodestr != ''){
-        $geoarg = explode(',', $geocodestr);
-        $google_places->location = array($geoarg[0],$geoarg [1]);
+        //$geoarg = explode(',', $geocodestr);
+        //$google_places->location = array($geoarg[0],$geoarg [1]);
         $geolog= $geolog.'{GEOCODING LOC SET} '.$geocodestr.$find;
     }else{
         $geocodestr = getField('location');
+        //TODO:get geoloc for above location
         if(isset($geocodestr) && $geocodestr != ''){
             $geodata = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.$geocodestr);
             $jsondata=json_decode($geodata);
-            $google_places->location = array($jsondata->results[0]->geometry->location->lat,$jsondata->results[0]->geometry->location->lng);
-                $geolog= $geolog.'{GEOCODING REVERSE SET} '.$geocodestr.$find;
+            //$google_places->location = array($jsondata->results[0]->geometry->location->lat,$jsondata->results[0]->geometry->location->lng);
+            $geocodestr = $jsondata->results[0]->geometry->location->lat.",".$jsondata->results[0]->geometry->location->lng;
+            $geolog= $geolog.'{GEOCODING REVERSE SET} '.$geocodestr.$find;
         }else{
-                $geolog= $geolog.'{GEOCODING ERROR} '.$geocodestr.$find;
+            //Please select a location first. (show send location menu) then try finding again
+            //    $geolog= $geolog.'{GEOCODING ERROR} '.$geocodestr.$find;
+            $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ['.$find.'].You must also enter a location for this to work. Please use the menu to add a new find location.');
+            $geocodestr = "";
         }
     }
 
@@ -698,13 +703,15 @@ $geolog = "{start}";
 
 
 
-    $google_places->rankby   = 'distance';
-    $google_places->types    = $find; // Requires keyword, name or types
-    $results               = $google_places->nearbySearch();
-
+    //$google_places->rankby   = 'distance';
+    //$google_places->types    = $find; // Requires keyword, name or types
+    //$results               = $google_places->nearbySearch();
+if(isset($geocodestr) && $geocodestr != ''){
+    $results =  file_get_contents('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=5000&type='.$find.'&keyword='.$find.'&key='.$_ENV['google_places_key']);
     //$jsondata = json_decode($results );
 
-        $jsondata = json_decode(json_encode($results));
+        //$jsondata = json_decode(json_encode($results));
+        $jsondata = json_decode($results);
 
       if($jsondata->status == "OK")
         {
@@ -762,6 +769,9 @@ $geolog = "{start}";
             $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
     	    return false;
     	}
+    }else{
+        return false;
+    }
     }
 
 function searchJobs($page)
