@@ -148,7 +148,7 @@ logx('{FIND PARA DONE....}'.":".$intent.":".$search_query.":".$location.":".$isF
 $isFind = true;
 //if(trim($intent) !='find'){
 $intent  = str_replace(' ', '', $intent);
-if(strpos(strtolower(trim($intent)),'find')===0){
+if(!strpos(strtolower(trim($intent)),'find')===0){
         logx('{NOT INTENT....}');
         $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text.')');
         $isFind = false;
