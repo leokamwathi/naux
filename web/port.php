@@ -1,11 +1,10 @@
 <?php
 //More to come
-require_once 'databaseCore.php';
-require_once 'replymessagesCore.php';
 require_once 'commonCore.php';
 require_once 'KaziBotCore.php';
-require_once 'findCore.php';
 require_once 'replymessagesCore.php';
+require_once 'findCore.php';
+require_once 'databaseCore.php';
 
 /*
 THINGS TO add
@@ -53,6 +52,6 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 KaziBot();
             }
         }
-        }
+    }
 
 ?>

@@ -1,10 +1,10 @@
 <?php
-require_once 'databaseCore.php';
-require_once 'replymessagesCore.php';
 require_once 'commonCore.php';
 require_once 'KaziBotCore.php';
-require_once 'findCore.php';
 require_once 'replymessagesCore.php';
+require_once 'findCore.php';
+require_once 'databaseCore.php';
+
 $GLOBALS['token'] = $_ENV["techware_fb_token"];
 
 $query = "SELECT * from ".$GLOBALS['dbTable']." where userType = 'Find-Job' AND isNotification = 'YES'";
