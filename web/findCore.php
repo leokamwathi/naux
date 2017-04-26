@@ -118,13 +118,17 @@ $find = preg_replace("/[^A-Za-z0-9 ]/", '', $find );
 $find  = str_replace(' ', '+', trim($find));
 $file = file_get_contents('https://api.wit.ai/message?v=20170426&q='.$find, false, $context);
 
-logx('{WITAI DONE....}');
+logx('{WITAI DONE....}'. trim(preg_replace('/\s+/', ' ', $file)));
 
 $quest = json_decode($file);
-$intent = $quest->entities->intent[0]->value;
+$intent ="";
+if(isset($quest->entities->intent)){
+    $intent = trim($quest->entities->intent[0]->value);
+}
 $search_query = "";
 $more_search_query="";
 $location="";
+if(isset($quest->entities->local_search_query)){
 foreach($quest->entities->local_search_query as $searchArray){
 	if ($search_query == ""){
 		$search_query = $searchArray->value;
@@ -132,15 +136,18 @@ foreach($quest->entities->local_search_query as $searchArray){
 		$more_search_query = $more_search_query."+".$searchArray->value;
 	}
 }
-
+}
+if(isset($quest->entities->location)){
 foreach($quest->entities->location as $LocationArray){
     $location = $location."+".$LocationArray->value;
+}
 }
 
 logx('{FIND PARA DONE....}'.":".$intent.":".$search_query.":".$location.":".$isFind);
 
 $isFind = true;
 //if(trim($intent) !='find'){
+$intent  = str_replace(' ', '', $intent);
 if(strpos(strtolower(trim($intent)),'find')===0){
         logx('{NOT INTENT....}');
         $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text.')');
