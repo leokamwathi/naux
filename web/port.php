@@ -706,6 +706,30 @@ function isStr($str)
      return(isset($GLOBALS['message']) && $GLOBALS['message'] != '');
 }
 
+function getLatLng($address){
+        if(isset($address) && $address != ''){
+            $geodata = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.$address);
+            $jsondata=json_decode($geodata);
+            return ($jsondata->results[0]->geometry->location->lat.",".$jsondata->results[0]->geometry->location->lng);
+        }else{
+            return "";
+        }
+}
+
+function getMYLatLng(){
+    $geocodestr = getField('findgeolocation');
+    if(isset($geocodestr) && $geocodestr != ''){
+        return $geocodestr;
+    }else{
+        $geocodestr = getLatLng(getField('findlocation'));
+        if(isset($geocodestr) && $geocodestr != ''){
+            return $geocodestr;
+        }else{
+            return "";
+        }
+    }
+}
+
 function findPlace($find){
 
 /*
@@ -715,76 +739,83 @@ function findPlace($find){
 
 //"find hotel near"
 
-$find = "";
-$near = "";
-$location ="";
-
-
 $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
-$geolog = "{start}";
-$find = trim($find);
-$find = preg_replace("/[^A-Za-z0-9 ]/", '', $find);
-$find = str_replace(' ', '+', $find);
-$find = substr($find , 0, 50); //only 50 charcterer
-$find = trim($find);
 
-    //get geocode or reverse code
-    $geocodestr = getField('findgeolocation');
+$find = "Find ".$find;
 
-    if(isset($geocodestr) && $geocodestr != ''){
-        //$geoarg = explode(',', $geocodestr);
-        //$google_places->location = array($geoarg[0],$geoarg [1]);
-        $geolog= $geolog.'{GEOCODING LOC SET} '.$geocodestr.$find;
-    }else{
-        $geocodestr = getField('findlocation');
-        //TODO:get geoloc for above location
-        if(isset($geocodestr) && $geocodestr != ''){
-            $geodata = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.$geocodestr);
-            $jsondata=json_decode($geodata);
-            //$google_places->location = array($jsondata->results[0]->geometry->location->lat,$jsondata->results[0]->geometry->location->lng);
-            $geocodestr = $jsondata->results[0]->geometry->location->lat.",".$jsondata->results[0]->geometry->location->lng;
-            $geolog= $geolog.'{GEOCODING REVERSE SET} '.$geocodestr.$find;
-        }else{
-            //Please select a location first. (show send location menu) then try finding again
-            //    $geolog= $geolog.'{GEOCODING ERROR} '.$geocodestr.$find;
-            $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ['.$find.'].You must also enter a location for this to work. Please use the menu to add a new find location.');
-            $geocodestr = "";
+$opts = array(
+  'http'=>array(
+    'method'=>"GET",
+    'header'=>"Authorization: Bearer 67IYBDEUGKA7TEJC2J46PUHWYJRAGM2G"
+  )
+);
+
+$context = stream_context_create($opts);
+$text  = str_replace(' ', '+', trim($text));
+$file = file_get_contents('https://api.wit.ai/message?v=20170426&q='.$text, false, $context);
+
+$quest = json_decode($file);
+$intent = $quest->entities->intent[0]->value;
+$search_query = "";
+$more_search_query="";
+$location="";
+foreach($quest->entities->local_search_query as $searchArray){
+	if ($search_query == ""){
+		$search_query = $searchArray->value;
+	}else{
+		$more_search_query = $more_search_query."+".$searchArray->value;
+	}
+}
+
+foreach($quest->entities->location as $LocationArray){
+$location = $location."+".$LocationArray->value;
+}
+
+if($location!=""){
+    $location = getLatLng($location);
+}
+
+$isFind = true;
+if($intent !='find'){
+        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
+        $isFind = false;
+}elseif($search_query==""){
+        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.'.\nYou must enter something to find.');
+        $isFind = false;
+}elseif($location==""){
+//NOW THIS
+//Do i have a pre defined location
+        $location = getMYLatLng();
+        if($location==""){
+                $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
+                $isFind = false;
         }
-    }
+}
 
-    $geoclocation = getField('findlocation');
-
-    //$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find." at ".$geocodestr);
-
-    //$google_places->location = array($lat,$lng);
-
-
-
-    //$google_places->rankby   = 'distance';
-    //$google_places->types    = $find; // Requires keyword, name or types
-    //$results               = $google_places->nearbySearch();
-if(isset($geocodestr) && $geocodestr != ''){
+if(isset($geocodestr) && $geocodestr != '' && $isFind){
     //$geoURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=5000&type='.$find.'&keyword='.$find.'&key='.$_ENV['google_places_key'];
-    $geoURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=5000&keyword='.$find.'&key='.$_ENV['google_places_key'];
-    $results =  file_get_contents($geoURL);
-    //$jsondata = json_decode($results );
+    $placesTextSearch='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$find.'&key='.$_ENV['google_places_key'];
+    $placesNearbySearch = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=50000&keyword='.$find.'&key='.$_ENV['google_places_key'];
+    $placesNearbySearchRanked = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?rankby=distance&location='.$geocodestr.'&radius=50000&keyword='.$find.'&key='.$_ENV['google_places_key'];
+    $results =  file_get_contents($placesNearbySearch);
+    $jsondata = json_decode($results);
+    $geoURL = $placesTextSearch;
+    if($jsondata->status != "OK")
+      {
+          $results =  file_get_contents($placesNearbySearchRanked);
+          $jsondata = json_decode($results);
+          $geoURL = $placesNearbySearchRanked;
+      }
 
-        //$jsondata = json_decode(json_encode($results));
-        $jsondata = json_decode($results);
-/*
-        if($jsondata->status != "OK")
-          {
-              $geoURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=50000&type='.$find.'&keyword='.$find.'&key='.$_ENV['google_places_key'];
-              $results =  file_get_contents($geoURL);
-              $jsondata = json_decode($results);
-          }
-
-*/
+      if($jsondata->status != "OK")
+        {
+            $results =  file_get_contents($placesTextSearch);
+            $jsondata = json_decode($results);
+            $geoURL = $placesTextSearch;
+        }
 //if($GLOBALS['username']=='Leo'){
     $geolog= $geolog."  <<< ".$geoURL." >>>  ";
 //}
-
-
       if($jsondata->status == "OK")
         {
             $GLOBALS['status_places'] =
