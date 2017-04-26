@@ -140,7 +140,8 @@ foreach($quest->entities->location as $LocationArray){
 logx('{FIND PARA DONE....}'.":".$intent.":".$search_query.":".$location.":".$isFind);
 
 $isFind = true;
-if(trim($intent) !='find'){
+//if(trim($intent) !='find'){
+if(strpos(strtolower(trim($intent)),'find')===0){
         logx('{NOT INTENT....}');
         $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text.')');
         $isFind = false;
