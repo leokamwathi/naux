@@ -1,6 +1,4 @@
 <?php
-
-
 $GLOBALS['dbTable'] = "jobsDBtest";
 $GLOBALS['pg_conn'] = pg_connect(pg_connection_string_from_database_url());
 $GLOBALS['dOptions'] = "user=bsgevrjwiebsmx password=ab2830989a17e4687378013a8fe933e311483e74373085ad86c278fc697bd521 host=ec2-54-225-230-243.compute-1.amazonaws.com dbname=d45idbnefqmtgd";

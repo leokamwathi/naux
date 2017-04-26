@@ -1,0 +1,35 @@
+<?php
+require_once 'databaseCore.php';
+require_once 'replymessagesCore.php';
+require_once 'commonCore.php';
+require_once 'KaziBotCore.php';
+require_once 'findCore.php';
+require_once 'replymessagesCore.php';
+$GLOBALS['token'] = $_ENV["techware_fb_token"];
+
+$query = "SELECT * from ".$GLOBALS['dbTable']." where userType = 'Find-Job' AND isNotification = 'YES'";
+$results = excuteQuery($query);
+
+if (pg_num_rows($results)) {
+    $rows = pg_fetch_all($results);
+    foreach ($rows as $row) {
+        $GLOBALS['sid'] = $row['userID'];
+        $GLOBALS['pid'] = $row['pageID'];
+        $user_details = file_get_contents("https://graph.facebook.com/v2.6/".$GLOBALS['sid']."?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=".$GLOBALS['token']);
+        $user_details =  json_decode($user_details);
+        $GLOBALS['username'] = $user_details->first_name;
+        if(isset($GLOBALS['username']) && $GLOBALS['username']!= ''){
+            searchJobs(0);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+ ?>
