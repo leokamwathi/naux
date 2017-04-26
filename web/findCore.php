@@ -137,6 +137,9 @@ foreach($quest->entities->local_search_query as $searchArray){
 	}
 }
 }
+
+$location = $more_search_query;
+
 if(isset($quest->entities->location)){
 foreach($quest->entities->location as $LocationArray){
     $location = $location."+".$LocationArray->value;
@@ -148,7 +151,7 @@ logx('{FIND PARA DONE....}'.":".$intent.":".$search_query.":".$location.":".$isF
 $isFind = true;
 //if(trim($intent) !='find'){
 $intent  = str_replace(' ', '', $intent);
-if(!strpos(strtolower(trim($intent)),'find')===0){
+if(!(strpos(strtolower(trim($intent)),'find')===0)){
         logx('{NOT INTENT....}');
         $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text.')');
         $isFind = false;
@@ -172,19 +175,19 @@ $geolocation = getLatLng($location);
 
 if(isset($geolocation) && $geolocation != '' && $isFind){
     //$geoURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=5000&type='.$find.'&keyword='.$find.'&key='.$_ENV['google_places_key'];
-    $placesTextSearch='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$find.'+in+'.getField('findlocation').'&key='.$_ENV['google_places_key'];
+    $placesTextSearch='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$find.'&key='.$_ENV['google_places_key'];
     $placesNearbySearch = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geolocation.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
     $placesNearbySearchRanked = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?rankby=distance&location='.$geolocation.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
-    $results =  file_get_contents($placesNearbySearch);
+    $results =  file_get_contents($placesNearbySearchRanked);
     $jsondata = json_decode($results);
     $geoURL = $placesNearbySearch;
-    logx('{NEARBY SEARCH....}'.$placesNearbySearch);
+    logx('{NEARBY RANKED SEARCH....}'.$placesNearbySearchRanked);
     if($jsondata->status != "OK")
       {
-          $results =  file_get_contents($placesNearbySearchRanked);
+          $results =  file_get_contents($placesNearbySearch);
           $jsondata = json_decode($results);
           $geoURL = $placesNearbySearchRanked;
-          logx('{NEARBY RANKED SEARCH....}'.$placesNearbySearchRanked);
+          logx('{NEARBY SEARCH....}'.$placesNearbySearch);
       }
 
       if($jsondata->status != "OK")
