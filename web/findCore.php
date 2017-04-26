@@ -100,15 +100,15 @@ function findPlace($find){
 */
 
 //"find hotel near"
-
+logx('{FINDSTART....}');
 $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
-
+addField('lastfind',$find);
 $find = strtolower($find);
 
 $opts = array(
   'http'=>array(
     'method'=>"GET",
-    'header'=>"Authorization: Bearer 67IYBDEUGKA7TEJC2J46PUHWYJRAGM2G"
+    'header'=>"Authorization: Bearer ".$_ENV['wit_token'].""
   )
 );
 
@@ -116,6 +116,8 @@ $context = stream_context_create($opts);
 $find = preg_replace("/[^A-Za-z0-9 ]/", '', $find );
 $find  = str_replace(' ', '+', trim($find));
 $file = file_get_contents('https://api.wit.ai/message?v=20170426&q='.$find, false, $context);
+
+logx('{WITAI DONE....}');
 
 $quest = json_decode($file);
 $intent = $quest->entities->intent[0]->value;
@@ -134,40 +136,46 @@ foreach($quest->entities->location as $LocationArray){
 $location = $location."+".$LocationArray->value;
 }
 
-if($location!=""){
-    $location = getLatLng($location);
-}
+logx('{FIND PARA DONE....}'.":".$intent.":".$search_query.":".$location.":".$isFind);
 
 $isFind = true;
 if($intent !='find'){
+        logx('{NOT INTENT....}');
         $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
         $isFind = false;
 }elseif($search_query==""){
+    logx('{NOT QUERY....}');
         $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.'.\nYou must enter something to find.');
         $isFind = false;
 }elseif($location==""){
+    logx('{NOT LOCATION....}');
 //NOW THIS
 //Do i have a pre defined location
-        $location = getMYLatLng();
-        if($location==""){
-                $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
-                $isFind = false;
-        }
+    $location = getField('findlocation');
+    if($location==""){
+        logx('{NOT EVEN MY LOCATION....}');
+        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$find."). Please try a command like find hotels in nairobi kenya. See the find places help menu for more commands");
+        $isFind = false;
+    }
 }
 
-if(isset($geocodestr) && $geocodestr != '' && $isFind){
+$geolocation = getLatLng($location);
+
+if(isset($location) && $location != '' && $isFind){
     //$geoURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=5000&type='.$find.'&keyword='.$find.'&key='.$_ENV['google_places_key'];
-    $placesTextSearch='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$find.'&key='.$_ENV['google_places_key'];
-    $placesNearbySearch = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=50000&keyword='.$find.'&key='.$_ENV['google_places_key'];
-    $placesNearbySearchRanked = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?rankby=distance&location='.$geocodestr.'&radius=50000&keyword='.$find.'&key='.$_ENV['google_places_key'];
+    $placesTextSearch='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$find.'+in+'.getField('findlocation').'&key='.$_ENV['google_places_key'];
+    $placesNearbySearch = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geolocation.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
+    $placesNearbySearchRanked = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?rankby=distance&location='.$geolocation.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
     $results =  file_get_contents($placesNearbySearch);
     $jsondata = json_decode($results);
-    $geoURL = $placesTextSearch;
+    $geoURL = $placesNearbySearch;
+    logx('{NEARBY SEARCH....}'.$placesNearbySearch);
     if($jsondata->status != "OK")
       {
           $results =  file_get_contents($placesNearbySearchRanked);
           $jsondata = json_decode($results);
           $geoURL = $placesNearbySearchRanked;
+          logx('{NEARBY RANKED SEARCH....}'.$placesNearbySearchRanked);
       }
 
       if($jsondata->status != "OK")
@@ -175,10 +183,12 @@ if(isset($geocodestr) && $geocodestr != '' && $isFind){
             $results =  file_get_contents($placesTextSearch);
             $jsondata = json_decode($results);
             $geoURL = $placesTextSearch;
+            logx('{TEXT SEARCH....}'.$placesTextSearch);
         }
 //if($GLOBALS['username']=='Leo'){
     $geolog= $geolog."  <<< ".$geoURL." >>>  ";
 //}
+logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
       if($jsondata->status == "OK")
         {
             $GLOBALS['status_places'] =
@@ -222,7 +232,7 @@ if(isset($geocodestr) && $geocodestr != '' && $isFind){
     	}
             $GLOBALS['status_places'] = $GLOBALS['status_places'].']}}}}';
             if($count == 0){
-                $geolog= $geolog.'{ZERO COUNT-DO TEXT SEARCH}'.$geocodestr.$find;
+                $geolog= $geolog.'{ZERO COUNT-DO TEXT SEARCH}'.$location.$find;
                 if($GLOBALS['username']!='Leo'){ $geolog = "";}
                 $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
                    return false;
@@ -230,12 +240,14 @@ if(isset($geocodestr) && $geocodestr != '' && $isFind){
                 return true;
             }
     	}else{
-            $geolog= $geolog.'{STATUS NOT OK} = [[['.$jsondata->status."]]]".$geocodestr.$find;
+            logx('{STATUS NOT OK....}');
+            $geolog= $geolog.'{STATUS NOT OK} = [[['.$jsondata->status."]]]".$location.$find;
             if($GLOBALS['username']!='Leo'){ $geolog = "";}
-            $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
-    	    return false;
+                $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
+    	           return false;
     	}
     }else{
+        logx('{GEOCODESTR FAIL....}');
         return false;
     }
     }
