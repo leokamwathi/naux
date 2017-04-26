@@ -18,10 +18,16 @@ if (isset($GLOBALS['locationGeoLat']) && $GLOBALS['locationGeoLat'] != '' && iss
         if(getField('isfindlocation')=='YES' || getField('findgeolocation')==''){
             addField('findgeolocation',$GLOBALS['geoLoc']);
             addField('findlocation',$cityCountry);
+            if(getField('isfindlocation')=='YES'){
+                sendMessage(basicReply("Hi ".$GLOBALS['username'].",\nYour find location has been set. I can now help you find places around that location.\nJust type the command  find [place]. (e.g.find hospital,find hotel or even find 5 star hotel). See find places in the help menu for more commands."));
+                addField('isfindlocation','NO');
+                exit("");
+            }else{
+                addField('geolocation',$GLOBALS['geoLoc'] );
+                addField($myStatus,$cityCountry);
+            }
             addField('isfindlocation','NO');
             //sendMessage(basicReply(""));
-            sendMessage(basicReply("Hi ".$GLOBALS['username'].",\nYour find location has been set. I can now help you find places around that location.\nJust type the command  find [place]. (e.g.find hospital,find hotel or even find 5 star hotel). See find places in the help menu for more commands."));
-            exit("");
         }else{
             addField('geolocation',$GLOBALS['geoLoc'] );
             addField($myStatus,$cityCountry);
