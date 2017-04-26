@@ -187,9 +187,9 @@ if (isNewUser()) {
             }
 
             logx("{IS MESSAGE}".$GLOBALS['message']);
-            if(strpos($GLOBALS['message'],'find')===0){
+            if(strpos(strtolower($GLOBALS['message']),'find')===0){
                 $place = $GLOBALS['message'];
-                $place = trim(str_replace('find', '', $place));
+                //$place = trim(str_replace('find', '', $place));
                 //TODO:
                 //sdfsdf jojo
                 logx('{FINDING....}');

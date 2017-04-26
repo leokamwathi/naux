@@ -103,7 +103,7 @@ function findPlace($find){
 
 $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
 
-$find = "Find ".$find;
+$find = strtolower($find);
 
 $opts = array(
   'http'=>array(
@@ -113,8 +113,9 @@ $opts = array(
 );
 
 $context = stream_context_create($opts);
-$text  = str_replace(' ', '+', trim($text));
-$file = file_get_contents('https://api.wit.ai/message?v=20170426&q='.$text, false, $context);
+$find = preg_replace("/[^A-Za-z0-9 ]/", '', $find );
+$find  = str_replace(' ', '+', trim($find));
+$file = file_get_contents('https://api.wit.ai/message?v=20170426&q='.$find, false, $context);
 
 $quest = json_decode($file);
 $intent = $quest->entities->intent[0]->value;

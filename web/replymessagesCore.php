@@ -23,7 +23,8 @@ function setReplys()
                     Job:' . getField('job') . '\n
                     Qualification:' . getField('qualification') . '\n
                     Experience:' . getField('experience') . '\n\n
-                    I will send you daily notifications when I get job opennings matching your requirements",
+                    I will send you daily notifications when I get job openings matching your requirements.\n\n
+                    You can also find places around '.getField('findlocation').'.\nJust use the command find [place] eg find hotel.",
                     "quick_replies":[
                         {
                             "content_type":"text",
