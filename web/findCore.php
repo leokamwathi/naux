@@ -100,8 +100,9 @@ function findPlace($find){
 */
 
 //"find hotel near"
+$text = $find;
 logx('{FINDSTART....}');
-$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
+$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text.')');
 addField('lastfind',$find);
 $find = strtolower($find);
 
@@ -133,19 +134,19 @@ foreach($quest->entities->local_search_query as $searchArray){
 }
 
 foreach($quest->entities->location as $LocationArray){
-$location = $location."+".$LocationArray->value;
+    $location = $location."+".$LocationArray->value;
 }
 
 logx('{FIND PARA DONE....}'.":".$intent.":".$search_query.":".$location.":".$isFind);
 
 $isFind = true;
-if($intent !='find'){
+if(trim($intent) !='find'){
         logx('{NOT INTENT....}');
-        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find);
+        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text.')');
         $isFind = false;
 }elseif($search_query==""){
     logx('{NOT QUERY....}');
-        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.'.\nYou must enter something to find.');
+        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text.').\nYou must enter something to find.');
         $isFind = false;
 }elseif($location==""){
     logx('{NOT LOCATION....}');
@@ -154,14 +155,14 @@ if($intent !='find'){
     $location = getField('findlocation');
     if($location==""){
         logx('{NOT EVEN MY LOCATION....}');
-        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$find."). Please try a command like find hotels in nairobi kenya. See the find places help menu for more commands");
+        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text."). Please try a command like find hotels in nairobi kenya. See the find places help menu for more commands");
         $isFind = false;
     }
 }
 
 $geolocation = getLatLng($location);
 
-if(isset($location) && $location != '' && $isFind){
+if(isset($geolocation) && $geolocation != '' && $isFind){
     //$geoURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=5000&type='.$find.'&keyword='.$find.'&key='.$_ENV['google_places_key'];
     $placesTextSearch='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$find.'+in+'.getField('findlocation').'&key='.$_ENV['google_places_key'];
     $placesNearbySearch = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geolocation.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
