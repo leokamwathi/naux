@@ -590,8 +590,8 @@ $GLOBALS['status_companyexperience'] = '
     },
     {
         "content_type":"text",
-        "title":"1 month and over",
-        "payload":"companyexperience_1-month-and-over"
+        "title":"Some",
+        "payload":"companyexperience_some"
     },
     {
         "content_type":"text",

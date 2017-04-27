@@ -339,7 +339,7 @@ $Query     = "SELECT * from ".$GLOBALS['dbTable']." where usertype = 'Post-Job' 
 				$rows = pg_fetch_all($results);
 
 				foreach ($rows as $row) {
-				if($count==11){
+				if($count==8){
 					break;
 				}
 
@@ -356,7 +356,7 @@ $Query     = "SELECT * from ".$GLOBALS['dbTable']." where usertype = 'Post-Job' 
 					}else{
 						$geolocation = $row['companylocation'];
 						if(isset($geolocation) && $geolocation != ''){
-						$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolocation."&size=500x260&markers=".$geolocation."&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo";
+						    $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolocation."&size=500x260&markers=".$geolocation."&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo";
 						}else{
 							$geolocation = getField('location');
 							$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolocation."&size=500x260&markers=".$geolocation."&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo";
@@ -400,45 +400,45 @@ function getSearchQualification($qualification)
 {
     switch (strtolower($qualification)) {
         case "masters-degree":
-            return ("(LOWER(companyqualification)= 'Self-Taught' OR LOWER(companyqualification)= 'Certificate' OR LOWER(companyqualification)= 'Collage-Diploma' OR LOWER(companyqualification)= 'university-degree' OR LOWER(companyqualification)=  'masters-degree')");
+            return ("(LOWER(companyqualification)= 'self-taught' OR LOWER(companyqualification)= 'certificate' OR LOWER(companyqualification)= 'collage-diploma' OR LOWER(companyqualification)= 'university-degree' OR LOWER(companyqualification)=  'masters-degree')");
             break;
         case "university-degree":
-            return ("(LOWER(companyqualification)= 'Self-Taught' OR LOWER(companyqualification)= 'Certificate' OR LOWER(companyqualification)= 'Collage-Diploma' OR LOWER(companyqualification)= 'university-degree')");
+            return ("(LOWER(companyqualification)= 'self-taught' OR LOWER(companyqualification)= 'certificate' OR LOWER(companyqualification)= 'collage-diploma' OR LOWER(companyqualification)= 'university-degree')");
             break;
         case "collage-diploma":
-            return ("(LOWER(companyqualification)= 'Self-Taught' OR LOWER(companyqualification)= 'Certificate' OR LOWER(companyqualification)= 'Collage-Diploma')");
+            return ("(LOWER(companyqualification)= 'self-taught' OR LOWER(companyqualification)= 'certificate' OR LOWER(companyqualification)= 'collage-diploma')");
             break;
         case "certificate":
-            return ("(LOWER(companyqualification)= 'Self-Taught' OR LOWER(companyqualification)= 'Certificate')");
+            return ("(LOWER(companyqualification)= 'self-taught' OR LOWER(companyqualification)= 'certificate')");
             break;
         case "self-taught":
             return ("(LOWER(companyqualification)=  'self-taught')");
             break;
         }
-		return("false");
+		return("companyqualification !=  ''");
 }
 
 function getSearchExperience($experience){
 
 switch (strtolower($experience)) {
 
-    case "First-Job":
+    case "first-job":
         return ("(LOWER(companyexperience) = 'none')");
         break;
     case "some":
-         return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'Some' )");
+         return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'some' )");
         break;
     case "1-to-3-years":
-        return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'Some' OR LOWER(companyexperience) = '1-year-and-over')");
+        return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'some' OR LOWER(companyexperience) = '1-year-and-over')");
         break;
     case "4-to-8-years":
-       return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'Some' OR LOWER(companyexperience) = '1-year-and-over' OR LOWER(companyexperience) = '4-years-and-over')");
+       return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'some' OR LOWER(companyexperience) = '1-year-and-over' OR LOWER(companyexperience) = '4-years-and-over')");
         break;
     case "9-years-and-over":
-        return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'Some' OR LOWER(companyexperience) = '1-year-and-over' OR LOWER(companyexperience) = '4-years-and-over' OR LOWER(companyexperience)=  '9-years-and-over')");
+        return ("(LOWER(companyexperience) = 'none' OR LOWER(companyexperience) = 'some' OR LOWER(companyexperience) = '1-year-and-over' OR LOWER(companyexperience) = '4-years-and-over' OR LOWER(companyexperience)=  '9-years-and-over')");
         break;
 }
-    return("false");
+    return("companyexperience != ''");
 }
 
 
