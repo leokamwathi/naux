@@ -71,9 +71,10 @@ function setReplys()
             },
             "message":{
                 "text":"Hi ' . $GLOBALS['username'] . ',\n
-                Welcome to the myKaziBot app. I am Kazibot. \n
-                I can help you find a job or find job applicants for your job. \n
-                What would you like to do?",
+                Welcome to MyKaziBot app. I am Kazibot. \n
+                I can help you find a job or find job applicants for your job openings. \n\n
+                I can also help you find places around. Just use the command find [place] in [location]. e.g. find hospitals in nairobi,kenya.\n
+                How can I help you today?",
                 "quick_replies":[
                     {
                         "content_type":"text",
