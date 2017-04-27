@@ -215,6 +215,17 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
            $count = 0;
     	   foreach ($jsondata->results as $component) {
     		$geolatx = $component->geometry->location->lat.",".$component->geometry->location->lng;
+            $photoPay = '';
+            if (isset($component->photos[0])){
+                $photoref = ($component->photos[0]->photo_reference);
+                //$photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=260&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
+                $photoPay = '
+                ,{
+                    "type":"postback",
+                    "title":"Photo",
+                    "payload":"photo_'.payloadFix($component->name).'_'.payloadFix($photoref).'"
+                }';
+            }
     		//markers=icon:https://maps.gstatic.com/mapfiles/place_api/icons/school-64.png%7Cshadow:true
     		//$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx;
             //https://maps.googleapis.com/maps/api/staticmap?center=Dandora%20Girl%27s%20Secondary%20School%20nairobi%20kenya&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo&markers=Dandora%20Girl%27s%20Secondary%20School&zoom=17
@@ -231,10 +242,10 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                        "type":"element_share"
                    },
                    {
-                       "type": "web_url",
-                       "url": "'.$maplink.'",
-                       "title": "View Map"
-                   }
+                       "type":"postback",
+                       "title":"Directions",
+                       "payload":"directions_'.payloadFix($geolatx).'_'.payloadFix($geolocation).'"
+                   }'.$photoPay.'
                ]
            }';
            if($count == 0){
@@ -269,6 +280,139 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
     }
     }
 
+function payloadFix($str){
+    $str = str_replace('_', '-', trim($str));
+    $str = str_replace(' ', '-', trim($str));
+    $str = str_replace('&', '-', trim($str));
+    $str = str_replace('?', '-', trim($str));
+    $str = str_replace('/', '-', trim($str));
+    $str = str_replace('.', '-', trim($str));
+    $str = str_replace(':', '-', trim($str));
+    return($tr);
+}
+function UnpayloadFix($str){
+    $str = str_replace('-', ' ', trim($str));
+    return($tr);
+}
+function getDirection($origin,$destination){
 
+$mapjson = file_get_contents("https://maps.googleapis.com/maps/api/directions/json?origin=$destination&destination=$origin&mode=DRIVING&key=".$_ENV['google_directions_key']);
+$dir = json_decode($mapjson);
+
+if($dir->status == "OK"){
+    $GLOBALS['status_places_directions'] =
+    '{"recipient": {
+    "id": "' . $GLOBALS['sid'] . '"
+    },
+    "message": {
+    "attachment": {
+        "type": "template",
+        "payload": {
+            "template_type": "generic","elements": [';
+        $path = $dir->routes[0]->overview_polyline->points;
+        $imgurl = 'https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A'.$path.'&key='.$_ENV['google_static_maps_key'];
+        $element = '
+       {
+           "title": "'.UnpayloadFix($destination).'",
+           "subtitle": "Distance:'.$dir->routes[0]->legs->distance->text.' Driving Time:'.$dir->routes[0]->legs->duration->text.'",
+           "image_url": "'.$imgurl.'",
+           "buttons": [
+               {
+                   "type":"element_share"
+               },
+               {
+                   "type":"postback",
+                   "title":"Direction Steps",
+                   "payload":"instructions_'.payloadFix($destination).'_'.payloadFix($origin).'"
+               }
+           ]
+       }';
+     $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].']}}}}';
+}else{
+    $GLOBALS['status_places_directions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to ('.$destination.')\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
+    //Directions not found
+}
+
+}
+
+function getPhoto($title,$photoref){
+    $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=260&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
+    $GLOBALS['status_places_photo'] =
+    '{"recipient": {
+    "id": "' . $GLOBALS['sid'] . '"
+    },
+    "message": {
+    "attachment": {
+        "type": "template",
+        "payload": {
+            "template_type": "generic","elements": [';
+        //$path = $dir->routes[0]->overview_polyline->points;
+        //$imgurl = 'https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A'.$path.'&key='.$_ENV['google_static_maps_key'];
+        $element = '
+       {
+           "title": "'.UnpayloadFix($title).'",
+           "image_url": "'.$photo.'",
+           "buttons": [
+               {
+                   "type":"element_share"
+               }
+           ]
+       }';
+     $GLOBALS['status_places_photo'] = $GLOBALS['status_places_photo'].']}}}}';
+    //Directions not found
+}
+
+function getInstructions($origin,$destination){
+
+$mapjson = file_get_contents("https://maps.googleapis.com/maps/api/directions/json?origin=$destination&destination=$origin&mode=DRIVING&key=".$_ENV['google_directions_key']);
+$dir = json_decode($mapjson);
+
+if($dir->status == "OK"){
+    $GLOBALS['status_places_instructions'] =
+    '{"recipient": {
+    "id": "' . $GLOBALS['sid'] . '"
+    },
+    "message": {
+    "attachment": {
+        "type": "template",
+        "payload": {
+            "template_type": "generic","elements": [';
+        $path = $dir->routes[0]->overview_polyline->points;
+        $imgurl = 'https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A'.$path.'&key='.$_ENV['google_static_maps_key'];
+        $count = 0;
+        foreach ($jsondata->results as $component) {
+        $element = '
+       {
+           "title": "'.UnpayloadFix($destination).'",
+           "subtitle": "Direction To('.UnpayloadFix($destination).')",
+           "image_url": "'.$imgurl.'",
+           "buttons": [
+               {
+                   "type":"element_share"
+               },
+               {
+                   "type":"postback",
+                   "title":"Instructions",
+                   "payload":"instructions_'.payloadFix($destination).'_'.payloadFix($origin).'"
+               }
+           ]
+       }';
+       if($count == 0){
+           $hasRows = true;
+           $GLOBALS['status_places_instructions'] = $GLOBALS['status_places_instructions'].$element;
+       }elseif($count < 11){
+           $GLOBALS['status_places_instructions'] = $GLOBALS['status_places_instructions'].",".$element;
+       }else{
+           break;
+       }
+       $count = $count + 1 ;
+   }
+     $GLOBALS['status_places_instructions'] = $GLOBALS['status_places_instructions'].']}}}}';
+}else{
+    $GLOBALS['status_places_instructions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to ('.$destination.')\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
+    //Directions not found
+}
+
+}
 
  ?>

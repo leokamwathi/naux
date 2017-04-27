@@ -161,6 +161,14 @@ if (isNewUser()) {
             //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
             logx($GLOBALS['smsg']);
             logMSG($GLOBALS['log']);
+        }elseif($payldPara[0]=='photo'){
+             getPhoto($payldPara[1],$payldPara[2]);
+             sendMessage($GLOBALS['status_places_photo']);
+            //"payload":"photo_'.payloadFix($photoref).'"
+        }elseif($payldPara[0]=='directions'){
+            getDirection($payldPara[1],$payldPara[2]);
+        }elseif($payldPara[0]=='instructions'){
+            getDirection($payldPara[1],$payldPara[2]);
         }else{
         if(setPayload($payldPara))
         {

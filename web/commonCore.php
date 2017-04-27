@@ -302,10 +302,10 @@ $GLOBALS['status_search_results'] = basicReply('Hi '.$GLOBALS['username'].', \nS
     $searchExpQuery = "";
     $searchlocQuery = "";
 
-    $searchJobQuery = " AND LOWER(companyjob) = '".getField('job')."' ";
+    $searchJobQuery = " AND LOWER(companyjob) = '".strtolower(getField('job'))."' ";
     $searchQualQuery = " AND ". getSearchQualification(getField('qualification'));
     $searchExpQuery = " AND ". getSearchExperience(getField('experience'));
-    $searchlocQuery = " AND LOWER(companylocation)= '".getField('location')."'";
+    $searchlocQuery = " AND LOWER(companylocation)= '".strtolower(getField('location'))."'";
 
 	 $searchQuery = strtolower($searchJobQuery.$searchQualQuery.$searchExpQuery.$searchlocQuery);
 //
@@ -352,7 +352,7 @@ $Query     = "SELECT * from ".$GLOBALS['dbTable']." where usertype = 'Post-Job' 
                     $geolocation = $row['geolocation'];
 
 					if(isset($geolocation) && $geolocation != ''){
-					$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolocation."&size=500x260&markers=".$geolocation."&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo";
+					                   $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolocation."&size=500x260&markers=".$geolocation."&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo";
 					}else{
 						$geolocation = $row['companylocation'];
 						if(isset($geolocation) && $geolocation != ''){
