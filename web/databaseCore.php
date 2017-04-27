@@ -1,6 +1,6 @@
 <?php
 $GLOBALS['pg_conn'] = pg_connect(pg_connection_string_from_database_url());
-$GLOBALS['dbTable'] = "jobsDBtest";
+$GLOBALS['dbTable'] = $_ENV["main_db_table"]; 
 
 function setup_database_connection()
 {

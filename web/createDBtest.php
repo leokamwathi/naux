@@ -1,5 +1,5 @@
 <?php
-$dbTable = "jobsDBtest";
+$GLOBALS['dbTable'] = $_ENV["main_db_table"];
   print ("<html>");
   print ("<head></head>");
   print ("<body>");
@@ -15,9 +15,9 @@ function pg_connection_string_from_database_url() {
 try{
 # Here we establish the connection. Yes, that's all.
 $pg_conn = pg_connect(pg_connection_string_from_database_url());
-$dbTable = "jobsDBtest";
+$GLOBALS['dbTable'] = $_ENV["main_db_table"];
 
-$result = pg_query($pg_conn, "SELECT * FROM jobsDBtest");
+$result = pg_query($pg_conn, "SELECT * FROM ".$GLOBALS['dbTable'] );
 print_r("Last connection Error read table<br>");
 print_r(pg_last_error($pg_conn));
 print_r("==========================<br>");
@@ -73,8 +73,8 @@ print ("</tr>");
 
 function createDB(){
     $pg_conn = pg_connect(pg_connection_string_from_database_url());
-    $dbTable = "jobsDBtest";
-$createTable = "CREATE TABLE IF NOT EXISTS ".$dbTable." (
+    $GLOBALS['dbTable'] = $_ENV["main_db_table"];
+$createTable = "CREATE TABLE IF NOT EXISTS ".$GLOBALS['dbTable']." (
                     pageID text  NOT NULL,
                     userID text  NOT NULL,
                     userType text ,

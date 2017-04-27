@@ -48,7 +48,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 $GLOBALS['locationGeoLong'] = $entry->messaging[0]->message->attachments[0]->payload->coordinates->long;
                 $GLOBALS['locationTitle'] = $entry->messaging[0]->message->attachments[0]->title;
                 $GLOBALS['mid'] = $entry->messaging[0]->message->mid;
-                $GLOBALS['dbTable']      = "jobsDBtest";
+                $GLOBALS['dbTable'] = $_ENV["main_db_table"];
                 KaziBot();
             }
         }
