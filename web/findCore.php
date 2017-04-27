@@ -220,7 +220,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
             //https://maps.googleapis.com/maps/api/staticmap?center=Dandora%20Girl%27s%20Secondary%20School%20nairobi%20kenya&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo&markers=Dandora%20Girl%27s%20Secondary%20School&zoom=17
             $geolatx = $component->name."+,".$component->vicinity."+,".$geoclocation;
             $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx."&zoom=17";
-
+            $maplink = "http://maps.google.com/?q=".$geolatx;
             $element = '
            {
                "title": "'.$component->name.'",
@@ -229,6 +229,11 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                "buttons": [
                    {
                        "type":"element_share"
+                   },
+                   {
+                       "type": "web_url",
+                       "url": "'.$maplink.'",
+                       "title": "View Map"
                    }
                ]
            }';

@@ -280,6 +280,68 @@ $GLOBALS['status_delete'] = '
 ]
 }
 }';
+$GLOBAL['search_options-find-jobs'] =
+'{"recipient":{
+"id":"' . $GLOBALS['sid'] . '"
+},
+"message":{
+"text":"What do you want to do?",
+"quick_replies":[
+	{
+        "content_type":"text",
+        "title":"View Profile",
+        "payload":"view_profile"
+    },
+    {
+        "content_type":"text",
+        "title":"Find Place",
+        "payload":"find_place"
+    },
+    {
+        "content_type":"text",
+        "title":"Disable Notifications",
+        "payload":"toggle_notifications"
+    },
+    {
+        "content_type":"text",
+        "title":"Delete Profile",
+        "payload":"delete_profile"
+    }
+]
+}
+}';
+
+$GLOBAL['search_options_post-jobs'] =
+'{"recipient":{
+"id":"' . $GLOBALS['sid'] . '"
+},
+"message":{
+"text":"What do you want to do?",
+"quick_replies":[
+	{
+        "content_type":"text",
+        "title":"View Profile",
+        "payload":"view_profile"
+    },
+    {
+        "content_type":"text",
+        "title":"Find Place",
+        "payload":"find_place"
+    },
+    {
+        "content_type":"text",
+        "title":"Disable Notifications",
+        "payload":"toggle_notifications"
+    },
+    {
+        "content_type":"text",
+        "title":"Delete Profile",
+        "payload":"delete_profile"
+    }
+]
+}
+}';
+
 $GLOBALS['status_search_job2'] = '{"recipient": {
 "id": "' . $GLOBALS['sid'] . '"
 },

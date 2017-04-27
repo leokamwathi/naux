@@ -111,7 +111,7 @@ if (isNewUser()) {
                     sendMessage(basicReply("Daily notifications have been disabled."));
                 }else{
                     addField('isNotification',"YES");
-                    sendMessage(basicReply("Daily notifications have been enable."));
+                    sendMessage(basicReply("Daily notifications have been enabled."));
                 }
             }else{
                 sendMessage(basicReply("Only users finding jobs can toggle daily notifications."));
