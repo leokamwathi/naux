@@ -162,7 +162,9 @@ if (isNewUser()) {
             logx($GLOBALS['smsg']);
             logMSG($GLOBALS['log']);
         }elseif($payldPara[0]=='photo'){
-             getPhoto($payldPara[1],$payldPara[2]);
+            $photoref = str_replace($payldPara[0].'_','', trim($payldPara));
+            $photoref = str_replace($payldPara[1].'_','', trim($photoref));
+             getPhoto($payldPara[1],$photoref);
              sendMessage($GLOBALS['status_places_photo']);
             //"payload":"photo_'.payloadFix($photoref).'"
         }elseif($payldPara[0]=='directions'){

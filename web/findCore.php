@@ -223,7 +223,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                 ,{
                     "type":"postback",
                     "title":"Photo",
-                    "payload":"photo_'.$component->name.'_'.$photoref.'"
+                    "payload":"photo_'.payloadFix($component->name).'_'.$photoref.'"
                 }';
             }
     		//markers=icon:https://maps.gstatic.com/mapfiles/place_api/icons/school-64.png%7Cshadow:true
@@ -244,7 +244,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                    {
                        "type":"postback",
                        "title":"Directions",
-                       "payload":"directions_'.$component->name.','.$component->vicinity.'_'.$geolocation.'"
+                       "payload":"directions_'.payloadFix($component->name.','.$component->vicinity).'_'.$geolocation.'"
                    }'.$photoPay.'
                ]
            }';
