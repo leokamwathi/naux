@@ -120,11 +120,11 @@ if (isNewUser()) {
             sendReply('info');
         }elseif($payldPara[0]=='help'){
             if ($payldPara[1]=='find-job') {
-                sendMessage(basicReply("About find job \nI help connect users looking for jobs with users looking for workers. Once you complete your find job profile you will be able to search for job openings.I will also send you daily job openings notifications."));
+                sendMessage(basicReply("About find job: \nI help connect users looking for jobs with users looking for workers. Once you complete your find job profile you will be able to search for job openings.I will also send you daily job openings notifications."));
             }elseif ($payldPara[1]=='post-job') {
-                sendMessage(basicReply("About post job \nI help connect users looking for jobs with users looking for workers. Once you complete your post job profile. I will notify users who match your job requirement of the opening. They will then be able to contact you for further information."));
+                sendMessage(basicReply("About post job: \nI help connect users looking for jobs with users looking for workers. Once you complete your post job profile. I will notify users who match your job requirement of the opening. They will then be able to contact you for further information."));
             }elseif ($payldPara[1]=='find') {
-                sendMessage(basicReply("About Find Places \nI can help you find places around you.\nThe commands to find places are:-\n.find [place] e.g. find hotel\nfind [place] in [location] e.g. find hotel in Nairobi,Kenya (adding city,country will improve the accuracy.)"));
+                sendMessage(basicReply("About Find Places: \nI can help you find places around you.\nThe commands to find places are:-\n.find [place] e.g. find hotel\nfind [place] in [location] e.g. find hotel in Nairobi,Kenya (adding city,country will improve the accuracy.)"));
             }
         }elseif($payldPara[0]=='search'){
             //search_job2jobs

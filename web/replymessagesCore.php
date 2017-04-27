@@ -17,12 +17,13 @@ function setReplys()
                     "id":"'.$GLOBALS['sid'].'"
                 },
                 "message":{
-                    "text":"Hi '.$GLOBALS['username'].', \n
-                    Your profile information.\n
-                    Location:' . getField('location') . '\n
-                    Job:' . getField('job') . '\n
-                    Qualification:' . getField('qualification') . '\n
-                    Experience:' . getField('experience') . '\n\n
+                    "text":"Welcome '.$GLOBALS['username'].', \n
+                    This is your current profile information.\n\n
+                    Job : ' . getField('job') . '\n
+                    Location : ' . getField('location') . '\n
+                    Experience : ' . getField('experience') . '\n
+                    Qualification : ' . getField('qualification') . '\n
+                    Notifications : ' . getField('isnotification') . '\n\n
                     I will send you daily notifications when I get job openings matching your requirements.\n\n
                     You can also find places around '.getField('findlocation').'.\nJust use the command find [place] eg find hotel.",
                     "quick_replies":[
@@ -55,6 +56,11 @@ function setReplys()
                             "content_type":"text",
                             "title":"Edit Experience",
                             "payload":"edit_experience"
+                        },
+                        {
+                            "content_type":"text",
+                            "title":"Toggle Notifications",
+                            "payload":"toggle_notifications"
                         },
                         {
                             "content_type":"text",
@@ -149,7 +155,7 @@ $GLOBALS['find_location_place'] = '
     "id":"' . $GLOBALS['sid'] . '"
 },
 "message":{
-    "text":"How many years have you worked at this job?",
+    "text":"How much experience do you have at this job?",
     "quick_replies":[
         {
             "content_type":"text",
@@ -482,14 +488,14 @@ $GLOBALS['status_companyinfo'] = '
 },
 "message":{
     "text":"Welcome '.getField('companyname').', \n
-    This is the information you have entered. \n
-    Job applicants matching your requirements will be notified of your job posting.\n
-                                                        \n
-    Job:- '.getField('companyjob').'\n
-    Location:- '.getField('companyLocation').'\n
-    Experience:- '.getField('companyexperience').'\n
-    Qualification:- '.getField('companyqualification').'\n
-    Phone:- '.getField('companyphone').'\n",
+    This is your current job opening information. \n
+    Job applicants matching your requirements will be notified of your job opening.\n\n
+    Job opening : '.getField('companyjob').'\n
+    Location : '.getField('companyLocation').'\n
+    Experience : '.getField('companyexperience').'\n
+    Qualification : '.getField('companyqualification').'\n
+    Phone : '.getField('companyphone').'\n
+    Notifications : '.getField('isNotification').'\n",
     "quick_replies":[
         {
             "content_type":"text",
@@ -520,6 +526,16 @@ $GLOBALS['status_companyinfo'] = '
             "content_type":"text",
             "title": "Edit Qualification",
             "payload": "edit_companyqualification"
+        },
+        {
+            "content_type":"text",
+            "title": "Edit Phone",
+            "payload": "edit_companyphone"
+        },
+        {
+            "content_type":"text",
+            "title":"Toggle Notifications",
+            "payload":"toggle_notifications"
         },
         {
             "content_type":"text",

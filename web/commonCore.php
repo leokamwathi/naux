@@ -362,23 +362,24 @@ $Query     = "SELECT * from ".$GLOBALS['dbTable']." where usertype = 'Post-Job' 
 							$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolocation."&size=500x260&markers=".$geolocation."&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo";
 						}
 					}
-
-					 $element = '
-                    {
-                        "title": "'.$row['companyname'].'",
-                        "subtitle": "Job:'.$row['companyjob'].'|Loc:'.$row['companylocation'].'|Exp:'.$row['companyexperience'].'|Qualification:'.$row['companyqualification'].' ",
-                        "image_url": "'.$imgurl.'",
-                        "buttons": [
-                            {
-                                  "type":"phone_number",
-                                  "title":"Call '.$row['companyname'].'",
-                                  "payload":"'.$row["companyphone"].'"
-                            },
-                            {
-                                "type":"element_share"
-                            }
-                        ]
-                    }';
+                    if(isset($row["companyphone"]) && $row["companyphone"] !=''){
+    					 $element = '
+                                    {
+                                        "title": "'.$row['companyname'].'",
+                                        "subtitle": "Job:'.$row['companyjob'].'|Loc:'.$row['companylocation'].'|Exp:'.$row['companyexperience'].'|Qualification:'.$row['companyqualification'].' ",
+                                        "image_url": "'.$imgurl.'",
+                                        "buttons": [
+                                            {
+                                                  "type":"phone_number",
+                                                  "title":"Call '.$row['companyname'].'",
+                                                  "payload":"'.$row["companyphone"].'"
+                                            },
+                                            {
+                                                "type":"element_share"
+                                            }
+                                        ]
+                                    }';
+                    }
 					if($count == 0){
 						$hasRows = true;
 						$GLOBALS['status_search_results'] = $GLOBALS['status_search_results'].$element;
@@ -562,6 +563,7 @@ function sendReply($status)
 function sendMessage($msg){
     $GLOBALS['smsg'] = $msg;
     $msg = trim(preg_replace('/\s+/', ' ', $msg));
+    $msg  = str_replace('-', ' ', trim($msg));
     $options = array(
         'http' => array(
             'method' => 'POST',
