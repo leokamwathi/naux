@@ -288,11 +288,11 @@ function payloadFix($str){
     $str = str_replace('/', '-', trim($str));
     $str = str_replace('.', '-', trim($str));
     $str = str_replace(':', '-', trim($str));
-    return($tr);
+    return($str);
 }
 function UnpayloadFix($str){
     $str = str_replace('-', ' ', trim($str));
-    return($tr);
+    return($str);
 }
 function getDirection($origin,$destination){
 
