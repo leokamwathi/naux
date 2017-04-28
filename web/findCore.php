@@ -250,8 +250,8 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                 $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx."&zoom=17";
             //}
             //$dirURL = getDirectionURL(($component->name.','.$component->vicinity),($location.','.$geolocation));
-            $origin=urlSpaceFix($component->name.','.$component->vicinity.GetCityCountry($geolocation));
-            $destination=urlSpaceFix($location.','.GetCityCountry($geolocation));
+            $origin=urlSpaceFix($location.','.GetCityCountry($geolocation));
+            $destination=urlSpaceFix($component->name.','.$component->vicinity.GetCityCountry($geolocation));
             $dirURL = ('https://maps.googleapis.com/maps/api/directions/json?origin='.$origin.'&destination='.$destination.'&mode=DRIVING&key='.$_ENV['google_directions_key']);
             logx($dirURL);
             //payloadFix($component->name.','.$component->vicinity).
@@ -423,7 +423,7 @@ if($dir->status == "OK"){
 
         $element = '
        {
-           "title": "Photo:'.$dir->routes[0]->legs[0]->end_address.'",
+           "title": "('.$dir->routes[0]->legs[0]->start_address.') To: ('.$dir->routes[0]->legs[0]->end_address.')",
            "subtitle": "Distance:'.$dir->routes[0]->legs[0]->distance->text.' Driving Time:'.$dir->routes[0]->legs[0]->duration->text.'",
            "image_url": "'.$imgurl.'",
            "buttons": [
