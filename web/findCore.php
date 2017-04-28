@@ -429,6 +429,11 @@ if($dir->status == "OK"){
            "buttons": [
                {
                    "type":"element_share"
+               },
+               {
+                   "type":"postback",
+                   "title":"Direction Steps",
+                   "payload":"instructions_'.$url.'"
                }
            ]
        }';
@@ -437,6 +442,73 @@ if($dir->status == "OK"){
      logx($GLOBALS['status_places_directions']);
 }else{
     $GLOBALS['status_places_directions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to that location\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
+    //Directions not found
+}
+
+}
+
+function getURLDirectionSteps($url){
+$dirURL = urldecode($url);
+//"https://maps.googleapis.com/maps/api/directions/json?origin=".urlFix($destination)."&destination=".urlFix($origin)."&mode=DRIVING&key=".$_ENV['google_directions_key'];
+$dirURL = str_replace(' ','+', $dirURL);
+$mapjson = file_get_contents($dirURL);
+logx("{MAP JSON}".$mapjson);
+logx("{DIRECTIONS_URL_DECODE}".$dirURL);
+$dir = json_decode($mapjson);
+logx($dir->status."<<--status-->>".json_last_error());
+if($dir->status == "OK"){
+    $GLOBALS['status_places_instructions'] =
+    '{"recipient": {
+    "id": "' . $GLOBALS['sid'] . '"
+    },
+    "message": {
+    "attachment": {
+        "type": "template",
+        "payload": {
+            "template_type": "generic","elements": [';
+/*  ===========STEPS=============== for future
+,
+{
+    "type":"postback",
+    "title":"Direction Steps",
+    "payload":"instructions_'.payloadFix($destination).'_'.payloadFix($origin).'"
+}
+*/
+$count = 0;
+foreach($dir->routes[0]->steps as $steps){
+        $path = $steps->polyline->points;
+        $imgurl = 'https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A'.$path.'&key='.$_ENV['google_static_maps_key'];
+        $element = '
+       {
+           "title": "STEP '.($count+1).'",
+           "subtitle": "'.$steps->html_instructions.'",
+           "image_url": "'.$imgurl.'",
+           "buttons": [
+               {
+                   "type":"element_share"
+               },
+               {
+                   "type":"postback",
+                   "title":"Direction Steps",
+                   "payload":"instructions_'.$url.'"
+               }
+           ]
+       }';
+       if($count == 0){
+           $hasRows = true;
+           $GLOBALS['status_places_instructions'] = $GLOBALS['status_places_instructions'].$element;
+       }elseif($count < 9){
+           $GLOBALS['status_places_instructions'] = $GLOBALS['status_places_instructions'].",".$element;
+       }else{
+           break;
+       }
+       $count = $count + 1 ;
+    // $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].$element;
+ }
+     $GLOBALS['status_places_instructions'] = $GLOBALS['status_places_instructions'].']}}}}';
+     logx($GLOBALS['status_places_instructions']);
+}else{
+    $GLOBALS['status_places_instructions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to that location\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
     //Directions not found
 }
 

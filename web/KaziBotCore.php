@@ -175,7 +175,9 @@ if (isNewUser()) {
             getURLDirection($dirURL);
             sendMessage($GLOBALS['status_places_directions']);
         }elseif($payldPara[0]=='instructions'){
-            getDirection($payldPara[1],$payldPara[2]);
+            $dirURL= $GLOBALS['payload'];
+            $dirURL = str_replace($payldPara[0].'_','', $dirURL);
+            getURLDirectionSteps($dirURL);
             sendMessage($GLOBALS['status_places_instructions']);
         }else{
         if(setPayload($payldPara))
