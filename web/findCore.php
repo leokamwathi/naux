@@ -395,7 +395,8 @@ function getURLDirection($url){
 $dirURL = urldecode($url);
 //"https://maps.googleapis.com/maps/api/directions/json?origin=".urlFix($destination)."&destination=".urlFix($origin)."&mode=DRIVING&key=".$_ENV['google_directions_key'];
 $mapjson = file_get_contents($dirURL);
-logx($dirURL);
+logx("{MAP JSON}".$mapjson);
+logx("{DIRECTIONS_URL_DECODE}".$dirURL);
 $dir = json_decode($mapjson);
 logx($dir->status."<<--status-->>".json_last_error());
 if($dir->status == "OK"){
@@ -421,7 +422,7 @@ if($dir->status == "OK"){
 
         $element = '
        {
-           "title": "'.UnpayloadFix($destination).'",
+           "title": "'.$dir->routes[0]->legs->end_address.'",
            "subtitle": "Distance:'.$dir->routes[0]->legs->distance->text.' Driving Time:'.$dir->routes[0]->legs->duration->text.'",
            "image_url": "'.$imgurl.'",
            "buttons": [
@@ -434,7 +435,7 @@ if($dir->status == "OK"){
      $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].']}}}}';
      logx($GLOBALS['status_places_directions']);
 }else{
-    $GLOBALS['status_places_directions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to ('.$destination.')\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
+    $GLOBALS['status_places_directions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to that location\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
     //Directions not found
 }
 
