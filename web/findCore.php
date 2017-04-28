@@ -299,8 +299,8 @@ function getDirection($origin,$destination){
 $mapjson = file_get_contents("https://maps.googleapis.com/maps/api/directions/json?origin=".$destination."&destination=".$origin."&mode=DRIVING&key=".$_ENV['google_directions_key']);
 logx("https://maps.googleapis.com/maps/api/directions/json?origin=".$destination."&destination=".$origin."&mode=DRIVING&key=".$_ENV['google_directions_key']);
 $dir = json_decode($mapjson);
-logx($dir->status);
-if($dir->status == "OK"){
+logx($dir->status."<<--status-->>".json_last_error());
+if($dir->status == "OK" && json_last_error() == "JSON_ERROR_NONE"){
     $GLOBALS['status_places_directions'] =
     '{"recipient": {
     "id": "' . $GLOBALS['sid'] . '"
