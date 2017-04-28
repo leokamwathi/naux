@@ -249,7 +249,10 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
             //}else{
                 $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx."&zoom=17";
             //}
-            $dirURL = getDirectionURL(($component->name.','.$component->vicinity),($location.','.$geolocation));
+            //$dirURL = getDirectionURL(($component->name.','.$component->vicinity),($location.','.$geolocation));
+            $origin=urlSpaceFix($component->name.','.$component->vicinity);
+            $destination=urlSpaceFix($location.','.$geolocation);
+            $dirURL = ('https://maps.googleapis.com/maps/api/directions/json?origin='.$origin.'&destination='.$destination.'&mode=DRIVING&key='.$_ENV['google_directions_key']);
             logx($dirURL);
             //payloadFix($component->name.','.$component->vicinity).
             $maplink = "http://maps.google.com/?q=".$geolatx;
@@ -327,12 +330,16 @@ function urlFix($str){
     $str = trim(preg_replace('/\s+/', '', $str));
     return($str);
 }
-
+function urlSpaceFix($str){
+    $str = str_replace(' ', '+', trim($str));
+    return($str);
+}
 function getDirectionURL($origin,$destination){
     $map = file_get_contents(urlFix("https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&mode=DRIVING&key=".$_ENV['google_directions_key']));
     $dir = json_decode($map);
     $path = $dir->routes[0]->overview_polyline->points;
     $src ='https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A$path&key='.$_ENV['google_static_maps_key'];
+    return($src);
 }
 
 
