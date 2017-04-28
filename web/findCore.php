@@ -296,7 +296,8 @@ function UnpayloadFix($str){
 }
 function getDirection($origin,$destination){
 
-$mapjson = file_get_contents("https://maps.googleapis.com/maps/api/directions/json?origin=$destination&destination=$origin&mode=DRIVING&key=".$_ENV['google_directions_key']);
+$mapjson = file_get_contents("https://maps.googleapis.com/maps/api/directions/json?origin=".$destination."&destination=".$origin."&mode=DRIVING&key=".$_ENV['google_directions_key']);
+logx("https://maps.googleapis.com/maps/api/directions/json?origin=".$destination."&destination=".$origin."&mode=DRIVING&key=".$_ENV['google_directions_key']);
 $dir = json_decode($mapjson);
 
 if($dir->status == "OK"){
@@ -336,7 +337,8 @@ if($dir->status == "OK"){
 }
 
 function getPhoto($title,$photoref){
-    $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=260&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
+    $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
+    logx($photo);
     $GLOBALS['status_places_photo'] =
     '{"recipient": {
     "id": "' . $GLOBALS['sid'] . '"
