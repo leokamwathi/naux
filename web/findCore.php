@@ -299,7 +299,7 @@ function getDirection($origin,$destination){
 $mapjson = file_get_contents("https://maps.googleapis.com/maps/api/directions/json?origin=".$destination."&destination=".$origin."&mode=DRIVING&key=".$_ENV['google_directions_key']);
 logx("https://maps.googleapis.com/maps/api/directions/json?origin=".$destination."&destination=".$origin."&mode=DRIVING&key=".$_ENV['google_directions_key']);
 $dir = json_decode($mapjson);
-
+logx($dir->status);
 if($dir->status == "OK"){
     $GLOBALS['status_places_directions'] =
     '{"recipient": {
