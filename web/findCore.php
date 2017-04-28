@@ -297,7 +297,8 @@ function UnpayloadFix($str){
 }
 function urlFix($str){
     $str = str_replace(' ', '+', trim($str));
-    return(urlencode($str));
+    $str = trim(preg_replace('/\s+/', ' ', $str));
+    return($str);
 }
 function getDirection($origin,$destination){
 $dirURL = "https://maps.googleapis.com/maps/api/directions/json?origin=".urlFix($destination)."&destination=".urlFix($origin)."&mode=DRIVING&key=".$_ENV['google_directions_key'];
