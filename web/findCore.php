@@ -294,9 +294,13 @@ function UnpayloadFix($str){
     $str = str_replace('-', ' ', trim($str));
     return($str);
 }
+function urlFix($str){
+    $str = str_replace(' ', '+', trim($str));
+    return(urldecode($str));
+}
 function getDirection($origin,$destination){
 
-$mapjson = file_get_contents("https://maps.googleapis.com/maps/api/directions/json?origin=".$destination."&destination=".$origin."&mode=DRIVING&key=".$_ENV['google_directions_key']);
+$mapjson = file_get_contents(urlFix("https://maps.googleapis.com/maps/api/directions/json?origin=".$destination."&destination=".$origin."&mode=DRIVING&key=".$_ENV['google_directions_key']));
 logx("https://maps.googleapis.com/maps/api/directions/json?origin=".$destination."&destination=".$origin."&mode=DRIVING&key=".$_ENV['google_directions_key']);
 $dir = json_decode($mapjson);
 logx($dir->status."<<--status-->>".json_last_error());
@@ -337,7 +341,7 @@ if($dir->status == "OK" && json_last_error() == "JSON_ERROR_NONE"){
 }
 
 function getPhoto($title,$photoref){
-    $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
+    $photo = urlFix('https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key']);
     logx($photo);
     $GLOBALS['status_places_photo'] =
     '{"recipient": {
