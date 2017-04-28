@@ -313,7 +313,7 @@ $mapjson = file_get_contents($dirURL);
 logx($dirURL);
 $dir = json_decode($mapjson);
 logx($dir->status."<<--status-->>".json_last_error());
-if($dir->status == "OK" && json_last_error() == "JSON_ERROR_NONE"){
+if($dir->status == "OK"){
     $GLOBALS['status_places_directions'] =
     '{"recipient": {
     "id": "' . $GLOBALS['sid'] . '"
