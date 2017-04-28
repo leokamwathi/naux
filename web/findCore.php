@@ -249,7 +249,9 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
             //}else{
                 $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx."&zoom=17";
             //}
-            $dirurl=getDirectionURL(($component->name.','.$component->vicinity),($location.','.$geolocation));
+            $dirURL = getDirectionURL(($component->name.','.$component->vicinity),($location.','.$geolocation));
+            logx($dirURL);
+            //payloadFix($component->name.','.$component->vicinity).
             $maplink = "http://maps.google.com/?q=".$geolatx;
             $element = '
            {
@@ -263,12 +265,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                    {
                        "type":"postback",
                        "title":"Directions",
-                       "payload":"directions_'.payloadFix($component->name.','.$component->vicinity).'_'.$location.','.$geolocation.'"
-                   },
-                   {
-                       "type": "web_url",
-                       "url": "'.$dirurl.'",
-                       "title": "See Directions"
+                       "payload":"directions_'.urlencode($dirURL).'"
                    }
                ]
            }';
@@ -341,6 +338,55 @@ function getDirectionURL($origin,$destination){
 
 function getDirection($origin,$destination){
 $dirURL = "https://maps.googleapis.com/maps/api/directions/json?origin=".urlFix($destination)."&destination=".urlFix($origin)."&mode=DRIVING&key=".$_ENV['google_directions_key'];
+$mapjson = file_get_contents($dirURL);
+logx($dirURL);
+$dir = json_decode($mapjson);
+logx($dir->status."<<--status-->>".json_last_error());
+if($dir->status == "OK"){
+    $GLOBALS['status_places_directions'] =
+    '{"recipient": {
+    "id": "' . $GLOBALS['sid'] . '"
+    },
+    "message": {
+    "attachment": {
+        "type": "template",
+        "payload": {
+            "template_type": "generic","elements": [';
+        $path = $dir->routes[0]->overview_polyline->points;
+        $imgurl = 'https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A'.$path.'&key='.$_ENV['google_static_maps_key'];
+/*  ===========STEPS=============== for future
+,
+{
+    "type":"postback",
+    "title":"Direction Steps",
+    "payload":"instructions_'.payloadFix($destination).'_'.payloadFix($origin).'"
+}
+*/
+
+        $element = '
+       {
+           "title": "'.UnpayloadFix($destination).'",
+           "subtitle": "Distance:'.$dir->routes[0]->legs->distance->text.' Driving Time:'.$dir->routes[0]->legs->duration->text.'",
+           "image_url": "'.$imgurl.'",
+           "buttons": [
+               {
+                   "type":"element_share"
+               }
+           ]
+       }';
+     $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].$element;
+     $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].']}}}}';
+     logx($GLOBALS['status_places_directions']);
+}else{
+    $GLOBALS['status_places_directions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to ('.$destination.')\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
+    //Directions not found
+}
+
+}
+
+function getURLDirection($url){
+$dirURL = urldecode($url);
+//"https://maps.googleapis.com/maps/api/directions/json?origin=".urlFix($destination)."&destination=".urlFix($origin)."&mode=DRIVING&key=".$_ENV['google_directions_key'];
 $mapjson = file_get_contents($dirURL);
 logx($dirURL);
 $dir = json_decode($mapjson);

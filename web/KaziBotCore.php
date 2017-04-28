@@ -170,7 +170,9 @@ if (isNewUser()) {
              sendMessage($GLOBALS['status_places_photo']);
             //"payload":"photo_'.payloadFix($photoref).'"
         }elseif($payldPara[0]=='directions'){
-            getDirection($payldPara[1],$payldPara[2]);
+            $dirURL= $GLOBALS['payload'];
+            $dirURL = str_replace($payldPara[0].'_','', $dirURL);
+            getURLDirection($dirURL);
             sendMessage($GLOBALS['status_places_directions']);
         }elseif($payldPara[0]=='instructions'){
             getDirection($payldPara[1],$payldPara[2]);
