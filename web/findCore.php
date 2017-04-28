@@ -249,7 +249,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
             //}else{
                 $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx."&zoom=17";
             //}
-            //$imgurl=getDirectionURL(($component->name.','.$component->vicinity),($location.','.$geolocation));
+            $dirurl=getDirectionURL(($component->name.','.$component->vicinity),($location.','.$geolocation));
             $maplink = "http://maps.google.com/?q=".$geolatx;
             $element = '
            {
@@ -264,6 +264,11 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                        "type":"postback",
                        "title":"Directions",
                        "payload":"directions_'.payloadFix($component->name.','.$component->vicinity).'_'.$location.','.$geolocation.'"
+                   },
+                   {
+                       "type": "web_url",
+                       "url": "'.$dirurl.'",
+                       "title": "See Directions"
                    }
                ]
            }';
