@@ -178,7 +178,10 @@ if (isNewUser()) {
             $dirURL= $GLOBALS['payload'];
             $dirURL = str_replace($payldPara[0].'_','', $dirURL);
             getURLDirectionSteps($dirURL);
-            sendMessage($GLOBALS['status_places_instructions']);
+            foreach ($GLOBALS['status_places_instructions'] as $steps) {
+                sendMessage($steps);
+            }
+
         }else{
         if(setPayload($payldPara))
         {
