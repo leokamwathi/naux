@@ -178,16 +178,29 @@ if(isset($geolocation) && $geolocation != '' && $isFind){
     $placesTextSearch='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$find.'&key='.$_ENV['google_places_key'];
     $placesNearbySearch = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geolocation.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
     $placesNearbySearchRanked = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?rankby=distance&location='.$geolocation.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
-    $results =  file_get_contents($placesNearbySearchRanked);
+
+    if(!(strpos(strtolower(trim($find)),'near')===0)){
+        $results =  file_get_contents($placesNearbySearch);
+    }else{
+        $results =  file_get_contents($placesNearbySearchRanked);
+    }
+
     $jsondata = json_decode($results);
     $geoURL = $placesNearbySearch;
-    logx('{NEARBY RANKED SEARCH....}'.$placesNearbySearchRanked);
+    logx('{NEARBY RANKED SEARCH....}'.$placesNearbySearch);
     if($jsondata->status != "OK")
       {
-          $results =  file_get_contents($placesNearbySearch);
+          if(!(strpos(strtolower(trim($find)),'near')===0)){
+              $results =  file_get_contents($placesNearbySearchRanked);
+              logx('{NEARBY SEARCH....}'.$placesNearbySearchRanked);
+          }else{
+              $results =  file_get_contents($placesNearbySearch);
+              logx('{NEARBY SEARCH....}'.$placesNearbySearch);
+          }
+          //$results =  file_get_contents($placesNearbySearchRanked);
           $jsondata = json_decode($results);
           $geoURL = $placesNearbySearchRanked;
-          logx('{NEARBY SEARCH....}'.$placesNearbySearch);
+
       }
 
       if($jsondata->status != "OK")
