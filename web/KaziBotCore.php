@@ -162,7 +162,7 @@ if (isNewUser()) {
             logx($GLOBALS['smsg']);
             logMSG($GLOBALS['log']);
         }elseif($payldPara[0]=='photo'){
-            $photoref= $payldPara;
+            $photoref= $GLOBALS['payload'];
             $photoref = str_replace($payldPara[0].'_','', $photoref);
             $photoref = str_replace($payldPara[1].'_','', $photoref);
             $photoref = trim(preg_replace('/\s+/', '', $photoref));
