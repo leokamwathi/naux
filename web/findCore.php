@@ -394,6 +394,7 @@ if($dir->status == "OK"){
 function getURLDirection($url){
 $dirURL = urldecode($url);
 //"https://maps.googleapis.com/maps/api/directions/json?origin=".urlFix($destination)."&destination=".urlFix($origin)."&mode=DRIVING&key=".$_ENV['google_directions_key'];
+$dirURL = str_replace(' ','+', $dirURL);
 $mapjson = file_get_contents($dirURL);
 logx("{MAP JSON}".$mapjson);
 logx("{DIRECTIONS_URL_DECODE}".$dirURL);
