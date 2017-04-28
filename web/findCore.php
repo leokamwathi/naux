@@ -224,7 +224,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                 ,{
                     "type":"postback",
                     "title":"Photo",
-                    "payload":"photo_'.payloadFix($component->name).'_'.$photoref.'"
+                    "payload":"photo_'.payloadNameFix($component->name).'_'.$photoref.'"
                 }';
             }
     		//markers=icon:https://maps.gstatic.com/mapfiles/place_api/icons/school-64.png%7Cshadow:true
@@ -291,9 +291,15 @@ function payloadFix($str){
     $str = str_replace(':', '-', trim($str));
     return($str);
 }
+function payloadNameFix($str){
+    $str = str_replace('_', '-', trim($str));
+    $str = str_replace(' ', '-', trim($str));
+    return($str);
+}
 function UnpayloadFix($str){
     $str = str_replace('-', ' ', trim($str));
-    $str = trim(preg_replace('/\s+/', '', $str));
+    $str = str_replace('+', ' ', trim($str));
+    //$str = trim(preg_replace('/\s+/', '', $str));
     return($str);
 }
 function urlFix($str){
