@@ -423,8 +423,8 @@ if($dir->status == "OK"){
 
         $element = '
        {
-           "title": "'.$dir->routes[0]->legs->end_address.'",
-           "subtitle": "Distance:'.$dir->routes[0]->legs->distance->text.' Driving Time:'.$dir->routes[0]->legs->duration->text.'",
+           "title": "Photo:'.$dir->routes[0]->legs[0]->end_address.'",
+           "subtitle": "Distance:'.$dir->routes[0]->legs[0]->distance->text.' Driving Time:'.$dir->routes[0]->legs[0]->duration->text.'",
            "image_url": "'.$imgurl.'",
            "buttons": [
                {
