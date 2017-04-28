@@ -218,6 +218,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
             $photoPay = '';
             if (isset($component->photos[0])){
                 $photoref = ($component->photos[0]->photo_reference);
+                $photoref = trim(preg_replace('/\s+/', '', $photoref));
                 //$photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=260&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
                 $photoPay = '
                 ,{
@@ -292,12 +293,12 @@ function payloadFix($str){
 }
 function UnpayloadFix($str){
     $str = str_replace('-', ' ', trim($str));
-    $str = trim(preg_replace('/\s+/', ' ', $str));
+    $str = trim(preg_replace('/\s+/', '', $str));
     return($str);
 }
 function urlFix($str){
     $str = str_replace(' ', '+', trim($str));
-    $str = trim(preg_replace('/\s+/', ' ', $str));
+    $str = trim(preg_replace('/\s+/', '', $str));
     return($str);
 }
 function getDirection($origin,$destination){
@@ -318,6 +319,15 @@ if($dir->status == "OK" && json_last_error() == "JSON_ERROR_NONE"){
             "template_type": "generic","elements": [';
         $path = $dir->routes[0]->overview_polyline->points;
         $imgurl = 'https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A'.$path.'&key='.$_ENV['google_static_maps_key'];
+/*  ===========STEPS=============== for future
+,
+{
+    "type":"postback",
+    "title":"Direction Steps",
+    "payload":"instructions_'.payloadFix($destination).'_'.payloadFix($origin).'"
+}
+*/
+
         $element = '
        {
            "title": "'.UnpayloadFix($destination).'",
@@ -326,14 +336,10 @@ if($dir->status == "OK" && json_last_error() == "JSON_ERROR_NONE"){
            "buttons": [
                {
                    "type":"element_share"
-               },
-               {
-                   "type":"postback",
-                   "title":"Direction Steps",
-                   "payload":"instructions_'.payloadFix($destination).'_'.payloadFix($origin).'"
                }
            ]
        }';
+     $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].$element;
      $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].']}}}}';
 }else{
     $GLOBALS['status_places_directions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to ('.$destination.')\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
@@ -367,6 +373,7 @@ function getPhoto($title,$photoref){
                }
            ]
        }';
+     $GLOBALS['status_places_photo'] = $GLOBALS['status_places_photo'].$element;
      $GLOBALS['status_places_photo'] = $GLOBALS['status_places_photo'].']}}}}';
     //Directions not found
 }
