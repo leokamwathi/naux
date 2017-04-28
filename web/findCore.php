@@ -244,7 +244,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                    {
                        "type":"postback",
                        "title":"Directions",
-                       "payload":"directions_'.payloadFix($component->name.','.$component->vicinity).'_'.$geolocation.'"
+                       "payload":"directions_'.payloadFix($component->name.','.$component->vicinity).'_'.$location.','.$geolocation.'"
                    }'.$photoPay.'
                ]
            }';
