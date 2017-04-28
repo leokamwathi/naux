@@ -218,8 +218,8 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
             $photoPay = '';
             if (isset($component->photos[0])){
                 $photoref = ($component->photos[0]->photo_reference);
-                $photoref = trim(preg_replace('/\s+/', '', $photoref));
-                //$photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=260&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
+                //$photoref = trim(preg_replace('/\s+/', '', $photoref));
+                $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=260&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
                 $photoPay = '
                 ,{
                     "type":"postback",
@@ -231,7 +231,11 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
     		//$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx;
             //https://maps.googleapis.com/maps/api/staticmap?center=Dandora%20Girl%27s%20Secondary%20School%20nairobi%20kenya&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo&markers=Dandora%20Girl%27s%20Secondary%20School&zoom=17
             $geolatx = $component->name."+,".$component->vicinity."+,".$geoclocation;
-            $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx."&zoom=17";
+            if(isset($photo) && $photo != ''){
+                $imgurl=$photo;
+            }else{
+                $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx."&zoom=17";
+            }
             $maplink = "http://maps.google.com/?q=".$geolatx;
             $element = '
            {
@@ -273,13 +277,13 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
             $geolog= $geolog.'{STATUS NOT OK} = [[['.$jsondata->status."]]]".$location.$find;
             if($GLOBALS['username']!='Leo'){ $geolog = "";}
                 $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
-    	           return false;
+    	        return false;
     	}
     }else{
         logx('{GEOCODESTR FAIL....}');
         return false;
     }
-    }
+}
 
 function payloadFix($str){
     $str = str_replace('_', '-', trim($str));
@@ -357,7 +361,7 @@ if($dir->status == "OK"){
 
 function getPhoto($title,$photoref){
     logx($photoref);
-    $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference='.urlFix($photoref).'&sensor=false&key='.$_ENV['google_places_key'];
+    $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
     logx($photo);
     $GLOBALS['status_places_photo'] =
     '{"recipient": {
