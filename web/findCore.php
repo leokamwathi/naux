@@ -231,11 +231,12 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
     		//$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx;
             //https://maps.googleapis.com/maps/api/staticmap?center=Dandora%20Girl%27s%20Secondary%20School%20nairobi%20kenya&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo&markers=Dandora%20Girl%27s%20Secondary%20School&zoom=17
             $geolatx = $component->name."+,".$component->vicinity."+,".$geoclocation;
-            if(isset($photo) && $photo != ''){
-                $imgurl=$photo;
-            }else{
+            //if(isset($photo) && $photo != ''){
+            //    $imgurl=$photo;
+            //}else{
                 $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx."&zoom=17";
-            }
+            //}
+            $imgurl=getDirectionURL(($component->name.','.$component->vicinity),($location.','.$geolocation));
             $maplink = "http://maps.google.com/?q=".$geolatx;
             $element = '
            {
@@ -250,7 +251,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                        "type":"postback",
                        "title":"Directions",
                        "payload":"directions_'.payloadFix($component->name.','.$component->vicinity).'_'.$location.','.$geolocation.'"
-                   }'.$photoPay.'
+                   }
                ]
            }';
            if($count == 0){
@@ -311,6 +312,15 @@ function urlFix($str){
     $str = trim(preg_replace('/\s+/', '', $str));
     return($str);
 }
+
+function getDirectionURL($origin,$destination){
+    $map = file_get_contents(urlFix("https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&mode=DRIVING&key=".$_ENV['google_directions_key']));
+    $dir = json_decode($map);
+    $path = $dir->routes[0]->overview_polyline->points;
+    $src ='https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A$path&key='.$_ENV['google_static_maps_key'];
+}
+
+
 function getDirection($origin,$destination){
 $dirURL = "https://maps.googleapis.com/maps/api/directions/json?origin=".urlFix($destination)."&destination=".urlFix($origin)."&mode=DRIVING&key=".$_ENV['google_directions_key'];
 $mapjson = file_get_contents($dirURL);
