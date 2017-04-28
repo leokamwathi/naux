@@ -347,6 +347,7 @@ if($dir->status == "OK"){
        }';
      $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].$element;
      $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].']}}}}';
+     logx($GLOBALS['status_places_directions']);
 }else{
     $GLOBALS['status_places_directions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to ('.$destination.')\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
     //Directions not found
@@ -381,6 +382,7 @@ function getPhoto($title,$photoref){
        }';
      $GLOBALS['status_places_photo'] = $GLOBALS['status_places_photo'].$element;
      $GLOBALS['status_places_photo'] = $GLOBALS['status_places_photo'].']}}}}';
+     logx($GLOBALS['status_places_photo']);
     //Directions not found
 }
 
