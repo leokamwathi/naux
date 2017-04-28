@@ -342,6 +342,7 @@ if($dir->status == "OK" && json_last_error() == "JSON_ERROR_NONE"){
 }
 
 function getPhoto($title,$photoref){
+    logx($photoref);
     $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference='.urlFix($photoref).'&sensor=false&key='.$_ENV['google_places_key'];
     logx($photo);
     $GLOBALS['status_places_photo'] =
