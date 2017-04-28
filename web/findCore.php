@@ -250,8 +250,8 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                 $imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx."&zoom=17";
             //}
             //$dirURL = getDirectionURL(($component->name.','.$component->vicinity),($location.','.$geolocation));
-            $origin=urlSpaceFix($component->name.','.$component->vicinity);
-            $destination=urlSpaceFix($location.','.$geolocation);
+            $origin=urlSpaceFix($component->name.','.$component->vicinity.GetCityCountry($geolocation));
+            $destination=urlSpaceFix($location.','.GetCityCountry($geolocation));
             $dirURL = ('https://maps.googleapis.com/maps/api/directions/json?origin='.$origin.'&destination='.$destination.'&mode=DRIVING&key='.$_ENV['google_directions_key']);
             logx($dirURL);
             //payloadFix($component->name.','.$component->vicinity).
