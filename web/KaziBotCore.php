@@ -231,6 +231,29 @@ if (isNewUser()) {
                 //sendReply(getField('status'));
                 exit("");
             }
+            if((strpos(strtolower($GLOBALS['message']),'directions')===0) || (strpos(strtolower($GLOBALS['message']),'get directions')===0)){
+                $place = $GLOBALS['message'];
+                //$place = trim(str_replace('find', '', $place));
+                //TODO:
+                //sdfsdf jojo
+                logx('{DIRECTIONS....}');
+                logx($GLOBALS['message']);
+                if(getDirections($place)){
+                    logx("{DIRECTIONS REPLY}".$GLOBALS['status_places_directions']);
+                    sendMessage($GLOBALS['status_places_directions']);
+                }else{
+                    sendMessage($GLOBALS['status_places_directions']);
+                    //$GLOBALS['status_places']
+                    //sendMessage(basicReply( "Hi ".$GLOBALS['username'].", I could not find any nearby locations that match [".$place."] either change your location or what you are looking for." ));
+                }
+                //sendMessage($GLOBALS['status_places']);
+                //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
+                logx($GLOBALS['smsg']);
+                logMSG($GLOBALS['log']);
+                //=======================================//
+                //sendReply(getField('status'));
+                exit("");
+            }
             if(strtolower(trim($GLOBALS['message']))=='hello kazi'){
                 sendMessage(basicReply( "Hello ".$GLOBALS['username']."," ));
             }elseif(strtolower(trim($GLOBALS['message']))=='hi kazi'){

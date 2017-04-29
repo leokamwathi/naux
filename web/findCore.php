@@ -304,6 +304,84 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
     }
 }
 
+function GetDirections($find){
+/*
+******all google types****
+"accounting","airport","amusement_park","aquarium","art_gallery","atm","bakery","bank","bar","beauty_salon","bicycle_store","book_store","bowling_alley","bus_station","cafe","campground","car_dealer","car_rental","car_repair","car_wash","casino","cemetery","church","city_hall","clothing_store","convenience_store","courthouse","dentist","department_store","doctor","electrician","electronics_store","embassy","establishment","finance","fire_station","florist","food","funeral_home","furniture_store","gas_station","general_contractor","grocery_or_supermarket","gym","hair_care","hardware_store","health","hindu_temple","home_goods_store","hospital","insurance_agency","jewelry_store","laundry","lawyer","library","liquor_store","local_government_office","locksmith","lodging","meal_delivery","meal_takeaway","mosque","movie_rental","movie_theater","moving_company","museum","night_club","painter","park","parking","pet_store","pharmacy","physiotherapist","place_of_worship","plumber","police","post_office","real_estate_agency","restaurant","roofing_contractor","rv_park","school","shoe_store","shopping_mall","spa","stadium","storage","store","subway_station","synagogue","taxi_stand","train_station","transit_station","travel_agency","university","veterinary_care","zoo","administrative_area_level_1","administrative_area_level_2","administrative_area_level_3","administrative_area_level_4","administrative_area_level_5","colloquial_area","country","establishment","finance","floor","food","general_contractor","geocode","health","intersection","locality","natural_feature","neighborhood","place_of_worship","political","point_of_interest","post_box","postal_code","postal_code_prefix","postal_code_suffix","postal_town","premise","room","route","street_address","street_number","sublocality","sublocality_level_4","sublocality_level_5","sublocality_level_3","sublocality_level_2","sublocality_level_1","subpremise"
+*/
+
+//"find hotel near"
+$text = $find;
+logx('{FINDSTART....}');
+$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to the places. Please be more specific with your command e.g. Directions from Hilton Hotel nairobi to maasai market nairobi');
+addField('lastDirections',$find);
+$find = strtolower($find);
+
+$opts = array(
+  'http'=>array(
+    'method'=>"GET",
+    'header'=>"Authorization: Bearer ".$_ENV['wit_token'].""
+  )
+);
+
+$context = stream_context_create($opts);
+$find = preg_replace("/[^A-Za-z0-9 ]/", '', $find );
+$find  = str_replace(' ', '+', trim($find));
+$file = file_get_contents('https://api.wit.ai/message?v=20170426&q='.$find, false, $context);
+
+logx('{DIRECTION WIT.AI DONE....}'. trim(preg_replace('/\s+/', ' ', $file)));
+
+$quest = json_decode($file);
+$intent ="";
+    if(isset($quest->entities->intent)){
+        $intent = trim($quest->entities->intent[0]->value);
+    }
+$search_query = "";
+$origin="";
+$destination="";
+    if(isset($quest->entities->local_search_query)){
+        foreach($quest->entities->local_search_query as $searchArray){
+        	if ($search_query == ""){
+        		$search_query = $searchArray->value;
+        	}else{
+        		$search_query = $search_query."+".$searchArray->value;
+        	}
+        }
+    }
+$destination = $search_query;
+    if(isset($quest->entities->location)){
+        foreach($quest->entities->location as $LocationArray){
+            if ($origin == ""){
+                $origin = $LocationArray->value;
+            }elseif($destination==""){
+                $destination = $LocationArray->value;
+            }else{
+                $destination = $destination."+".$LocationArray->value;
+            }
+
+        }
+    }
+
+$isFind = true;
+//if(trim($intent) !='find'){
+$intent  = str_replace(' ', '', $intent);
+    if(!(strpos(strtolower(trim($intent)),'directions')===0)){
+            logx('{NOT INTENT....}');
+            $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to the places. Please be more specific with your command e.g. Directions from Hilton Hotel nairobi to maasai market nairobi');
+            $isFind = false;
+    }elseif($origin=="" || $destination==""){
+            logx('{NOT QUERY....}');
+            $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to the places. Please be more specific with your command e.g. Directions from Hilton Hotel nairobi to maasai market nairobi');
+            $isFind = false;
+    }
+    if($isFind){
+        $dirURL = ('https://maps.googleapis.com/maps/api/directions/json?origin='.$origin.'&destination='.$destination.'&mode=DRIVING&key='.$_ENV['google_directions_key']);
+        getURLDirection(urlencode($dirURL));
+    }
+}
+
+
+
 function payloadFix($str){
     $str = str_replace('_', '-', trim($str));
     $str = str_replace(' ', '-', trim($str));
@@ -340,55 +418,6 @@ function getDirectionURL($origin,$destination){
     $path = $dir->routes[0]->overview_polyline->points;
     $src ='https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A$path&key='.$_ENV['google_static_maps_key'];
     return($src);
-}
-
-
-function getDirection($origin,$destination){
-$dirURL = "https://maps.googleapis.com/maps/api/directions/json?origin=".urlFix($destination)."&destination=".urlFix($origin)."&mode=DRIVING&key=".$_ENV['google_directions_key'];
-$mapjson = file_get_contents($dirURL);
-logx($dirURL);
-$dir = json_decode($mapjson);
-logx($dir->status."<<--status-->>".json_last_error());
-if($dir->status == "OK"){
-    $GLOBALS['status_places_directions'] =
-    '{"recipient": {
-    "id": "' . $GLOBALS['sid'] . '"
-    },
-    "message": {
-    "attachment": {
-        "type": "template",
-        "payload": {
-            "template_type": "generic","elements": [';
-        $path = $dir->routes[0]->overview_polyline->points;
-        $imgurl = 'https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A'.$path.'&key='.$_ENV['google_static_maps_key'];
-/*  ===========STEPS=============== for future
-,
-{
-    "type":"postback",
-    "title":"Direction Steps",
-    "payload":"instructions_'.payloadFix($destination).'_'.payloadFix($origin).'"
-}
-*/
-
-        $element = '
-       {
-           "title": "'.UnpayloadFix($destination).'",
-           "subtitle": "Distance:'.$dir->routes[0]->legs->distance->text.' Driving Time:'.$dir->routes[0]->legs->duration->text.'",
-           "image_url": "'.$imgurl.'",
-           "buttons": [
-               {
-                   "type":"element_share"
-               }
-           ]
-       }';
-     $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].$element;
-     $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].']}}}}';
-     logx($GLOBALS['status_places_directions']);
-}else{
-    $GLOBALS['status_places_directions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to ('.$destination.')\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
-    //Directions not found
-}
-
 }
 
 function getURLDirection($url){
