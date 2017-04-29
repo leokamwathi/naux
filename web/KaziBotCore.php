@@ -87,7 +87,7 @@ if (isNewUser()) {
                 sendReply(getField('status'));
             }
         }elseif($payldPara[0]=='get'){
-            sendMessage(basicReply("Hi ".$GLOBALS['username'].",\nI can help get for you directions to places around ".$myLoc.".\nJust type the commands \nJust use the command Get directions to [location] from [location]. e.g. Directions from Maasai Market to Hilton Hotel Nairobi. (adding a city and country will improve my results)"));
+            sendMessage(basicReply("Hi ".$GLOBALS['username'].",\nI can help get for you directions to places around ".$myLoc.".\nJust use the command\n Directions from [location] to [location]. e.g. Directions from Maasai Market to Hilton Hotel Nairobi Kenya. (adding a city and country will improve my results)"));
         }elseif($payldPara[0]=='find'){
             logx('{FINDING....}');
             if ($payldPara[1]=='location') {
