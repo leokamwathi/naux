@@ -233,6 +233,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                 $photoref = ($component->photos[0]->photo_reference);
                 //$photoref = trim(preg_replace('/\s+/', '', $photoref));
                 $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=260&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
+                $photo = trim(preg_replace('/\s+/', '', $photo));
                 $photoPay = '
                 ,{
                     "type":"postback",
@@ -553,6 +554,7 @@ function getPhoto($url){
     //logx($photoref);
     //$photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
     $photo = urldecode($url);
+    $photo = trim(preg_replace('/\s+/', '', $photo));
     logx($photo);
     $GLOBALS['status_places_photo'] =
     '{"recipient": {

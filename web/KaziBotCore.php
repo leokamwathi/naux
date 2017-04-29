@@ -215,7 +215,7 @@ if (isNewUser()) {
                 logx($GLOBALS['message']);
                 if(findPlace($place)){
                     logx("{PLACES REPLY}".$GLOBALS['status_places']);
-                    sendMessage($GLOBALS['status_places']);
+                    sendGoogleMessage($GLOBALS['status_places']);
                 }else{
                     sendMessage($GLOBALS['status_places']);
                     //$GLOBALS['status_places']
