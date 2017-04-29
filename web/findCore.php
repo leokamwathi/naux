@@ -364,6 +364,7 @@ $destination = $search_query;
 
 $isFind = true;
 //if(trim($intent) !='find'){
+$GLOBALS['get_directions'] = $find;
 $intent  = str_replace(' ', '', $intent);
     if(!(strpos(strtolower(trim($intent)),'directions')===0)){
             logx('{NOT DIRECTION INTENT....}');
@@ -443,9 +444,13 @@ if($dir->status == "OK"){
             "template_type": "generic","elements": [';
         $path = $dir->routes[0]->overview_polyline->points;
         $imgurl = 'https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A'.$path.'&key='.$_ENV['google_static_maps_key'];
+        $myTitle = 'Directions from '.$dir->routes[0]->legs[0]->start_address.' to '.$dir->routes[0]->legs[0]->end_address;
+        if(isset($GLOBALS['get_directions']) && $GLOBALS['get_directions'] != ''){
+            $myTitle = $GLOBALS['get_directions'];
+        }
         $element = '
        {
-           "title": "Directions from '.$dir->routes[0]->legs[0]->start_address.' to '.$dir->routes[0]->legs[0]->end_address.'",
+           "title": "'.$myTitle.'",
            "subtitle": "Distance:'.$dir->routes[0]->legs[0]->distance->text.' Driving Time:'.$dir->routes[0]->legs[0]->duration->text.'",
            "image_url": "'.$imgurl.'",
            "buttons": [
