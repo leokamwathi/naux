@@ -237,7 +237,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                 ,{
                     "type":"postback",
                     "title":"Photo",
-                    "payload":"photo_'.payloadNameFix($component->name).'_'.$photoref.'"
+                    "payload":"photo_'.urlencode($photo).'"
                 }';
             }
     		//markers=icon:https://maps.gstatic.com/mapfiles/place_api/icons/school-64.png%7Cshadow:true
@@ -269,7 +269,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                        "type":"postback",
                        "title":"Directions",
                        "payload":"directions_'.urlencode($dirURL).'"
-                   }
+                   }'.$photoPay.'
                ]
            }';
            if($count == 0){
@@ -548,9 +548,10 @@ foreach($dir->routes[0]->legs[0]->steps as $steps){
 
 }
 
-function getPhoto($title,$photoref){
-    logx($photoref);
-    $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
+function getPhoto($url){
+    //logx($photoref);
+    //$photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
+    $photo = urldecode($url);
     logx($photo);
     $GLOBALS['status_places_photo'] =
     '{"recipient": {
