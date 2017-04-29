@@ -100,7 +100,7 @@ function setReplys()
                     },
                     {
                         "content_type":"text",
-                        "title":"Directions",
+                        "title":"Get Directions",
                         "payload":"get_directions"
                     }
                 ]
