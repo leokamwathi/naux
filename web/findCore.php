@@ -229,7 +229,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
     	   foreach ($jsondata->results as $component) {
     		$geolatx = $component->geometry->location->lat.",".$component->geometry->location->lng;
             $photoPay = '';
-            if (isset($component->photos[0])){
+            if (isset($component->photos[0]) && $GLOBALS['sid'] == '1360046804041611'){
                 $photoref = ($component->photos[0]->photo_reference);
                 //$photoref = trim(preg_replace('/\s+/', '', $photoref));
                 $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=260&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
@@ -240,6 +240,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                     "payload":"photo_'.urlencode($photo).'"
                 }';
             }
+
     		//markers=icon:https://maps.gstatic.com/mapfiles/place_api/icons/school-64.png%7Cshadow:true
     		//$imgurl="https://maps.googleapis.com/maps/api/staticmap?center=".$geolatx."&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo".$marker="&markers=".$geolatx;
             //https://maps.googleapis.com/maps/api/staticmap?center=Dandora%20Girl%27s%20Secondary%20School%20nairobi%20kenya&size=500x260&key=AIzaSyDrw7vZP5NQ6gC9LPpxYL8AdEneojJKTpo&markers=Dandora%20Girl%27s%20Secondary%20School&zoom=17
