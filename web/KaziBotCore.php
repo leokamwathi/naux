@@ -168,19 +168,19 @@ if (isNewUser()) {
             $photoref = str_replace($payldPara[1].'_','', $photoref);
             $photoref = trim(preg_replace('/\s+/', '', $photoref));
              getPhoto($payldPara[1],$photoref);
-             sendMessage($GLOBALS['status_places_photo']);
+             sendGoogleMessage($GLOBALS['status_places_photo']);
             //"payload":"photo_'.payloadFix($photoref).'"
         }elseif($payldPara[0]=='directions'){
             $dirURL= $GLOBALS['payload'];
             $dirURL = str_replace($payldPara[0].'_','', $dirURL);
             getURLDirection($dirURL);
-            sendMessage($GLOBALS['status_places_directions']);
+            sendGoogleMessage($GLOBALS['status_places_directions']);
         }elseif($payldPara[0]=='instructions'){
             $dirURL= $GLOBALS['payload'];
             $dirURL = str_replace($payldPara[0].'_','', $dirURL);
             getURLDirectionSteps($dirURL);
             foreach ($GLOBALS['status_places_instructions'] as $steps) {
-                sendMessage($steps);
+                sendGoogleMessage($steps);
             }
 
         }else{
