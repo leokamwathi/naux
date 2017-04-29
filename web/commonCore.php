@@ -574,6 +574,14 @@ function sendMessage($msg){
     $context = stream_context_create($options);
     //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
     $GLOBALS['fbreply'] = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=".$GLOBALS['token'], false, $context);
+
+    $marco = json_decode($GLOBALS['fbreply']);
+
+    if (json_last_error() != "JSON_ERROR_NONE") {
+        logx("{FB REPLY ERROR!!!!! MSG NOT SEND}");
+        sendMessage(basicReply("😵 I am really sorry ".$GLOBALS['username'].". But I encounted an error while processing your request. Please try again later."));
+    }
+
     addField('lastReplyJson',$msg);
     addField("fbreply",$GLOBALS['fbreply']);
     addField("mylog",$GLOBALS['log']);
