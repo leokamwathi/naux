@@ -182,7 +182,6 @@ if (isNewUser()) {
             foreach ($GLOBALS['status_places_instructions'] as $steps) {
                 sendGoogleMessage($steps);
             }
-
         }else{
         if(setPayload($payldPara))
         {

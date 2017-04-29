@@ -366,16 +366,18 @@ $isFind = true;
 //if(trim($intent) !='find'){
 $intent  = str_replace(' ', '', $intent);
     if(!(strpos(strtolower(trim($intent)),'directions')===0)){
-            logx('{NOT INTENT....}');
+            logx('{NOT DIRECTION INTENT....}');
             $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to the places. Please be more specific with your command e.g. Directions from Hilton Hotel nairobi to maasai market nairobi');
             $isFind = false;
     }elseif($origin=="" || $destination==""){
-            logx('{NOT QUERY....}');
+            logx('{NOT DIRECTION QUERY....}');
             $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to the places. Please be more specific with your command e.g. Directions from Hilton Hotel nairobi to maasai market nairobi');
             $isFind = false;
     }
     if($isFind){
+
         $dirURL = ('https://maps.googleapis.com/maps/api/directions/json?origin='.$origin.'&destination='.$destination.'&mode=DRIVING&key='.$_ENV['google_directions_key']);
+        logx('{IS DIRECTION URL....}'.$dirURL);
         getURLDirection(urlencode($dirURL));
     }
 }
@@ -441,18 +443,9 @@ if($dir->status == "OK"){
             "template_type": "generic","elements": [';
         $path = $dir->routes[0]->overview_polyline->points;
         $imgurl = 'https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A'.$path.'&key='.$_ENV['google_static_maps_key'];
-/*  ===========STEPS=============== for future
-,
-{
-    "type":"postback",
-    "title":"Direction Steps",
-    "payload":"instructions_'.payloadFix($destination).'_'.payloadFix($origin).'"
-}
-*/
-
         $element = '
        {
-           "title": "('.$dir->routes[0]->legs[0]->start_address.') To: ('.$dir->routes[0]->legs[0]->end_address.')",
+           "title": "Directions from '.$dir->routes[0]->legs[0]->start_address.' to '.$dir->routes[0]->legs[0]->end_address.'",
            "subtitle": "Distance:'.$dir->routes[0]->legs[0]->distance->text.' Driving Time:'.$dir->routes[0]->legs[0]->duration->text.'",
            "image_url": "'.$imgurl.'",
            "buttons": [
