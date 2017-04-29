@@ -77,10 +77,10 @@ function setReplys()
             },
             "message":{
                 "text":"Hi ' . $GLOBALS['username'] . ',\n
-                Welcome to MyKaziBot app. I am Kazibot. \n
-                I can help you find a job or find job applicants for your job openings. \n\n
-                I can help you find places around. Just use the command find [place] in [location]. e.g. find hospitals in nairobi,kenya.\n
-                I can also help you find directions to places around. Just use the command Get directions to [location] from [location]. e.g. Directions from Maasai Market to Hilton Hotel Nairobi.\n
+                Welcome to MyKaziBot app. I am Kazibot. \n\n
+                I can help you find a job or find job applicants for your job openings. \n\n\n
+                I can help you find places around. Just use the command find [place] in [location]. e.g. find hospitals in nairobi,kenya.\n\n\n
+                I can also help you find directions to places around. Just use the command Get directions to [location] from [location]. e.g. Directions from Maasai Market to Hilton Hotel Nairobi.\n\n
                 How can I help you today?",
                 "quick_replies":[
                     {

@@ -86,7 +86,8 @@ if (isNewUser()) {
             }else{
                 sendReply(getField('status'));
             }
-
+        }elseif($payldPara[0]=='get'){
+            sendMessage(basicReply("Hi ".$GLOBALS['username'].",\nI can help get for you directions to places around ".$myLoc.".\nJust type the commands \nJust use the command Get directions to [location] from [location]. e.g. Directions from Maasai Market to Hilton Hotel Nairobi. (adding a city and country will improve my results)"));
         }elseif($payldPara[0]=='find'){
             logx('{FINDING....}');
             if ($payldPara[1]=='location') {
@@ -97,7 +98,7 @@ if (isNewUser()) {
                 if($myLoc==''){
                     sendMessage($GLOBALS['find_location_place']);
                 }else{
-                    sendMessage(basicReply("Hi ".$GLOBALS['username'].",\nI can help you find places around ".$myLoc.".\nJust type the commands \nfind [place] e.g.find hospital,find police station,find atm (I will search based on your find location or job location).\nfind [place] in [location] e.g find police stations in kampala,uganda (adding a city,country will improve the results)"));
+                    sendMessage(basicReply("Hi ".$GLOBALS['username'].",\nI can help you find places around ".$myLoc.".\nJust type the commands \nfind [place] e.g.find hospital,find police station,find atm (I will search based on your find location or job location).\nfind [place] in [location] e.g find police stations in kampala,uganda (adding a city,country will improve my results)"));
                 }
             }
 
