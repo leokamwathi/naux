@@ -584,6 +584,7 @@ function sendGoogleMessage($msg){
     $msg = trim(preg_replace('/\s+/', ' ', $msg));
 	$msg  = str_replace("'", '', trim($msg));
 	$msg  = str_replace("\\", "^", $msg);
+    $msg  = str_replace("^n", '\n', $msg);
 
     $options = array(
         'http' => array(
