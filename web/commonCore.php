@@ -592,9 +592,9 @@ function nextStatus($userStatus)
                                 $GLOBALS['smsg'] = $msg;
                                 $msg = trim(preg_replace('/\s+/', ' ', $msg));
                                 $msg  = str_replace("\n", "?*?#*^n", $msg);
-                            	$msg  = str_replace("\\", "\\\\\\\\", $msg);
-                                $msg  = str_replace("\\\\", "\\\\\\", $msg);
-                                $msg  = str_replace("\\\\\\\\", "\\\\\\", $msg);
+                            	$msg  = str_replace("\\", "\\\\\\", $msg);
+                                //$msg  = str_replace("\\\\", "\\\\\\", $msg);
+                                //$msg  = str_replace("\\\\\\\\", "\\\\\\", $msg);
                                 $msg  = str_replace("?*?#*^n", "\n", $msg);
                                 //$msg = jsonFixer($msg);
                                 $options = array(
@@ -626,8 +626,6 @@ function nextStatus($userStatus)
                                     $marco = json_decode($GLOBALS['fbreply']);
 
                                     if (json_last_error() != "JSON_ERROR_NONE") {
-
-
                                         logx("{FB REPLY ERROR!!!!! MSG NOT SEND}");
                                         sendMessage(basicReply(getReply('send error')));
                                     }
