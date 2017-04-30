@@ -87,7 +87,7 @@ if (isNewUser()) {
                 sendReply(getField('status'));
             }
         }elseif($payldPara[0]=='get'){
-            sendMessage(basicReply("Hi ".$GLOBALS['username'].",\nI can help you get directions from one places to another place.\n\nJust use the command\n Directions from [one location] to [another location]. e.g. Directions from Maasai Market to Hilton Hotel Nairobi Kenya. (adding a city and country will improve my results)"));
+            sendMessage(basicReply(getReply('get directions')));
         }elseif($payldPara[0]=='find'){
             logx('{FINDING....}');
             if ($payldPara[1]=='location') {
@@ -98,7 +98,7 @@ if (isNewUser()) {
                 if($myLoc==''){
                     sendMessage($GLOBALS['find_location_place']);
                 }else{
-                    sendMessage(basicReply("Hi ".$GLOBALS['username'].",\nI can help you find places around ".$myLoc.".\nJust type the commands \nfind [place] in [location] e.g.find hospital in nairobi kenya,find hotels in nairobi kenya,find atm in nairobi kenya, find police stations in kampala uganda (adding a city,country will improve my results)"));
+                    sendMessage(basicReply(getReply('find places')));
                 }
             }
 
@@ -109,10 +109,10 @@ if (isNewUser()) {
             //if(getField('userType')=="Find-Job"){
                 if(getField('isNotification')=="YES"){
                     addField('isNotification',"NO");
-                    sendMessage(basicReply("Daily notifications have been disabled."));
+                    sendMessage(basicReply("Daily notifications have been 🔕 disabled."));
                 }else{
                     addField('isNotification',"YES");
-                    sendMessage(basicReply("Daily notifications have been enabled."));
+                    sendMessage(basicReply("Daily notifications have been 🔔 enabled."));
                 }
             //}else{
             //    sendMessage(basicReply("Only users finding jobs can toggle daily notifications."));
@@ -121,11 +121,11 @@ if (isNewUser()) {
             sendReply('info');
         }elseif($payldPara[0]=='help'){
             if ($payldPara[1]=='find-job') {
-                sendMessage(basicReply("About find job: \nI help connect users looking for jobs with users looking for workers. Once you complete your find job profile you will be able to search for job openings.I will also send you daily job openings notifications."));
+                sendMessage(basicReply(getReply('about find job')));
             }elseif ($payldPara[1]=='post-job') {
-                sendMessage(basicReply("About post job: \nI help connect users looking for jobs with users looking for workers. Once you complete your post job profile. I will notify users who match your job requirement of the opening. They will then be able to contact you for further information."));
+                sendMessage(basicReply(getReply('about post job')));
             }elseif ($payldPara[1]=='find') {
-                sendMessage(basicReply("About Find Places: \nI can help you find places around you.\nThe commands to find places are:-\n.find [place] e.g. find hotel\nfind [place] in [location] e.g. find hotel in Nairobi,Kenya (adding city,country will improve the accuracy.)\n\nI can also help you find directions from one place to another. Just use the command \nDirections from Maasai Market Nairobi to Hilton Hotel Nairobi kenya.\n\n The more detail your command the better the accuracy of my results."));
+                sendMessage(basicReply(getReply('about find place')));
             }
         }elseif($payldPara[0]=='search'){
             //search_job2jobs
