@@ -564,6 +564,7 @@ function sendMessage($msg){
     $GLOBALS['smsg'] = $msg;
     $msg = trim(preg_replace('/\s+/', ' ', $msg));
     $msg  = str_replace('-', ' ', trim($msg));
+	$msg  = str_replace("'", '', trim($msg));
     $options = array(
         'http' => array(
             'method' => 'POST',
@@ -604,6 +605,14 @@ function sendGoogleMessage($msg){
     $context = stream_context_create($options);
     //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
     $GLOBALS['fbreply'] = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=".$GLOBALS['token'], false, $context);
+
+    $marco = json_decode($GLOBALS['fbreply']);
+
+    if (json_last_error() != "JSON_ERROR_NONE") {
+        logx("{FB REPLY ERROR!!!!! MSG NOT SEND}");
+        sendMessage(basicReply(getReply('send error')));
+    }
+    
     addField('lastReplyJson',$msg);
     addField("fbreply",$GLOBALS['fbreply']);
     addField("mylog",$GLOBALS['log']);
