@@ -102,7 +102,7 @@ function findPlace($find){
 //"find hotel near"
 $text = $find;
 logx('{FINDSTART....}');
-$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text.')');
+$GLOBALS['status_places'] = basicReply(getReply('find error'));
 addField('lastfind',$find);
 $find = strtolower($find);
 
@@ -153,11 +153,11 @@ $isFind = true;
 $intent  = str_replace(' ', '', $intent);
 if(!(strpos(strtolower(trim($intent)),'find')===0)){
         logx('{NOT INTENT....}');
-        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text.')');
+        $GLOBALS['status_places'] = basicReply(getReply('find error'));
         $isFind = false;
 }elseif($search_query==""){
     logx('{NOT QUERY....}');
-        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text.').\nYou must enter something to find.');
+        $GLOBALS['status_places'] = basicReply(getReply('find error'));
         $isFind = false;
 }elseif($location==""){
     logx('{NOT LOCATION....}');
@@ -166,7 +166,7 @@ if(!(strpos(strtolower(trim($intent)),'find')===0)){
     $location = getField('findlocation');
     if($location==""){
         logx('{NOT EVEN MY LOCATION....}');
-        $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$text."). Please try a command like find hotels in nairobi kenya. See the find places help menu for more commands");
+        $GLOBALS['status_places'] = basicReply(getReply('find error'));
         $isFind = false;
     }
 }
@@ -288,7 +288,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
             if($count == 0){
                 $geolog= $geolog.'{ZERO COUNT-DO TEXT SEARCH}'.$location.$find;
                 if($GLOBALS['username']!='Leo'){ $geolog = "";}
-                $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
+                $GLOBALS['status_places'] = basicReply(getReply('find error'));
                    return false;
             }else{
                 return true;
@@ -297,7 +297,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
             logx('{STATUS NOT OK....}');
             $geolog= $geolog.'{STATUS NOT OK} = [[['.$jsondata->status."]]]".$location.$find;
             if($GLOBALS['username']!='Leo'){ $geolog = "";}
-                $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching '.$find.$geolog);
+                $GLOBALS['status_places'] = basicReply(getReply('find error'));
     	        return false;
     	}
     }else{
@@ -315,7 +315,7 @@ function GetDirections($find){
 //"find hotel near"
 $text = $find;
 logx('{FINDSTART....}');
-$GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to the places. Please be more specific with your command e.g. Directions from Hilton Hotel nairobi to maasai market nairobi');
+$GLOBALS['status_places'] = basicReply(getReply('directions error'));
 addField('lastDirections',$find);
 $find = strtolower($find);
 
@@ -370,11 +370,11 @@ $GLOBALS['get_directions'] = $text;
 $intent  = str_replace(' ', '', $intent);
     if(!(strpos(strtolower(trim($intent)),'directions')===0)){
             logx('{NOT DIRECTION INTENT....}');
-            $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to the places. Please be more specific with your command e.g. Directions from Hilton Hotel nairobi to maasai market nairobi');
+            $GLOBALS['status_places'] = basicReply(getReply('directions error'));
             $isFind = false;
     }elseif($origin=="" || $destination==""){
             logx('{NOT DIRECTION QUERY....}');
-            $GLOBALS['status_places'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to the places. Please be more specific with your command e.g. Directions from Hilton Hotel nairobi to maasai market nairobi');
+            $GLOBALS['status_places'] = basicReply(getReply('directions error'));
             $isFind = false;
     }
     if($isFind){
@@ -470,7 +470,7 @@ if($dir->status == "OK"){
      $GLOBALS['status_places_directions'] = $GLOBALS['status_places_directions'].']}}}}';
      logx($GLOBALS['status_places_directions']);
 }else{
-    $GLOBALS['status_places_directions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to that location\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
+    $GLOBALS['status_places_directions'] = basicReply(getReply('directions error'));
     //Directions not found
 }
 
@@ -544,7 +544,7 @@ foreach($dir->routes[0]->legs[0]->steps as $steps){
      $GLOBALS['status_places_instructions'][]=$myHead.$elements.$mytail;
      logx("{myplaces COUNT}".count($GLOBALS['status_places_instructions']));
 }else{
-    $GLOBALS['status_places_instructions'][] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to that location\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
+    $GLOBALS['status_places_instructions'][] = basicReply(getReply('directions error'));
     //Directions not found
 }
 
@@ -630,7 +630,7 @@ if($dir->status == "OK"){
    }
      $GLOBALS['status_places_instructions'] = $GLOBALS['status_places_instructions'].']}}}}';
 }else{
-    $GLOBALS['status_places_instructions'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find the directions to ('.$destination.')\nPlease try and use more details in your location parameter. eg Find ATM near hilton hotel in nairobi,kenya');
+    $GLOBALS['status_places_instructions'] = basicReply(getReply('directions error'));
     //Directions not found
 }
 

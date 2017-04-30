@@ -1,5 +1,54 @@
 <?php
 
+
+function getReply($replyID){
+
+    switch (strtolower($replyID)) {
+    case "find error":
+        return('Hi '.$GLOBALS['username'].', \nSorry I could not find any places nearby matching ('.$GLOBALS['message'].').\nPlease use the command format Find [Place] in [Location].\n\n e.g find hotels in nairobi kenya OR find Maasai Market in nairobi kenya.');
+        break;
+    case "directions error":
+        return('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$GLOBALS['message'].').\nPlease use the command format Find [Place] in [Location].\n\n e.g find hotels in nairobi kenya OR find Maasai Market in nairobi kenya.');
+        break;
+    case "send error":
+        return("😵 I am really sorry ".$GLOBALS['username'].". But I encounted an error while processing your request. Please try again later.");
+        break;
+    case "email error":
+        return("(".$GLOBALS['message'].") is not a valid email. Please enter a valid email address.");
+        break;
+    case "phone error":
+        return("(".$GLOBALS['message'].") is not a valid phone number. Please enter a valid phone number (+254 723456789 , 0723456789 , 020 123456).");
+        break;
+    case "no jobs found error":
+        return('Hi '.$GLOBALS['username'].', \nSorry we could not find any jobs matching your requirements in the selected location.\n\nPlease review your profile or try again later.');
+        break;
+    case "some error1":
+        return("");
+        break;
+    case "some error2":
+        return("");
+        break;
+    case "some error3":
+        return("");
+        break;
+    case "some error4":
+        return("");
+        break;
+    case "some error5":
+        return("");
+        break;
+
+
+
+  default:
+     return("😵 I am really sorry ".$GLOBALS['username'].". But I encounted an error while processing your request. Please try again later.");
+      break;
+
+    }
+
+}
+
+
 function setReplys()
 {
     logx("{SETTING REPLIES}");

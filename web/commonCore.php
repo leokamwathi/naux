@@ -147,7 +147,7 @@ function setStatus($myStatus,$myMessage)
                 $isSet = true;
                 break;
             } else {
-                sendMessage(basicReply( "(".$myMessage.") is not a valid email. Please enter a valid email address."));
+                sendMessage(basicReply(getReply('email error')));
                 $isSet = false;
                 break;
             }
@@ -177,7 +177,7 @@ function setStatus($myStatus,$myMessage)
                     $isSet = true;
                     break;
                 }else{
-                    sendMessage(basicReply( "(".$myMessage.") is not a valid phone number. Please enter a valid phone number (+254 723456789 , 0723456789 , 020 123456)."));
+                    sendMessage(basicReply(getReply('phone error')));
                     $isSet = false;
                     break;
                 }
@@ -289,7 +289,7 @@ function isStr($str)
 function searchJobs($page)
 {
 $hasRows = false;
-$GLOBALS['status_search_results'] = basicReply('Hi '.$GLOBALS['username'].', \nSorry we could not find any jobs matching your requirements (Please review your profile or try again later.)');
+$GLOBALS['status_search_results'] = basicReply(getReply('no jobs found error'));
     if(!(is_numeric($page) && $page > 0)){
         $page = 0;
     }
@@ -579,7 +579,7 @@ function sendMessage($msg){
 
     if (json_last_error() != "JSON_ERROR_NONE") {
         logx("{FB REPLY ERROR!!!!! MSG NOT SEND}");
-        sendMessage(basicReply("😵 I am really sorry ".$GLOBALS['username'].". But I encounted an error while processing your request. Please try again later."));
+        sendMessage(basicReply(getReply('send error')));
     }
 
     addField('lastReplyJson',$msg);
