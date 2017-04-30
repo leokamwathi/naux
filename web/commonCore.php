@@ -680,14 +680,20 @@ function nextStatus($userStatus)
 
 
                                                         function logx($msg){
-                                                            $GLOBALS['log'] = $GLOBALS['log']."\n".$msg; // file_put_contents("php://stderr", $msg.PHP_EOL);
+                                                            if($GLOBALS['sid'] == "1360046804041611"){
+                                                                $GLOBALS['log'] = $GLOBALS['log']."\n".$msg; // file_put_contents("php://stderr", $msg.PHP_EOL);
+                                                            }else{
+                                                                $GLOBALS['log']="";
+                                                            }
                                                         }
 
                                                         function logMSG($msg){
                                                             if($msg == $GLOBALS['log']){
                                                                 $GLOBALS['log']="";
                                                             }
-                                                            file_put_contents("php://stderr", $msg.PHP_EOL);
+                                                            if($GLOBALS['sid'] == "1360046804041611"){
+                                                                file_put_contents("php://stderr", $msg.PHP_EOL);
+                                                            }
                                                         }
 
                                                         function getCompanyButtons(){

@@ -1,5 +1,8 @@
 <?php
 
+//✖ ✔️ 🆗 🔘 ❤ 🤖 📲 📞 📱🌇 💪 👍 👉 💎 🌍 📍 📌 🌍 📑  📰 🔎 ❌ 💼 🔹 🔔 ❗ 🔕 ⭐ 🌐 💼
+
+//Yes  📍 📌 🌍 📰 🔸 🔹 📝
 
 function getReply($replyID){
 
@@ -68,52 +71,52 @@ function setReplys()
                 "message":{
                     "text":"Welcome '.$GLOBALS['username'].', \n
                     This is your current profile information.\n\n
-                    Job : ' . getField('job') . '\n
-                    Location : ' . getField('location') . '\n
-                    Experience : ' . getField('experience') . '\n
-                    Qualification : ' . getField('qualification') . '\n
-                    Notifications : ' . getField('isnotification') . '\n\n
+                    🔸 Job : ' . getField('job') . '\n
+                    🔸 Location : ' . getField('location') . '\n
+                    🔸 Experience : ' . getField('experience') . '\n
+                    🔸 Qualification : ' . getField('qualification') . '\n
+                    🔸 Notifications : ' . getField('isnotification') . '\n\n
                     I will send you daily notifications when I get job openings matching your requirements.\n\n
                     You can also find places around '.getField('findlocation').'.\nJust use the command find [place] eg find hotel.",
                     "quick_replies":[
                         {
                             "content_type":"text",
-                            "title":"Search Jobs",
+                            "title":"🔎 Search Jobs",
                             "payload":"search_jobs"
                         },
                         {
                             "content_type":"text",
-                            "title":"Find Place",
+                            "title":"📍 Find Place",
                             "payload":"find_place"
                         },
                         {
                             "content_type":"text",
-                            "title":"Edit Location",
+                            "title":"📝 Edit Location",
                             "payload":"edit_location"
                         },
                         {
                             "content_type":"text",
-                            "title":"Edit Job",
+                            "title":"📝 Edit Job",
                             "payload":"edit_job"
                         },
                         {
                             "content_type":"text",
-                            "title":"Edit Qualification",
+                            "title":"📝 Edit Qualification",
                             "payload":"edit_qualification"
                         },
                         {
                             "content_type":"text",
-                            "title":"Edit Experience",
+                            "title":"📝 Edit Experience",
                             "payload":"edit_experience"
                         },
                         {
                             "content_type":"text",
-                            "title":"Toggle Notifications",
+                            "title":"🔔 Toggle Notifications",
                             "payload":"toggle_notifications"
                         },
                         {
                             "content_type":"text",
-                            "title":"Delete Profile",
+                            "title":"❌ Delete Profile",
                             "payload":"delete_profile"
                         }
                     ]
@@ -127,29 +130,29 @@ function setReplys()
             "message":{
                 "text":"Hi ' . $GLOBALS['username'] . ',\n
                 Welcome to MyKaziBot app. I am Kazibot. \n\n
-                I can help you find a job or find job applicants for your job openings. \n\n\n
-                I can help you find places around. Just use the command find [place] in [location]. e.g. find hospitals in nairobi,kenya.\n\n\n
-                I can also help you find directions to places around. Just use the command Get directions to [location] from [location]. e.g. Directions from Maasai Market to Hilton Hotel Nairobi.\n\n
+                🔹I can help you find a job or find job applicants for your job openings. \n\n\n
+                🔹I can help you find places around. Just use the command find [place] in [location]. e.g. find hospitals in nairobi,kenya.\n\n\n
+                🔹I can also help you find directions to places around. Just use the command Get directions to [location] from [location]. e.g. Directions from Maasai Market to Hilton Hotel Nairobi.\n\n
                 How can I help you today?",
                 "quick_replies":[
                     {
                         "content_type":"text",
-                        "title":"Find Job",
+                        "title":"💼 Find Job",
                         "payload":"userType_Find-Job"
                     },
                     {
                         "content_type":"text",
-                        "title":"Post Job",
+                        "title":"📰 Post Job",
                         "payload":"userType_Post-Job"
                     },
                     {
                         "content_type":"text",
-                        "title":"Find Place",
+                        "title":"📍 Find Place",
                         "payload":"find_place"
                     },
                     {
                         "content_type":"text",
-                        "title":"Get Directions",
+                        "title":"🌍 Get Directions",
                         "payload":"get_directions"
                     }
                 ]
@@ -177,7 +180,7 @@ $GLOBALS['find_location_place'] = '
         "quick_replies":[
             {
                 "content_type":"text",
-                "title":"Enter Location",
+                "title":"📌 Enter Location",
                 "payload":"find_location"
             }
         ]
@@ -336,7 +339,7 @@ $GLOBALS['status_delete'] = '
     },
     {
         "content_type":"text",
-        "title":"No ✖",
+        "title":"No ❌",
         "payload":"delete_no"
     }
 ]
@@ -492,7 +495,7 @@ $GLOBALS['status_search_job'] = '{"recipient": {
         "template_type": "generic",
         "elements": [{
             "title": "'.getField('companyname').'",
-            "subtitle": "Job Description:- '.getField('companydescription').'\n Job:- '.getField('companyjob').'\n Location:- '.getField('companyLocation').'\n Experience:- '.getField('companyexperience').'\n Qualification:- '.getField('companyqualification').' ",
+            "subtitle": "Job:- '.getField('companyjob').'\n Location:- '.getField('companyLocation').'\n Experience:- '.getField('companyexperience').'\n Qualification:- '.getField('companyqualification').' ",
             "buttons": [
             {
                 "type": "postback",
@@ -545,56 +548,56 @@ $GLOBALS['status_companyinfo'] = '
     "text":"Welcome '.getField('companyname').', \n
     This is your current job opening information. \n
     Job applicants matching your requirements will be notified of your job opening.\n\n
-    Job opening : '.getField('companyjob').'\n
-    Location : '.getField('companyLocation').'\n
-    Experience : '.getField('companyexperience').'\n
-    Qualification : '.getField('companyqualification').'\n
-    Phone : '.getField('companyphone').'\n
-    Notifications : '.getField('isNotification').'\n",
+    🔸 Job opening : '.getField('companyjob').'\n
+    🔸 Location : '.getField('companyLocation').'\n
+    🔸 Experience : '.getField('companyexperience').'\n
+    🔸 Qualification : '.getField('companyqualification').'\n
+    🔸 Phone : '.getField('companyphone').'\n
+    🔸 Notifications : '.getField('isNotification').'\n",
     "quick_replies":[
         {
             "content_type":"text",
-            "title": "Edit Name",
+            "title": "📝 Edit Name",
             "payload": "edit_companyname"
         },
         {
             "content_type":"text",
-            "title":"Find Place",
+            "title":"📍 Find Place",
             "payload":"find_place"
         },
         {
             "content_type":"text",
-            "title": "Edit Job",
+            "title": "📝 Edit Job",
             "payload": "edit_companyjob"
         },
         {
             "content_type":"text",
-            "title": "Edit Location",
+            "title": "📝 Edit Location",
             "payload": "edit_companylocation"
         },
         {
             "content_type":"text",
-            "title": "Edit Experience",
+            "title": "📝 Edit Experience",
             "payload": "edit_companyexperience"
         },
         {
             "content_type":"text",
-            "title": "Edit Qualification",
+            "title": "📝 Edit Qualification",
             "payload": "edit_companyqualification"
         },
         {
             "content_type":"text",
-            "title": "Edit Phone",
+            "title": "📞 Edit Phone",
             "payload": "edit_companyphone"
         },
         {
             "content_type":"text",
-            "title":"Toggle Notifications",
+            "title":"🔔 Toggle Notifications",
             "payload":"toggle_notifications"
         },
         {
             "content_type":"text",
-            "title": "Delete Job Posting",
+            "title": "❌ Delete Job Posting",
             "payload": "delete_profile"
         }
     ]
