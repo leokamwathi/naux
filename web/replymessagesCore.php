@@ -5,10 +5,10 @@ function getReply($replyID){
 
     switch (strtolower($replyID)) {
     case "find error":
-        return('Hi '.$GLOBALS['username'].', \nSorry I could not find any places nearby matching ('.$GLOBALS['message'].').\nPlease use the command format Find [Place] in [Location].\n\n e.g find hotels in nairobi kenya OR find Maasai Market in nairobi kenya.');
+        return('Hi '.$GLOBALS['username'].', \nSorry I could not find any places nearby matching ('.$GLOBALS['message'].').\nPlease use the command format:- \nFind [Place] in [Location].\n\n Examples \nfind hotels in nairobi kenya \nfind Maasai Market in nairobi kenya\nfind point of interest in nairobi kenya.');
         break;
     case "directions error":
-        return('Hi '.$GLOBALS['username'].', \nSorry we could not find any places nearby matching ('.$GLOBALS['message'].').\nPlease use the command format Find [Place] in [Location].\n\n e.g find hotels in nairobi kenya OR find Maasai Market in nairobi kenya.');
+        return('Hi '.$GLOBALS['username'].', \nSorry we could not find a direction path between those locations.\nPlease use the command format:- \nDirections from [place & location] to [another place & location]\nExamples \nDirections from Hilton Hotel Nairobi to Maasai Market in Nairobi Kenya. \nDirections from hilton hotel nairobi to aga khan hospital nairobi.\nAdding a city,country will get much better results.');
         break;
     case "send error":
         return("😵 I am really sorry ".$GLOBALS['username'].". But I encounted an error while processing your request. Please try again later.");
