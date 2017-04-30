@@ -366,7 +366,7 @@ $destination = $search_query;
 
 $isFind = true;
 //if(trim($intent) !='find'){
-$GLOBALS['get_directions'] = $find;
+$GLOBALS['get_directions'] = $text;
 $intent  = str_replace(' ', '', $intent);
     if(!(strpos(strtolower(trim($intent)),'directions')===0)){
             logx('{NOT DIRECTION INTENT....}');
