@@ -1,6 +1,6 @@
 <?php
 
-header("HTTP/1.1 200 OK");
+
 
 //webhook response
 // For 4.3.0 <= PHP <= 5.4.0
