@@ -606,7 +606,7 @@ $GLOBALS['status_companyinfo'] = '
     ]
 }
 }';
-
+//markers
 $GLOBALS['status_companylocation'] = '
     {"recipient":{
         "id":"' . $GLOBALS['sid'] . '"
