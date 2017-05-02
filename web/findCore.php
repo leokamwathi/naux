@@ -423,7 +423,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
            if($count == 0){
                $hasRows = true;
                $GLOBALS['status_places'] = $GLOBALS['status_places'].$element;
-           }elseif($count < 8){
+           }elseif($count < 10){
                $GLOBALS['status_places'] = $GLOBALS['status_places'].",".$element;
            }else{
                break;
