@@ -249,8 +249,33 @@ logx('{FIND PARA DONE....}'.":".$intent.":".$search_query.":".$location.":".$isF
 
 $isFind = true;
 
-if($search_query==""){
-    $search_query = $type;
+$express = strtolower($text);
+$express = trim(str_replace("find","",$express));
+$expression = explode(" in ",$express);
+
+if (count($expression) < 2){
+    $expression = explode(" near ",$express);
+}
+
+if (count($expression) < 2){
+    $expression = explode(" nearby ",$express);
+}
+
+if (count($expression) < 2){
+    $expression = explode(" next ",$express);
+}
+
+if (count($expression) < 2){
+    $expression = explode(" at ",$express);
+}
+
+if (count($expression) > 1){
+    if($search_query==""){
+        $search_query = $expression[0];
+    }
+    if($location==""){
+        $location = $expression[1];
+    }
 }
 //if(trim($intent) !='find'){
 $intent  = str_replace(' ', '', $intent);
