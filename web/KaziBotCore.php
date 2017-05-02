@@ -111,15 +111,20 @@ if (isNewUser()) {
         }elseif($payldPara[0]=='find'){
             logx('{FINDING....}');
             if ($payldPara[1]=='location') {
-                addField('isfindlocation','YES');
-                sendJson($GLOBALS['find_location']);
+                //addField('isfindlocation','YES');
+                //sendJson($GLOBALS['find_location']);
+                sendMessage(basicReply(getReply('about find place')));
             }elseif ($payldPara[1]=='place') {
+                sendMessage(basicReply(getReply('find places')));
+                //TODO: removed this because the add find place was not really working like I wanted. Might add it anotehr time.
+                /*
                 $myLoc = getField('findlocation');
                 if($myLoc==''){
                     sendJson($GLOBALS['find_location_place']);
                 }else{
                     sendMessage(basicReply(getReply('find places')));
                 }
+                */
             }
 
             logx($GLOBALS['smsg']);

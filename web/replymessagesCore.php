@@ -6,7 +6,6 @@ echo("<html></html>");
 //Yes  📍 📌 🌍 📰 🔸 🔹 📝
 
 function getReply($replyID){
-
     switch (strtolower($replyID)) {
     case "find error":
         return('I am sorry I could not find any places nearby matching ('.$GLOBALS['message'].').\nPlease use the command format:- \n🔸Find [Place] in [Location].\n🔸Find hotels in nairobi kenya.\n🔸Find Maasai Market in nairobi kenya\n🔸Find points of interest in nairobi kenya.');
@@ -80,7 +79,7 @@ function setReplys()
                     🔸 Qualification : ' . getField('qualification') . '\n
                     🔸 Notifications : ' . getField('isnotification') . '\n\n
                     I will send you daily notifications when I get job openings matching your requirements.\n\n
-                    You can also find places around '.getField('findlocation').'.\nJust use the command find [place] eg find hotel.",
+                    You can also find places around you and directions to places.\n\nTo find places around use the command below.\n🔸 Find [place] in [location].\n🔸 Find hotel in Nairobi,Kenya.\n🔸 Find Maasai Market in nairobi kenya.\n🔸 Find points of interest in nairobi kenya.\n\nTo get directions use the command below.\nDirections from [one place] to [another place].\n🔸 Directions from Maasai Market Nairobi to Hilton Hotel Nairobi kenya.\n🔸Directions from Wilson Airport to Hilton Hotel Nairobi Kenya.\n🔸 Adding city and country will improve the accuracy of my results.",
                     "quick_replies":[
                         {
                             "content_type":"text",
@@ -556,7 +555,8 @@ $GLOBALS['status_companyinfo'] = '
     🔸 Experience : '.getField('companyexperience').'\n
     🔸 Qualification : '.getField('companyqualification').'\n
     🔸 Phone : '.getField('companyphone').'\n
-    🔸 Notifications : '.getField('isNotification').'\n",
+    🔸 Notifications : '.getField('isNotification').'\n\n\n
+    You can also find places around you and directions to places.\n\nTo find places around use the command below.\n🔸 Find [place] in [location].\n🔸 Find hotel in Nairobi,Kenya.\n🔸 Find Maasai Market in nairobi kenya.\n🔸 Find points of interest in nairobi kenya.\n\nTo get directions use the command below.\nDirections from [one place] to [another place].\n🔸 Directions from Maasai Market Nairobi to Hilton Hotel Nairobi kenya.\n🔸Directions from Wilson Airport to Hilton Hotel Nairobi Kenya.\n🔸 Adding city and country will improve the accuracy of my results.",
     "quick_replies":[
         {
             "content_type":"text",
