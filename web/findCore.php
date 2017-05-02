@@ -234,21 +234,22 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                 //$photoref = trim(preg_replace('/\s+/', '', $photoref));
                 $photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=260&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
                 //$photo = trim(preg_replace('/\s+/', '', $photo));
-/*
+
                 $photoPay = '
                 ,{
                     "type":"postback",
                     "title":"Photo",
                     "payload":"photo_'.urlencode($photo).'"
                 }';
-                */
 
+/*
                 $photoPay = '
                 ,{
                     "type": "web_url",
                     "url": "'.$photo.'",
                     "title": "See Photo"
                 }';
+                */
             }
 
     		//markers=icon:https://maps.gstatic.com/mapfiles/place_api/icons/school-64.png%7Cshadow:true
