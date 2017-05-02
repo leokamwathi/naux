@@ -154,7 +154,11 @@ function setPayload($paypara)
 
 
     case "companyphone":
+    addField($myStatus, $myMessage);
+    $isSet = true;
+    break;
     //TODO:test valid phone
+    /*
     $phone = $myMessage;
     $plus = "";
     if(strpos($phone,'+')===0){
@@ -181,6 +185,7 @@ function setPayload($paypara)
         $isSet = false;
         break;
     }
+    */
     case "companywebsite":
     //TODO:test valid website
     if (!filter_var($myMessage, FILTER_VALIDATE_URL) === false) {
