@@ -9,7 +9,7 @@ function getReply($replyID){
 
     switch (strtolower($replyID)) {
     case "find error":
-        return('I am sorry I could not find any places nearby matching ('.$GLOBALS['message'].').\nPlease use the command format:- \n🔸Find [Place] in [Location].\n🔸Find hotels in nairobi kenya.\n🔸Find Maasai Market in nairobi kenya\n🔸Find point of interest in nairobi kenya.');
+        return('I am sorry I could not find any places nearby matching ('.$GLOBALS['message'].').\nPlease use the command format:- \n🔸Find [Place] in [Location].\n🔸Find hotels in nairobi kenya.\n🔸Find Maasai Market in nairobi kenya\n🔸Find points of interest in nairobi kenya.');
         break;
     case "directions error":
         return('I am sorry I could not find a direction path between those locations.\nPlease use the command format:- \n🔸Directions from [place & location] to [another place & location]\n🔸Directions from Hilton Hotel Nairobi to Maasai Market in Nairobi Kenya.\n🔸Directions from hilton hotel nairobi to aga khan hospital nairobi.\n🔸Adding a city and country will get much better results.');
