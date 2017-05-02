@@ -112,11 +112,11 @@ if (isNewUser()) {
             logx('{FINDING....}');
             if ($payldPara[1]=='location') {
                 addField('isfindlocation','YES');
-                sendMessage($GLOBALS['find_location']);
+                sendJson($GLOBALS['find_location']);
             }elseif ($payldPara[1]=='place') {
                 $myLoc = getField('findlocation');
                 if($myLoc==''){
-                    sendMessage($GLOBALS['find_location_place']);
+                    sendJson($GLOBALS['find_location_place']);
                 }else{
                     sendMessage(basicReply(getReply('find places')));
                 }
@@ -154,8 +154,8 @@ if (isNewUser()) {
             logx('{SEARCHING....}');
             logx($GLOBALS['payload']);
             searchJobs(0);
-            sendMessage($GLOBALS['status_search_results']);
-            //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
+            sendJson($GLOBALS['status_search_results']);
+            //sendJson($GLOBALS["status_".$GLOBALS['payload']]);
             logx($GLOBALS['smsg']);
             logMSG($GLOBALS['log']);
             //=======================================//
@@ -166,7 +166,7 @@ if (isNewUser()) {
             logx($GLOBALS['payload']);
             if($payldPara[1]=='profile'){
                 logx('{DELETE CONFIRMATION....}');
-                sendMessage($GLOBALS['status_delete']);
+                sendJson($GLOBALS['status_delete']);
             }elseif($payldPara[1]=='yes'){
                 logx('{YES DELETE....}');
                 if(deleteprofile()){
@@ -179,20 +179,20 @@ if (isNewUser()) {
                 logx('{NO DELETE....}');
                 sendReply(getField('status'));
             }
-            //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
+            //sendJson($GLOBALS["status_".$GLOBALS['payload']]);
             logx($GLOBALS['smsg']);
             logMSG($GLOBALS['log']);
         }elseif($payldPara[0]=='photo'){
             $photoref=  $GLOBALS['payload'];
             $photoref = str_replace($payldPara[0].'_','', $photoref);
              getPhoto($photoref);
-             sendMessage($GLOBALS['status_places_photo']);
-            //"payload":"photo_'.payloadFix($photoref).'"
+             sendJson($GLOBALS['status_places_photo']);
+            //"payload":"photo_'.payloadFix($photoref).'" //sdf sdf
         }elseif($payldPara[0]=='directions'){
             $dirURL= $GLOBALS['payload'];
             $dirURL = str_replace($payldPara[0].'_','', $dirURL);
             getURLDirection($dirURL);
-            sendMessage($GLOBALS['status_places_directions']);
+            sendJson($GLOBALS['status_places_directions']);
         }elseif($payldPara[0]=='instructions'){
             $dirURL= $GLOBALS['payload'];
             $dirURL = str_replace($payldPara[0].'_','', $dirURL);
@@ -235,14 +235,14 @@ if (isNewUser()) {
                 logx($GLOBALS['message']);
                 if(findPlace($place)){
                     logx("{PLACES REPLY}".$GLOBALS['status_places']);
-                    sendMessage($GLOBALS['status_places']);
+                    sendJson($GLOBALS['status_places']);
                 }else{
-                    sendMessage($GLOBALS['status_places']);
+                    sendJson($GLOBALS['status_places']);
                     //$GLOBALS['status_places']
                     //sendMessage(basicReply( "Hi ".$GLOBALS['username'].", I could not find any nearby locations that match [".$place."] either change your location or what you are looking for." ));
                 }
-                //sendMessage($GLOBALS['status_places']);
-                //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
+                //sendJson($GLOBALS['status_places']);
+                //sendJson($GLOBALS["status_".$GLOBALS['payload']]);
                 logx($GLOBALS['smsg']);
                 logMSG($GLOBALS['log']);
                 //=======================================//
@@ -258,14 +258,14 @@ if (isNewUser()) {
                 logx($GLOBALS['message']);
                 if(getDirections($place)){
                     logx("{DIRECTIONS REPLY}".$GLOBALS['status_places_directions']);
-                    sendMessage($GLOBALS['status_places_directions']);
+                    sendJson($GLOBALS['status_places_directions']);
                 }else{
-                    sendMessage($GLOBALS['status_places_directions']);
+                    sendJson($GLOBALS['status_places_directions']);
                     //$GLOBALS['status_places']
                     //sendMessage(basicReply( "Hi ".$GLOBALS['username'].", I could not find any nearby locations that match [".$place."] either change your location or what you are looking for." ));
                 }
-                //sendMessage($GLOBALS['status_places']);
-                //sendMessage($GLOBALS["status_".$GLOBALS['payload']]);
+                //sendJson($GLOBALS['status_places']);
+                //sendJson($GLOBALS["status_".$GLOBALS['payload']]);
                 logx($GLOBALS['smsg']);
                 logMSG($GLOBALS['log']);
                 //=======================================//

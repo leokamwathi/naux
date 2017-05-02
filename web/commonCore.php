@@ -560,6 +560,33 @@ function nextStatus($userStatus)
                                 }
                                 logMSG($GLOBALS['log']);
                             }
+                            function sendJson($msg){
+                                $GLOBALS['smsg'] = $msg;
+                                //$msg = trim(preg_replace('/\s+/', ' ', $msg));
+                                //$msg  = str_replace('-', ' ', trim($msg));
+                                //$msg  = str_replace("'", '', trim($msg));
+                                //$msg = jsonFixer($msg);
+                                $options = array(
+                                    'http' => array(
+                                        'method' => 'POST',
+                                        'content' => $msg,
+                                        'header' => "Content-Type: application/json\n"
+                                    )
+                                );
+                                $context = stream_context_create($options);
+                                //file_put_contents("php://stderr", "FB Context: = ".$context.PHP_EOL);
+                                $GLOBALS['fbreply'] = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=".$GLOBALS['token'], false, $context);
+
+                                $marco = json_decode($GLOBALS['fbreply']);
+
+                                if (json_last_error() != "JSON_ERROR_NONE") {
+                                    sendMessage($GLOBALS['smsg']);
+                                }else{
+                                    addField('lastReplyJson',$msg);
+                                    addField("fbreply",$GLOBALS['fbreply']);
+                                    addField("mylog",$GLOBALS['log']);
+                                }
+                            }
                             function sendMessage($msg){
                                 $GLOBALS['smsg'] = $msg;
                                 $msg = trim(preg_replace('/\s+/', ' ', $msg));
