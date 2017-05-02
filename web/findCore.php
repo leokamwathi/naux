@@ -124,6 +124,7 @@ $google_places = array("accounting","airport","amusement_park","aquarium","art_g
 	$pos = strpos(strtolower(trim($text)),$place);
 	if($pos > 0){
 		$type = "&type=".$places;
+        $type = strtolower(str_replace(" ","_",$type));
 		break;
 	}
  }
@@ -306,6 +307,11 @@ if(isset($geolocation) && $geolocation != '' && $isFind){
     $placesTextSearch='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$find.$type.'&key='.$_ENV['google_places_key'];
     $placesNearbySearch = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geolocation.$type.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
     $placesNearbySearchRanked = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?rankby=distance&location='.$geolocation.$type.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
+
+
+    $placesTextSearch = strtolower(str_replace(" ","+",$placesTextSearch));
+    $placesNearbySearch = strtolower(str_replace(" ","+",$placesNearbySearch));
+    $placesNearbySearchRanked = strtolower(str_replace(" ","+",$placesNearbySearchRanked));
 
     if(!(strpos(strtolower(trim($find)),'near')===0)){
         $results =  file_get_contents($placesNearbySearch);
