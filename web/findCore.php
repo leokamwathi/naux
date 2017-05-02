@@ -93,6 +93,104 @@ function getMYLatLng(){
     }
 }
 
+
+function getPlacesType($text){
+
+$text = str_replace("."," ",$text);
+$text = str_replace(","," ",$text);
+$text = str_replace("'"," ",$text);
+$words = explode(" ",$text);
+$text = "";
+
+foreach($words as $word){
+	$text = $text." ".singularize($word);
+}
+
+$text = str_replace("supermarket","grocery or supermarket",$text);
+$text = str_replace("salon","beauty salon",$text);
+$text = str_replace("real estate","real estate agency",$text);
+$text = str_replace("realestate","real estate agency",$text);
+$text = str_replace("worship","place_of_worship",$text);
+$text = str_replace("temple","hindu temple",$text);
+$text = str_replace("mosque","place_of_worship",$text);
+$text = str_replace("taxi","taxi stand",$text);
+$text = str_replace("bus","bus station",$text);
+
+$type = "";
+$google_places = array("accounting","airport","amusement_park","aquarium","art_gallery","atm","bakery","bank","bar","beauty_salon","bicycle_store","book_store","bowling_alley","bus_station","cafe","campground","car_dealer","car_rental","car_repair","car_wash","casino","cemetery","church","city_hall","clothing_store","convenience_store","courthouse","dentist","department_store","doctor","electrician","electronics_store","embassy","establishment","finance","fire_station","florist","food","funeral_home","furniture_store","gas_station","general_contractor","grocery_or_supermarket","gym","hair_care","hardware_store","health","hindu_temple","home_goods_store","hospital","insurance_agency","jewelry_store","laundry","lawyer","library","liquor_store","local_government_office","locksmith","lodging","meal_delivery","meal_takeaway","mosque","movie_rental","movie_theater","moving_company","museum","night_club","painter","park","parking","pet_store","pharmacy","physiotherapist","place_of_worship","plumber","police","post_office","real_estate_agency","restaurant","roofing_contractor","rv_park","school","shoe_store","shopping_mall","spa","stadium","storage","store","subway_station","synagogue","taxi_stand","train_station","transit_station","travel_agency","university","veterinary_care","zoo","administrative_area_level_1","administrative_area_level_2","administrative_area_level_3","administrative_area_level_4","administrative_area_level_5","colloquial_area","country","establishment","finance","floor","food","general_contractor","geocode","health","intersection","locality","natural_feature","neighborhood","place_of_worship","political","point_of_interest","post_box","postal_code","postal_code_prefix","postal_code_suffix","postal_town","premise","room","route","street_address","street_number","sublocality","sublocality_level_4","sublocality_level_5","sublocality_level_3","sublocality_level_2","sublocality_level_1","subpremise");
+
+	foreach($google_places as $places){
+	$place = strtolower(str_replace("_"," ",$places));
+	$pos = strpos(strtolower(trim($test)),$place);
+	if($pos > 0){
+		$type = "&type=".$place;
+		break;
+	}
+ }
+ return $type;
+}
+
+function singularize($word)
+   {
+       $singular = array (
+       '/(quiz)zes$/i' => '\1',
+       '/(matr)ices$/i' => '\1ix',
+       '/(vert|ind)ices$/i' => '\1ex',
+       '/^(ox)en/i' => '\1',
+       '/(alias|status)es$/i' => '\1',
+       '/([octop|vir])i$/i' => '\1us',
+       '/(cris|ax|test)es$/i' => '\1is',
+       '/(shoe)s$/i' => '\1',
+       '/(o)es$/i' => '\1',
+       '/(bus)es$/i' => '\1',
+       '/(mosque)s$/i' => '\1',
+       '/([m|l])ice$/i' => '\1ouse',
+       '/(x|ch|ss|sh)es$/i' => '\1',
+       '/(m)ovies$/i' => '\1ovie',
+       '/(s)eries$/i' => '\1eries',
+       '/([^aeiouy]|qu)ies$/i' => '\1y',
+       '/([lr])ves$/i' => '\1f',
+       '/(tive)s$/i' => '\1',
+       '/(hive)s$/i' => '\1',
+       '/([^f])ves$/i' => '\1fe',
+       '/(^analy)ses$/i' => '\1sis',
+       '/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i' => '\1\2sis',
+       '/([ti])a$/i' => '\1um',
+       '/(n)ews$/i' => '\1ews',
+       '/s$/i' => '',
+       );
+
+       $uncountable = array('equipment', 'information', 'rice', 'money', 'species', 'series', 'fish', 'sheep');
+
+       $irregular = array(
+       'person' => 'people',
+       'man' => 'men',
+       'child' => 'children',
+       'sex' => 'sexes',
+       'move' => 'moves');
+
+       $lowercased_word = strtolower($word);
+       foreach ($uncountable as $_uncountable){
+           if(substr($lowercased_word,(-1*strlen($_uncountable))) == $_uncountable){
+               return $word;
+           }
+       }
+
+       foreach ($irregular as $_plural=> $_singular){
+           if (preg_match('/('.$_singular.')$/i', $word, $arr)) {
+               return preg_replace('/('.$_singular.')$/i', substr($arr[0],0,1).substr($_plural,1), $word);
+           }
+       }
+
+       foreach ($singular as $rule => $replacement) {
+           if (preg_match($rule, $word)) {
+               return preg_replace($rule, $replacement, $word);
+           }
+       }
+
+       return $word;
+   }
+
 function findPlace($find){
 /*
 ******all google types****
@@ -101,6 +199,7 @@ function findPlace($find){
 
 //"find hotel near"
 $text = $find;
+$type=getPlacesType($text);
 logx('{FINDSTART....}');
 $GLOBALS['status_places'] = basicReply(getReply('find error'));
 addField('lastfind',$find);
@@ -149,6 +248,10 @@ foreach($quest->entities->location as $LocationArray){
 logx('{FIND PARA DONE....}'.":".$intent.":".$search_query.":".$location.":".$isFind);
 
 $isFind = true;
+
+if($search_query==""){
+    $search_query = $type;
+}
 //if(trim($intent) !='find'){
 $intent  = str_replace(' ', '', $intent);
 if(!(strpos(strtolower(trim($intent)),'find')===0)){
@@ -175,9 +278,9 @@ $geolocation = getLatLng($location);
 
 if(isset($geolocation) && $geolocation != '' && $isFind){
     //$geoURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=5000&type='.$find.'&keyword='.$find.'&key='.$_ENV['google_places_key'];
-    $placesTextSearch='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$find.'&key='.$_ENV['google_places_key'];
-    $placesNearbySearch = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geolocation.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
-    $placesNearbySearchRanked = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?rankby=distance&location='.$geolocation.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
+    $placesTextSearch='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$find.$type.'&key='.$_ENV['google_places_key'];
+    $placesNearbySearch = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geolocation.$type.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
+    $placesNearbySearchRanked = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?rankby=distance&location='.$geolocation.$type.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
 
     if(!(strpos(strtolower(trim($find)),'near')===0)){
         $results =  file_get_contents($placesNearbySearch);
