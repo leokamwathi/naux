@@ -186,19 +186,19 @@ if (isNewUser()) {
             $photoref=  $GLOBALS['payload'];
             $photoref = str_replace($payldPara[0].'_','', $photoref);
              getPhoto($photoref);
-             sendGoogleMessage($GLOBALS['status_places_photo']);
+             sendMessage($GLOBALS['status_places_photo']);
             //"payload":"photo_'.payloadFix($photoref).'"
         }elseif($payldPara[0]=='directions'){
             $dirURL= $GLOBALS['payload'];
             $dirURL = str_replace($payldPara[0].'_','', $dirURL);
             getURLDirection($dirURL);
-            sendGoogleMessage($GLOBALS['status_places_directions']);
+            sendMessage($GLOBALS['status_places_directions']);
         }elseif($payldPara[0]=='instructions'){
             $dirURL= $GLOBALS['payload'];
             $dirURL = str_replace($payldPara[0].'_','', $dirURL);
             getURLDirectionSteps($dirURL);
             foreach ($GLOBALS['status_places_instructions'] as $steps) {
-                sendGoogleMessage($steps);
+                sendMessage($steps);
             }
         }else{
         if(setPayload($payldPara))
@@ -235,7 +235,7 @@ if (isNewUser()) {
                 logx($GLOBALS['message']);
                 if(findPlace($place)){
                     logx("{PLACES REPLY}".$GLOBALS['status_places']);
-                    sendGoogleMessage($GLOBALS['status_places']);
+                    sendMessage($GLOBALS['status_places']);
                 }else{
                     sendMessage($GLOBALS['status_places']);
                     //$GLOBALS['status_places']

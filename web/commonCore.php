@@ -591,14 +591,14 @@ function nextStatus($userStatus)
                             function sendGoogleMessage($msg){
                                 $GLOBALS['smsg'] = $msg;
                                 $msg = trim(preg_replace('/\s+/', ' ', $msg));
-                                $msg  = str_replace("\\n", "?*?#*^n", $msg);
+                                $msg  = str_replace("\n", "?*?#*^n", $msg);
                                 $msg  = str_replace("\\","\\\\",$msg );
                                 //$msg  = addslashes($msg );
                                 //$msg  = str_replace("\\\\","\\\\\\",$msg );
                             	//$msg  = str_replace("\\", "\\\\\\", $msg);
                                 //$msg  = str_replace("\\\\", "\\\\\\", $msg);
                                 //$msg  = str_replace("\\\\\\\\", "\\\\\\", $msg);
-                                $msg  = str_replace("?*?#*^n", "\\n", $msg);
+                                $msg  = str_replace("?*?#*^n", "\n", $msg);
                                 //$msg = jsonFixer($msg);
                                 $options = array(
                                     'http' => array(

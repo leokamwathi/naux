@@ -258,6 +258,12 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
             logx($dirURL);
             //payloadFix($component->name.','.$component->vicinity).
             $maplink = "http://maps.google.com/?q=".$geolatx;
+            //ADD directions back to find places
+            $meDir = ',{
+                "type":"postback",
+                "title":"Directions",
+                "payload":"directions_'.urlencode($dirURL).'"
+            }';
             $element = '
            {
                "title": "'.$component->name.'",
@@ -266,12 +272,8 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                "buttons": [
                    {
                        "type":"element_share"
-                   },
-                   {
-                       "type":"postback",
-                       "title":"Directions",
-                       "payload":"directions_'.urlencode($dirURL).'"
-                   }'.$photoPay.'
+                   }
+                   '.$photoPay.'
                ]
            }';
            if($count == 0){
