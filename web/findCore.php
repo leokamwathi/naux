@@ -121,7 +121,7 @@ $google_places = array("accounting","airport","amusement_park","aquarium","art_g
 
 	foreach($google_places as $places){
 	$place = strtolower(str_replace("_"," ",$places));
-	$pos = strpos(strtolower(trim($test)),$place);
+	$pos = strpos(strtolower(trim($text)),$place);
 	if($pos > 0){
 		$type = "&type=".$place;
 		break;
@@ -245,7 +245,7 @@ foreach($quest->entities->location as $LocationArray){
 }
 }
 
-logx('{FIND PARA DONE....}'.":".$intent.":".$search_query.":".$location.":".$isFind);
+logx('{FIND PARA DONE....}'.":".$intent.":".$search_query.":".$location.":".$isFind.":".$type);
 
 $isFind = true;
 
