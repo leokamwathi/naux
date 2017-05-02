@@ -239,7 +239,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                 ,{
                     "type":"postback",
                     "title":"Photo",
-                    "payload":"photo_'.urlencode($photo).'"
+                    "payload":"photo_'.$component->name."bytheastar".urlencode($photo).'"
                 }';
 
 /*
@@ -564,9 +564,11 @@ foreach($dir->routes[0]->legs[0]->steps as $steps){
 }
 
 function getPhoto($url){
+    $photofix = explode("bytheastar", $url);
+    $title = $photofix[0];
     //logx($photoref);
     //$photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
-    $photo = urldecode($url);
+    $photo = urldecode($photofix[1]);
     //$photo = trim(preg_replace('/\s+/', '', $photo));
     logx($photo);
     $GLOBALS['status_places_photo'] =
@@ -582,7 +584,7 @@ function getPhoto($url){
         //$imgurl = 'https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A'.$path.'&key='.$_ENV['google_static_maps_key'];
         $element = '
        {
-           "title": "Photo",
+           "title": "'.$title.' Photo",
            "image_url": "'.$photo.'",
            "buttons": [
                {
