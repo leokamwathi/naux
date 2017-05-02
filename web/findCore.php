@@ -567,7 +567,7 @@ function getPhoto($url){
     //logx($photoref);
     //$photo = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference='.$photoref.'&sensor=false&key='.$_ENV['google_places_key'];
     $photo = urldecode($url);
-    $photo = trim(preg_replace('/\s+/', '', $photo));
+    //$photo = trim(preg_replace('/\s+/', '', $photo));
     logx($photo);
     $GLOBALS['status_places_photo'] =
     '{"recipient": {
@@ -582,7 +582,7 @@ function getPhoto($url){
         //$imgurl = 'https://maps.googleapis.com/maps/api/staticmap?size=500x260&path=enc%3A'.$path.'&key='.$_ENV['google_static_maps_key'];
         $element = '
        {
-           "title": "'.UnpayloadFix($title).'",
+           "title": "Photo",
            "image_url": "'.$photo.'",
            "buttons": [
                {
