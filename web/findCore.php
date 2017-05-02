@@ -309,9 +309,9 @@ if(isset($geolocation) && $geolocation != '' && $isFind){
     $placesNearbySearchRanked = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?rankby=distance&location='.$geolocation.$type.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
 
 
-    $placesTextSearch = strtolower(str_replace(" ","+",$placesTextSearch));
-    $placesNearbySearch = strtolower(str_replace(" ","+",$placesNearbySearch));
-    $placesNearbySearchRanked = strtolower(str_replace(" ","+",$placesNearbySearchRanked));
+    $placesTextSearch = (str_replace(" ","+",$placesTextSearch));
+    $placesNearbySearch = (str_replace(" ","+",$placesNearbySearch));
+    $placesNearbySearchRanked = (str_replace(" ","+",$placesNearbySearchRanked));
 
     if(!(strpos(strtolower(trim($find)),'near')===0)){
         $results =  file_get_contents($placesNearbySearch);
