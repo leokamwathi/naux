@@ -9,10 +9,10 @@ function getReply($replyID){
 
     switch (strtolower($replyID)) {
     case "find error":
-        return('Hi '.$GLOBALS['username'].', \nSorry I could not find any places nearby matching ('.$GLOBALS['message'].').\nPlease use the command format:- \n🔸Find [Place] in [Location].\n🔸Find hotels in nairobi kenya.\n🔸Find Maasai Market in nairobi kenya\n🔸Find point of interest in nairobi kenya.');
+        return('I am sorry I could not find any places nearby matching ('.$GLOBALS['message'].').\nPlease use the command format:- \n🔸Find [Place] in [Location].\n🔸Find hotels in nairobi kenya.\n🔸Find Maasai Market in nairobi kenya\n🔸Find point of interest in nairobi kenya.');
         break;
     case "directions error":
-        return('Hi '.$GLOBALS['username'].', \nSorry we could not find a direction path between those locations.\nPlease use the command format:- \n🔸Directions from [place & location] to [another place & location]\n🔸Directions from Hilton Hotel Nairobi to Maasai Market in Nairobi Kenya.\n🔸Directions from hilton hotel nairobi to aga khan hospital nairobi.\n🔸Adding a city and country will get much better results.');
+        return('I am sorry I could not find a direction path between those locations.\nPlease use the command format:- \n🔸Directions from [place & location] to [another place & location]\n🔸Directions from Hilton Hotel Nairobi to Maasai Market in Nairobi Kenya.\n🔸Directions from hilton hotel nairobi to aga khan hospital nairobi.\n🔸Adding a city and country will get much better results.');
         break;
     case "send error":
         return("😵 I am really sorry ".$GLOBALS['username'].". But I encounted an error while processing your request. Please try again later.");
@@ -24,13 +24,13 @@ function getReply($replyID){
         return("(".$GLOBALS['message'].") is not a valid phone number. Please enter a valid phone number (+254 723456789 , 0723456789 , 020 123456).");
         break;
     case "no jobs found error":
-        return('Hi '.$GLOBALS['username'].', \nSorry we could not find any jobs matching your requirements in the selected location.\n\nPlease review your profile or try again later.');
+        return('I am sorry I could not find any jobs matching your requirements in the selected location.\n\nPlease review your profile or try again later.');
         break;
     case "get directions":
-        return('Hi '.$GLOBALS['username'].',\nI can help you get directions from one places to another place.\n\nJust use the command\n🔸 Directions from [one location] to [another location].\n🔸 Directions from Maasai Market to Hilton Hotel Nairobi Kenya.\n🔸 Adding a city and country will improve my results.');
+        return('I can help you get directions from one places to another place.\n\nJust use the command\n🔸 Directions from [one location] to [another location].\n🔸 Directions from Maasai Market to Hilton Hotel Nairobi Kenya.\n🔸 Adding a city and country will improve my results.');
         break;
     case "find places":
-        return('Hi '.$GLOBALS['username'].',\nI can help you find places around.\nJust type the command below.\n🔸 Find [place] in [location]\n🔸 Find hospital in nairobi kenya.\n🔸 Find hotels in nairobi kenya.\n🔸 Find points of interest in nairobi kenya.\n🔸 Find police stations in kampala uganda.\n🔸 Adding a city and country will improve my results.');
+        return('I can help you find places around.\nJust type the command below.\n🔸 Find [place] in [location]\n🔸 Find hospital in nairobi kenya.\n🔸 Find hotels in nairobi kenya.\n🔸 Find points of interest in nairobi kenya.\n🔸 Find police stations in kampala uganda.\n🔸 Adding a city and country will improve my results.');
         break;
     case "about find job":
         return('About find job:\n\nI help connect users looking for jobs with users looking for workers.\n\nOnce you complete your find job profile you will be able to search for job openings.\nI will also send you daily job openings notifications.');
