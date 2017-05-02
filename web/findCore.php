@@ -123,7 +123,7 @@ $google_places = array("accounting","airport","amusement_park","aquarium","art_g
 	$place = strtolower(str_replace("_"," ",$places));
 	$pos = strpos(strtolower(trim($text)),$place);
 	if($pos > 0){
-		$type = "&type=".$place;
+		$type = "&type=".$places;
 		break;
 	}
  }
