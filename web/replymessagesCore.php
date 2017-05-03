@@ -66,6 +66,11 @@ function setReplys()
                 "sender_action":"typing_on"
                 }';
 */
+
+/*
+\n\n
+You can also find places around you and directions to places.\n\nTo find places around use the command below.\n🔸 Find [place] in [location].\n🔸 Find hotel in Nairobi,Kenya.\n🔸 Find Maasai Market in nairobi kenya.\n🔸 Find points of interest in nairobi kenya.\n\nTo get directions use the command below.\nDirections from [one place] to [another place].\n🔸 Directions from Maasai Market Nairobi to Hilton Hotel Nairobi kenya.\n🔸Directions from Wilson Airport to Hilton Hotel Nairobi Kenya.\n🔸 Adding city and country will improve the accuracy of my results.
+*/
     $GLOBALS['status_info'] = '
                 {"recipient":{
                     "id":"'.$GLOBALS['sid'].'"
@@ -78,8 +83,7 @@ function setReplys()
                     🔸 Experience : ' . getField('experience') . '\n
                     🔸 Qualification : ' . getField('qualification') . '\n
                     🔸 Notifications : ' . getField('isnotification') . '\n\n
-                    I will send you daily notifications when I get job openings matching your requirements.\n\n
-                    You can also find places around you and directions to places.\n\nTo find places around use the command below.\n🔸 Find [place] in [location].\n🔸 Find hotel in Nairobi,Kenya.\n🔸 Find Maasai Market in nairobi kenya.\n🔸 Find points of interest in nairobi kenya.\n\nTo get directions use the command below.\nDirections from [one place] to [another place].\n🔸 Directions from Maasai Market Nairobi to Hilton Hotel Nairobi kenya.\n🔸Directions from Wilson Airport to Hilton Hotel Nairobi Kenya.\n🔸 Adding city and country will improve the accuracy of my results.",
+                    I will send you daily notifications when I get job openings matching your requirements.",
                     "quick_replies":[
                         {
                             "content_type":"text",
@@ -542,6 +546,10 @@ $GLOBALS['status_search_job'] = '{"recipient": {
     "payload": "edit_companydelete"
 }
 */
+
+/*
+You can also find places around you and directions to places.\n\nTo find places around use the command below.\n🔸 Find [place] in [location].\n🔸 Find hotel in Nairobi,Kenya.\n🔸 Find Maasai Market in nairobi kenya.\n🔸 Find points of interest in nairobi kenya.\n\nTo get directions use the command below.\nDirections from [one place] to [another place].\n🔸 Directions from Maasai Market Nairobi to Hilton Hotel Nairobi kenya.\n🔸Directions from Wilson Airport to Hilton Hotel Nairobi Kenya.\n🔸 Adding city and country will improve the accuracy of my results.
+*/
 $GLOBALS['status_companyinfo'] = '
 {"recipient":{
     "id":"'.$GLOBALS['sid'].'"
@@ -555,8 +563,7 @@ $GLOBALS['status_companyinfo'] = '
     🔸 Experience : '.getField('companyexperience').'\n
     🔸 Qualification : '.getField('companyqualification').'\n
     🔸 Phone : '.getField('companyphone').'\n
-    🔸 Notifications : '.getField('isNotification').'\n\n\n
-    You can also find places around you and directions to places.\n\nTo find places around use the command below.\n🔸 Find [place] in [location].\n🔸 Find hotel in Nairobi,Kenya.\n🔸 Find Maasai Market in nairobi kenya.\n🔸 Find points of interest in nairobi kenya.\n\nTo get directions use the command below.\nDirections from [one place] to [another place].\n🔸 Directions from Maasai Market Nairobi to Hilton Hotel Nairobi kenya.\n🔸Directions from Wilson Airport to Hilton Hotel Nairobi Kenya.\n🔸 Adding city and country will improve the accuracy of my results.",
+    🔸 Notifications : '.getField('isNotification').'",
     "quick_replies":[
         {
             "content_type":"text",
