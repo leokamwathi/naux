@@ -552,7 +552,7 @@ function nextStatus($userStatus)
                                 $fbreply = file_get_contents("https://graph.facebook.com/v2.6/me/messages?access_token=".$GLOBALS['token'], false, $context);
                                 //file_put_contents("php://stderr", "FB reply: = ".$fbreply.PHP_EOL);
                                 */
-                                sendMessage($reply);
+                                sendJson($reply);
                                 addField('status',$status);
                                 logx("{STATUS}.$status");
                                 logx("{REPLY JSON}see db");
