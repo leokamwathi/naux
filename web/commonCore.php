@@ -455,7 +455,7 @@ function nextStatus($userStatus)
                             setReplys();
 
                             if($status == "info"){
-                                if(getField('usertype')=='Post-Job'){
+                                if(getField('usertype')=='Post-Job' || getField('usertype')=='Post Job'){
                                     $status = 'companyinfo';
                                 }
                             }
