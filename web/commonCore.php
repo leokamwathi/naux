@@ -154,38 +154,41 @@ function setPayload($paypara)
 
 
     case "companyphone":
-    addField($myStatus, $myMessage);
-    $isSet = true;
-    break;
-    //TODO:test valid phone
-    /*
-    $phone = $myMessage;
-    $plus = "";
-    if(strpos($phone,'+')===0){
-        $plus = "+";
-    }
-    $phone = preg_replace('/\s+/', '', $phone);
-    $phone = str_replace('+', '', $phone);
-    $phone = str_replace(' ', '', $phone);
-    $phone = str_replace('#', '', $phone);
-    $phone = str_replace('.', '', $phone);
-    $phone = str_replace('-', '', $phone);
-    $phone = str_replace('*', '', $phone);
-    $phone = str_replace('(', '', $phone);
-    $phone = str_replace(')', '', $phone);
-    $phone = preg_replace("/[^0-9,.]/", "", $phone );
-    $phone = preg_replace('~\D~', '', $phone);
-
-    if (ctype_digit ($phone) && strlen($phone) < 20 && strlen($phone) > 3){
-        addField($myStatus, $plus.$phone);
+    if($GLOBALS['sid'] != "1360046804041611"){
+        addField($myStatus, $myMessage);
         $isSet = true;
         break;
     }else{
-        sendMessage(basicReply(getReply('phone error')));
-        $isSet = false;
-        break;
+        //TODO:test valid phone
+
+        $phone = $myMessage;
+        $plus = "";
+        if(strpos($phone,'+')===0){
+            $plus = "+";
+        }
+        $phone = preg_replace('/\s+/', '', $phone);
+        $phone = str_replace('+', '', $phone);
+        $phone = str_replace(' ', '', $phone);
+        $phone = str_replace('#', '', $phone);
+        $phone = str_replace('.', '', $phone);
+        $phone = str_replace('-', '', $phone);
+        $phone = str_replace('*', '', $phone);
+        $phone = str_replace('(', '', $phone);
+        $phone = str_replace(')', '', $phone);
+        //$phone = preg_replace("/[^0-9,.]/", "", $phone );
+        //$phone = preg_replace('~\D~', '', $phone);
+
+        if (ctype_digit ($phone) && strlen($phone) < 20 && strlen($phone) > 3){
+            addField($myStatus, $plus.$phone);
+            $isSet = true;
+            break;
+        }else{
+            sendMessage(basicReply(getReply('phone error')));
+            $isSet = false;
+            break;
+        }
     }
-    */
+
     case "companywebsite":
     //TODO:test valid website
     if (!filter_var($myMessage, FILTER_VALIDATE_URL) === false) {
