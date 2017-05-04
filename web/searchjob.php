@@ -22,8 +22,8 @@ if (pg_num_rows($results)) {
         $GLOBALS['username'] = $user_details->first_name;
         if(isset($GLOBALS['username']) && $GLOBALS['username']!= ''){
             $FindJobs = $FindJobs+1;
-            //searchJobs(0);
-            //sendMessage($GLOBALS['status_search_results']);
+            searchJobs(0);
+            sendMessage($GLOBALS['status_search_results']);
             //sendMessage($GLOBALS['status_options_find-job']);
             //if($GLOBALS['sid'] == $_ENV['my_userID']){
             sendReply("info");
