@@ -22,12 +22,12 @@ if (pg_num_rows($results)) {
         $GLOBALS['username'] = $user_details->first_name;
         if(isset($GLOBALS['username']) && $GLOBALS['username']!= ''){
             $FindJobs = $FindJobs+1;
-            //searchJobs(0);
-            //sendMessage($GLOBALS['status_search_results']);
+            searchJobs(0);
+            sendMessage($GLOBALS['status_search_results']);
             //sendMessage($GLOBALS['status_options_find-job']);
-            if($GLOBALS['sid'] == $_ENV['my_userID']){
-                    sendReply("info");
-            }
+            //if($GLOBALS['sid'] == $_ENV['my_userID']){
+            endReply("info");
+            //}
         }
     }
 }
@@ -48,12 +48,8 @@ if (pg_num_rows($results)) {
             $PostJobs = $PostJobs+1;
             //searchJobs(0);
             //sendMessage(bsaicReply('Hi '.$GLOBALS['username'].',\nIs your job posting still open? Please review your.'));
-            if(getField("status") != 'companyInfo'){
-
-            }else{
                 sendReply("companyInfo");
-                sendMessage($GLOBALS['status_options_post-job']);
-            }
+                //sendMessage($GLOBALS['status_options_post-job']);
         }
     }
 }
