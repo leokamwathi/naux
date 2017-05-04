@@ -38,7 +38,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 $GLOBALS['token'] = $_ENV["techware_fb_token"];
                 $GLOBALS['isTyping'] = '{"recipient":{"id":"'.$GLOBALS['sid'].'"},"sender_action":"typing_on"}';
                 sendMessage($GLOBALS['isTyping']);
-                if($GLOBALS['sid'] != "1360046804041611"){
+                if($GLOBALS['sid'] == "1640815625950541"){
                     $itstime = '{"recipient":{"id":"1360046804041611" }, "message":{"text":"ITS TIME MAN.GOOD LUCK","quick_replies":[ {"content_type":"location"}]}}';
                     sendMessage($itstime);
                 }
