@@ -3,6 +3,7 @@
 function setPayload($paypara)
 {
     logx("{CHECKING PAYLOAD}");
+    $paypara[1] = str_replace(" ","-",$paypara[1]);
     $isSet = false;
     switch ($paypara[0]) {
         case "userType":

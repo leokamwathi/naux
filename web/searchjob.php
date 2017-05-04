@@ -45,8 +45,12 @@ if (pg_num_rows($results)) {
             $PostJobs = $PostJobs+1;
             //searchJobs(0);
             //sendMessage(bsaicReply('Hi '.$GLOBALS['username'].',\nIs your job posting still open? Please review your.'));
-            sendReply("companyInfo");
-            sendMessage($GLOBALS['status_options_post-job']);
+            if(getField("status") != 'companyInfo'){
+
+            }else{
+                sendReply("companyInfo");
+                sendMessage($GLOBALS['status_options_post-job']);
+            }
         }
     }
 }

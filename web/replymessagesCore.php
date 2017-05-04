@@ -351,7 +351,7 @@ $GLOBALS['status_delete'] = '
 ]
 }
 }';
-$GLOBAL['search_options-find-jobs'] =
+$GLOBAL['search_options_find-jobs'] =
 '{"recipient":{
 "id":"' . $GLOBALS['sid'] . '"
 },
@@ -360,22 +360,27 @@ $GLOBAL['search_options-find-jobs'] =
 "quick_replies":[
 	{
         "content_type":"text",
-        "title":"View Profile",
+        "title":"💼 View Profile",
         "payload":"view_profile"
     },
     {
         "content_type":"text",
-        "title":"Find Place",
+        "title":"📍 Find Place",
         "payload":"find_place"
     },
     {
         "content_type":"text",
-        "title":"Disable Notifications",
+        "title":"🌍 Get Directions",
+        "payload":"get_directions"
+    },
+    {
+        "content_type":"text",
+        "title":"🔕 Disable Notifications",
         "payload":"toggle_notifications"
     },
     {
         "content_type":"text",
-        "title":"Delete Profile",
+        "title":"❌ Delete Profile",
         "payload":"delete_profile"
     }
 ]
@@ -389,24 +394,29 @@ $GLOBAL['search_options_post-jobs'] =
 "message":{
 "text":"What do you want to do?",
 "quick_replies":[
-	{
+    {
         "content_type":"text",
-        "title":"View Profile",
+        "title":"💼 View Profile",
         "payload":"view_profile"
     },
     {
         "content_type":"text",
-        "title":"Find Place",
+        "title":"📍 Find Place",
         "payload":"find_place"
     },
     {
         "content_type":"text",
-        "title":"Disable Notifications",
+        "title":"🌍 Get Directions",
+        "payload":"get_directions"
+    },
+    {
+        "content_type":"text",
+        "title":"🔕 Disable Notifications",
         "payload":"toggle_notifications"
     },
     {
         "content_type":"text",
-        "title":"Delete Profile",
+        "title":"❌ Delete Profile",
         "payload":"delete_profile"
     }
 ]

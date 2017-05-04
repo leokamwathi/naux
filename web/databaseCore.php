@@ -1,6 +1,6 @@
 <?php
 $GLOBALS['pg_conn'] = pg_connect(pg_connection_string_from_database_url());
-$GLOBALS['dbTable'] = $_ENV["main_db_table"]; 
+$GLOBALS['dbTable'] = $_ENV["main_db_table"];
 
 function setup_database_connection()
 {
@@ -39,6 +39,7 @@ function getField($field)
         }
     }
 }
+$fielddata = stripslashes($fielddata);
     return $fielddata;
 }
 
