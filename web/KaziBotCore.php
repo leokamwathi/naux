@@ -164,7 +164,8 @@ if (isNewUser()) {
             logx($GLOBALS['smsg']);
             logMSG($GLOBALS['log']);
             //=======================================//
-            sendReply(getField('status'));
+            //So I will remove this part ok :p
+            //sendReply(getField('status'));
             //sendReply($payldPara[0]);
         }elseif($payldPara[0]=='delete'){
             logx('{DELETING....}');
@@ -277,20 +278,31 @@ if (isNewUser()) {
                 //sendReply(getField('status'));
                 exit("");
             }
-            if(strtolower(trim($GLOBALS['message']))=='hello kazi'){
+            if(strtolower(trim($GLOBALS['message']))=='hello kazi' || strtolower(trim($GLOBALS['message']))=='hello kazibot'){
                 sendMessage(basicReply( "Hello ".$GLOBALS['username']."," ));
-            }elseif(strtolower(trim($GLOBALS['message']))=='hi kazi'){
+            }elseif(strtolower(trim($GLOBALS['message']))=='hi kazi' || strtolower(trim($GLOBALS['message']))=='hi kazibot'){
                 sendMessage(basicReply( "Hi ".$GLOBALS['username']."," ));
             }elseif(strtolower(trim($GLOBALS['message']))=='help me'){
                 sendMessage(basicReply( "Help Info: This app will help you find a job or post a job opening for other users to apply."));
+            }elseif(strtolower(trim($GLOBALS['message']))=='find place'){
+                sendMessage(basicReply(getReply('find places')));
+            }elseif(strtolower(trim($GLOBALS['message']))=='get direction'){
+                sendMessage(basicReply(getReply('get directions')));
+            }elseif(strtolower(trim($GLOBALS['message']))=='find job'){
+                sendMessage(basicReply(getReply('about find job')));
+            }elseif(strtolower(trim($GLOBALS['message']))=='post job'){
+                    sendMessage(basicReply(getReply('about post job')));
+            }elseif(strtolower(trim($GLOBALS['message']))=='delete'){
+                    sendJson($GLOBALS['status_delete']);
+            }elseif(strtolower(trim($GLOBALS['message']))=='delete profile'){
+                    sendJson($GLOBALS['status_delete']);
             }elseif(strtolower(trim($GLOBALS['message']))=='help'){
             //if(strpos($GLOBALS['message'],'help')!=false){
-                sendMessage(basicReply( "Help Info ❤: This app will help you find a job or post a job opening for other users to apply."));
+                sendMessage(basicReply( "This app will help you find a job or post a job opening for other users to apply.I can also help you find places or get directions to places"));
                 sendReply(getField('status'));
-
                 //if(strpos($GLOBALS['message'],'help')!=false){
                 //sendMessage(basicReply( $GLOBALS['message']." ".$GLOBALS['username']."," ));
-                sendReply(getField('status'));
+                //sendReply(getField('status'));
             }else{
             if($GLOBALS['mid'] == getField('lastNotification') ){
                 logx("{SAME MESSAGE AGAIN REALLY SUCKS}".$GLOBALS['message']);
