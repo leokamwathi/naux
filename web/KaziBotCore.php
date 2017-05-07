@@ -204,7 +204,7 @@ if (isNewUser()) {
             $dirURL = str_replace($payldPara[0].'_','', $dirURL);
             getURLDirectionSteps($dirURL);
             foreach ($GLOBALS['status_places_instructions'] as $steps) {
-                sendMessage($steps);
+                sendJson($steps);
             }
         }else{
         if(setPayload($payldPara))
@@ -237,6 +237,7 @@ if (isNewUser()) {
                 //$place = trim(str_replace('find', '', $place));
                 //TODO:
                 //sdfsdf jojo
+                //hope this works
                 logx('{FINDING....}');
                 logx($GLOBALS['message']);
                 if(findPlace($place)){
