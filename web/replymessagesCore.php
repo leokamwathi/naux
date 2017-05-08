@@ -244,7 +244,7 @@ $GLOBALS['find_location_place'] = '
         {
             "content_type":"text",
             "title":"9 years and over",
-            "payload":"expexperience_9-years-and-over"
+            "payload":"experience_9-years-and-over"
         }
     ]
 }
