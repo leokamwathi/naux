@@ -298,7 +298,7 @@ function nextStatus($userStatus)
         function searchJobs($page)
         {
             $hasRows = false;
-            $GLOBALS['status_search_results'] = basicReply(getReply('no jobs found error'));
+            $GLOBALS['status_search_results'] = $GLOBALS['search_notifications'];//basicReply(getReply('no jobs found error'));
             if(!(is_numeric($page) && $page > 0)){
                 $page = 0;
             }

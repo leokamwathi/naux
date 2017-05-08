@@ -214,6 +214,43 @@ $GLOBALS['find_location_place'] = '
     }
 }';
 
+
+$GLOBALS['search_notifications'] =
+'{"recipient":{
+"id":"' . $GLOBALS['sid'] . '"
+},
+"message":{
+"text":"Hi '.$GLOBALS['username'].', There are no new jobs matching your description today :-(.\nBut you can check out my other features.\n\nI can help you find places and get directions.\nPlease click [📍 Find Place] or [🌍 Get Directions] below for more instructions.\n\nHave a nice day.",
+"quick_replies":[
+    {
+    "content_type":"text",
+    "title":"📍 Find Place",
+    "payload":"find_place"
+   },
+   {
+    "content_type":"text",
+    "title":"🌍 Get Directions",
+    "payload":"get_directions"
+   },
+   {
+    "content_type":"text",
+    "title":"💼 View Profile",
+    "payload":"view_profile"
+   },
+   {
+    "content_type":"text",
+    "title":"🔕 Disable Notifications",
+    "payload":"toggle_notifications"
+   },
+   {
+    "content_type":"text",
+    "title":"❌ Delete Profile",
+    "payload":"delete_profile"
+   }
+]
+}
+}';
+
     $GLOBALS['status_experience'] = '
 {"recipient":{
     "id":"' . $GLOBALS['sid'] . '"
