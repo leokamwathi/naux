@@ -328,10 +328,12 @@ function nextStatus($userStatus)
                 logx(pg_result_error($results));
                 //$GLOBALS['status_search_results'] = basicReply('Send sorry we could not find and jobs matching your requirements (Please review your profile or try again later.)');
             }else{
-                if (!pg_num_rows($results)) {
+                if (!pg_num_rows($results) || pg_num_rows($results) <= 0) {
                     //no rows = no data
                     //$GLOBALS['status_search_results'] = basicReply('Send sorry we could not find and jobs matching your requirements (Please review your profile or try again later.)');
                 } else {
+                    $rows = pg_fetch_all($results);
+                    //if rows > 0 then
                     //Head
                     $GLOBALS['status_search_results'] =
                     '{"recipient": {
@@ -345,7 +347,7 @@ function nextStatus($userStatus)
 
                                 $count = 0;
 
-                                $rows = pg_fetch_all($results);
+
 
                                 foreach ($rows as $row) {
                                     if($count==8){
