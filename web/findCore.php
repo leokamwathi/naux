@@ -294,9 +294,10 @@ if(!(strpos(strtolower(trim($intent)),'find')===0)){
 //Do i have a pre defined location
     $location = getField('findlocation');
     if($location==""){
+        //may be is do a basic search ok and return onlt in nothing shows up.
         logx('{NOT EVEN MY LOCATION....}');
         $GLOBALS['status_places'] = basicReply(getReply('find error'));
-        $isFind = false;
+        //$isFind = false;
     }
 }
 
@@ -347,6 +348,9 @@ if(isset($geolocation) && $geolocation != '' && $isFind){
 //if($GLOBALS['username']=='Leo'){
     $geolog= $geolog."  <<< ".$geoURL." >>>  ";
 //}
+
+
+
 logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
       if($jsondata->status == "OK")
         {
@@ -360,6 +364,9 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                 "payload": {
                     "template_type": "generic","elements": [';
            $count = 0;
+
+           shuffle($jsondata->results);
+           
     	   foreach ($jsondata->results as $component) {
     		$geolatx = $component->geometry->location->lat.",".$component->geometry->location->lng;
             $photoPay = '';
