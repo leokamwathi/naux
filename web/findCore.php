@@ -303,7 +303,7 @@ if(!(strpos(strtolower(trim($intent)),'find')===0)){
 
 $geolocation = getLatLng($location);
 
-if(isset($geolocation) && $geolocation != '' && $isFind){
+if($isFind){
     //$geoURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geocodestr.'&radius=5000&type='.$find.'&keyword='.$find.'&key='.$_ENV['google_places_key'];
     $placesTextSearch='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$find.$type.'&key='.$_ENV['google_places_key'];
     $placesNearbySearch = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$geolocation.$type.'&radius=50000&keyword='.$search_query.'&key='.$_ENV['google_places_key'];
@@ -313,6 +313,9 @@ if(isset($geolocation) && $geolocation != '' && $isFind){
     $placesTextSearch = (str_replace(" ","+",$placesTextSearch));
     $placesNearbySearch = (str_replace(" ","+",$placesNearbySearch));
     $placesNearbySearchRanked = (str_replace(" ","+",$placesNearbySearchRanked));
+
+
+if(isset($geolocation) && $geolocation != ''){
 
     if(!(strpos(strtolower(trim($find)),'near')===0)){
         $results =  file_get_contents($placesNearbySearch);
@@ -349,7 +352,14 @@ if(isset($geolocation) && $geolocation != '' && $isFind){
     $geolog= $geolog."  <<< ".$geoURL." >>>  ";
 //}
 
+}else{
 
+    $results =  file_get_contents($placesTextSearch);
+    $jsondata = json_decode($results);
+    $geoURL = $placesTextSearch;
+    logx('{TEXT FIND SEARCH....}'.$placesTextSearch);
+    $geolog= $geolog."  <<< ".$geoURL." >>>  ";
+}
 
 logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
       if($jsondata->status == "OK")
@@ -366,7 +376,7 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
            $count = 0;
 
            shuffle($jsondata->results);
-           
+
     	   foreach ($jsondata->results as $component) {
     		$geolatx = $component->geometry->location->lat.",".$component->geometry->location->lng;
             $photoPay = '';
