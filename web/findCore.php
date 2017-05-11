@@ -375,7 +375,9 @@ logx('{FIND LOCATION STATUS....}=='.$jsondata->status);
                     "template_type": "generic","elements": [';
            $count = 0;
 
-           shuffle($jsondata->results);
+           //random man
+
+          // shuffle($jsondata->results);
 
     	   foreach ($jsondata->results as $component) {
     		$geolatx = $component->geometry->location->lat.",".$component->geometry->location->lng;
