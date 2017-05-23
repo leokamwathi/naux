@@ -225,6 +225,34 @@ if ($isSet == true){
 return $isSet;
 }
 
+
+
+function nexteStatus($userStatus)
+{
+    switch ($userStatus) {
+        case "post_job_name":
+        return("post_job");
+        case "post_job":
+        return("post_location");
+        case "post_location":
+        return("post_description");
+        case "post_description":
+        return("post_contacts");
+        case "post_contacts":
+        return("post_info");
+        case "post_info":
+        return("post_info");
+        case "find_job":
+        return("find_location");
+        case "find_location":
+        return("find_info");
+        case "find_info":
+        return("find_info");
+        default:
+        return("intro");
+    }
+}
+
 function nextStatus($userStatus)
 {
 
@@ -319,9 +347,7 @@ function nextStatus($userStatus)
             $searchQuery = strtolower($searchJobQuery.$searchQualQuery.$searchExpQuery.$searchlocQuery);
             //
             $Query     = "SELECT * from ".$GLOBALS['dbTable']." where usertype = 'Post-Job' ".$searchQuery;
-
             //print_r($Query);
-
             $results      = pg_query($GLOBALS['pg_conn'], $Query);
 
             if(!$results){
@@ -344,11 +370,7 @@ function nextStatus($userStatus)
                             "type": "template",
                             "payload": {
                                 "template_type": "generic","elements": [';
-
                                 $count = 0;
-
-
-
                                 foreach ($rows as $row) {
                                     if($count==8){
                                         break;

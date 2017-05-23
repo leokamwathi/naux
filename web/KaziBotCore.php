@@ -20,6 +20,87 @@ if (!function_exists('http_response_code'))
     }
 }
 */
+
+function eKaziBot(){
+    try{
+        $user_details = file_get_contents("https://graph.facebook.com/v2.6/".$GLOBALS['sid']."?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=".$GLOBALS['token']);
+        $user_details =  json_decode($user_details);
+        $GLOBALS['username'] = $user_details->first_name;
+
+        addField("fbjsondata",$datastream);
+
+        if($GLOBALS['mid'] == getField('lastNotification') && $GLOBALS['mid'] != '' ){
+            exit("");
+        }else{
+            addField('lastNotification',$GLOBALS['mid']);
+        }
+
+        if (isNewUser()) {
+            logx("{NEW USER..CREATING USER}");
+            if(addNewUser()){
+                sendReply('intro');
+            }else{
+                logx("{FAILED TO CREATE USER}");
+            }
+        }else{
+            if (isset($GLOBALS['message']) && $GLOBALS['message'] != '') {
+
+                $isExit = true;
+                //COMMANDS
+
+                if(strtolower(trim($GLOBALS['message']))=='help me'){
+                    sendMessage(basicReply( "Help Info: This app will help you find a job or post a job opening for other users to apply."));
+
+                }elseif(strtolower(trim($GLOBALS['message']))=='post job'){
+                    addField('estatus','post_job');
+                    sendMessage(basicReply(getEreplies('post_job_name')));
+
+                }elseif(strtolower(trim($GLOBALS['message']))=='find job'){
+                    addField('estatus','find_job');
+                    sendMessage(basicReply(getEreplies('find_job')));
+
+                }elseif(strtolower(trim($GLOBALS['message']))=='help'){
+                    sendMessage(basicReply( "This app will help you find a job or post a job opening for other users to apply.I can also help you find places or get directions to places"));
+                    sendReply(getField('status'));
+
+                }else{
+                    $isExit = false;
+                }
+
+                if($isExit){
+                    exit("");
+                }
+
+
+                //estatus
+                $estatus = getField('estatus');
+                if ($estatus != '' && isset($estatus))
+                {
+                    addField($estatus,$GLOBALS['message']);
+                    $estatus = nexteStatus($estatus);
+                    sendMessage(basicReply(getEreplies($estatus)));
+                }
+
+                if(setStatus(getField('status'),$GLOBALS['message'])){
+                    $myNextStatus = nextStatus(getField('status'));
+                    logx("{NEXT STATUS}".$myNextStatus);
+                    sendReply($myNextStatus);
+                }else{
+                    //TODO: Sometimes Error Message might be send first
+                    if (is_string(getField('status'))){
+                        sendReply(getField('status'));
+                    }else{
+                        logx("{SO THIS HAPPENS}");
+                        sendReply('userType');
+                    }
+                }
+            }
+        }
+    } catch (Exception $e) {
+        logx("{TRY ERROR}".$e->getMessage());
+    }
+}
+
 function KaziBot(){
 try{
 $user_details = file_get_contents("https://graph.facebook.com/v2.6/".$GLOBALS['sid']."?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=".$GLOBALS['token']);

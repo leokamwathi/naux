@@ -5,6 +5,114 @@ echo("<html></html>");
 
 //Yes  📍 📌 🌍 📰 🔸 🔹 📝
 
+/*
+case "post_job_name":
+return("post_job");
+case "post_job":
+return("post_location");
+case "post_location":
+return("post_description");
+case "post_description":
+return("post_contacts");
+case "post_contacts":
+return("post_info");
+case "post_info":
+return("post_info");
+case "find_job":
+return("find_location");
+case "find_location":
+return("find_info");
+case "find_info":
+return("find_info");
+default:
+return("intro");
+*/
+function geteReply($replyID){
+
+    switch (strtolower($replyID)) {
+        case "post_job_name":
+        return('What is the name of the person or company posting the job.');
+        break;
+        case "post_job":
+        return('What job are you posting for? eg. Accountant, Sales, Marketing, Plumber, Househelp, Chef, Driver, etc...');
+        break;
+        case "post_location":
+        return('Please enter the city,country of where the is located? eg. Nairobi,Kenya ; Kampala,Uganda ; Cairo,Eygpt');
+        break;
+        case "post_description":
+        return('Please enter a small summary of the job.');
+        break;
+        case "post_contacts":
+        return('Please enter contact details (mobile number, email, website) of where users can contact you or send CVs.');
+        break;
+        case "post_info":
+        return('This is your current posted job information.');
+        break;
+        case "find_job":
+        return('What job are you looking for? eg. Accountant, Sales, Marketing, Plumber, Househelp, Chef, Driver, etc...');
+        break;
+        case "find_location":
+        return('Please enter the city,country of where you are looking for a job in? eg. Nairobi,Kenya ; Kampala,Uganda ; Cairo,Eygpt');
+        break;
+        case "find_info":
+        return('Your are currently looking for Accounting job in Nairobi Kenya.');
+        break;
+        case "intro":
+        return('If you are looking for a job enter the command find job, If you are looking to post a job opening enter the command post job.');
+        break;
+        default:
+        return('If you are looking for a job enter the command find job, If you are looking to post a job opening enter the command post job.');
+        break;
+    }
+
+    switch (strtolower($replyID)) {
+    case "find error":
+        return('I am sorry I could not find any places nearby matching ('.$GLOBALS['message'].').\nPlease use the command format:- \n🔸Find [Place] in [Location].\n🔸Find hotels in nairobi kenya.\n🔸Find Maasai Market in nairobi kenya\n🔸Find points of interest in nairobi kenya.');
+        break;
+    case "directions error":
+        return('I am sorry I could not find a direction path between those locations.\nPlease use the command format:- \n🔸Directions from [place & location] to [another place & location]\n🔸Directions from Hilton Hotel Nairobi to Maasai Market in Nairobi Kenya.\n🔸Directions from hilton hotel nairobi to aga khan hospital nairobi.\n🔸Adding a city and country will get much better results.');
+        break;
+    case "send error":
+        return("😵 I am really sorry ".$GLOBALS['username'].". But I encounted an error while processing your request. Please try again later.");
+        break;
+    case "email error":
+        return("(".$GLOBALS['message'].") is not a valid email. Please enter a valid email address.");
+        break;
+    case "phone error":
+        return("(".$GLOBALS['message'].") is not a valid phone number. Please enter a valid phone number (+254 723456789 , 0723456789 , 020 123456).");
+        break;
+    case "no jobs found error":
+        return('I am sorry I could not find any jobs matching your requirements in the selected location.\n\nPlease review your profile or try again later.');
+        break;
+    case "get directions":
+        return('I can help you get directions from one places to another place.\n\nJust use the command\n🔸 Directions from [one location] to [another location].\n🔸 Directions from Maasai Market to Hilton Hotel Nairobi Kenya.\n🔸 Adding a city and country will improve my results.');
+        break;
+    case "find places":
+        return('I can help you find places around.\nJust type the command below.\n🔸 Find [place] in [location]\n🔸 Find hospital in nairobi kenya.\n🔸 Find hotels in nairobi kenya.\n🔸 Find points of interest in nairobi kenya.\n🔸 Find police stations in kampala uganda.\n🔸 Adding a city and country will improve my results.');
+        break;
+    case "about find job":
+        return('About find job:\n\nI help connect users looking for jobs with users looking for workers.\n\nOnce you complete your find job profile you will be able to search for job openings.\nI will also send you daily job openings notifications.');
+        break;
+    case "about post job":
+        return('About post job: \nI help connect users looking for jobs with users looking for workers.\n\nOnce you complete your post job profile.\nI will notify users who match your job requirement of the opening.\nThey will then be able to contact you for further information.');
+        break;
+    case "about find place":
+        return('About Nearby Places: \nI can help you find places or directions to places around you.\n\nTo find places around use the command below.\n🔸 Find [place] in [location].\n🔸 Find hotel in Nairobi,Kenya.\n🔸 Find Maasai Market in nairobi kenya.\n🔸 Find points of interest in nairobi kenya.\n\nTo get directions use the command below.\nDirections from [one place] to [another place].\n🔸 Directions from Maasai Market Nairobi to Hilton Hotel Nairobi kenya.\n🔸Directions from Wilson Airport to Hilton Hotel Nairobi Kenya.\n🔸 Adding city and country will improve the accuracy of my results.');
+        break;
+    case "some error5":
+        return("");
+        break;
+
+
+  default:
+     return("😵 I am really sorry ".$GLOBALS['username'].". But I encounted an error while processing your request. Please try again later.");
+      break;
+
+    }
+
+}
+
+
 function getReply($replyID){
     switch (strtolower($replyID)) {
     case "find error":
