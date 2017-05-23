@@ -411,13 +411,13 @@ function nextStatus($userStatus)
                     {
                         switch (strtolower($qualification)) {
                             case "masters-degree":
-                            return ("(LOWER(companyqualification)= 'self-taught' OR LOWER(companyqualification)= 'certificate' OR LOWER(companyqualification)= 'collage-diploma' OR LOWER(companyqualification)= 'university-degree' OR LOWER(companyqualification)=  'masters-degree')");
+                            return ("(LOWER(companyqualification)= 'self-taught' OR LOWER(companyqualification)= 'certificate' OR LOWER(companyqualification)= 'college-diploma' OR LOWER(companyqualification)= 'university-degree' OR LOWER(companyqualification)=  'masters-degree')");
                             break;
                             case "university-degree":
-                            return ("(LOWER(companyqualification)= 'self-taught' OR LOWER(companyqualification)= 'certificate' OR LOWER(companyqualification)= 'collage-diploma' OR LOWER(companyqualification)= 'university-degree')");
+                            return ("(LOWER(companyqualification)= 'self-taught' OR LOWER(companyqualification)= 'certificate' OR LOWER(companyqualification)= 'college-diploma' OR LOWER(companyqualification)= 'university-degree')");
                             break;
-                            case "collage-diploma":
-                            return ("(LOWER(companyqualification)= 'self-taught' OR LOWER(companyqualification)= 'certificate' OR LOWER(companyqualification)= 'collage-diploma')");
+                            case "college-diploma":
+                            return ("(LOWER(companyqualification)= 'self-taught' OR LOWER(companyqualification)= 'certificate' OR LOWER(companyqualification)= 'college-diploma')");
                             break;
                             case "certificate":
                                 return ("(LOWER(companyqualification)= 'self-taught' OR LOWER(companyqualification)= 'certificate')");

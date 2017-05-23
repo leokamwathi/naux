@@ -306,8 +306,8 @@ $GLOBALS['search_notifications'] =
         },
         {
             "content_type":"text",
-            "title":"Collage Diploma",
-            "payload":"qualification_Collage-Diploma"
+            "title":"College Diploma",
+            "payload":"qualification_College-Diploma"
         },
         {
             "content_type":"text",
@@ -746,8 +746,8 @@ $GLOBALS['status_companyqualification'] = '
     },
     {
         "content_type":"text",
-        "title":"Collage Diploma",
-        "payload":"companyqualification_Collage-Diploma"
+        "title":"College Diploma",
+        "payload":"companyqualification_College-Diploma"
     },
     {
         "content_type":"text",

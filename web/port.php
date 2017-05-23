@@ -11,8 +11,6 @@ THINGS TO add
 -Call button  https://developers.facebook.com/docs/messenger-platform/send-api-reference/call-button
 -Share button. https://developers.facebook.com/docs/messenger-platform/send-api-reference/share-button
 -MENUS MAN WTH!!!!!! - SOCIAL NEWS!!!! https://developers.facebook.com/docs/messenger-platform/messenger-profile/persistent-menu
--dont do shenzhen until post job is done!!!!!
-
 // => ✖ ✔️ 🆗 🔘 ❤ 🤖 📲 📞 📱
 */
 
@@ -53,6 +51,7 @@ if (isset($_GET["hub_challenge"]) && $_GET["hub_challenge"] != '') {
                 $GLOBALS['locationTitle'] = $entry->messaging[0]->message->attachments[0]->title;
                 $GLOBALS['mid'] = $entry->messaging[0]->message->mid;
                 $GLOBALS['dbTable'] = $_ENV["main_db_table"];
+                
                 KaziBot();
             }
         }
